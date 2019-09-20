@@ -6,13 +6,7 @@ library(rgdal)
 library(raster) 
 library(sp)
 library(pxR)
-
 library(leaflet)
-library(plotly)
-library(widgetframe)
-library(ggplot2)
-library(ggiraph)
-library(geojsonio)
 
 #comunidades <- read.csv("datos_csv/codccaa.csv", fileEncoding = "UTF-8")
 provincias <- read.csv("datos_csv/codprov.csv", fileEncoding = "UTF-8")
@@ -26,12 +20,6 @@ secciones <- readRDS("cartografia_censo2011_nacional/secciones.rds") # saveRDS(s
 #SXnacionalTodosSexos <- as.data.frame(read.px("scPrincNacionalidades.px"))
 #SXnacional <- SXnacionalTodosSexos[which(SXnacionalTodosSexos$sexo == "Ambos Sexos"), ]
 SXnacional <- readRDS("SXnacional2019.rds") # saveRDS(SXnacional, "SXnacional2019.rds")
-
-
-
-
-
-
 
 shinyServer(function(input, output, session) {
   
@@ -59,7 +47,7 @@ shinyServer(function(input, output, session) {
       
       capa_sp <- spTransform(capa, CRS("+proj=longlat +datum=WGS84 +no_defs"))
       
-      if(sum(capa_sp@data$numPoblacionElegida) == 0) {
+      if(sum(capa_sp@data$numPoblacionElegida, na.rm = T) == 0) {
         leaflet(capa_sp, options = leafletOptions(minZoom = 10, maxZoom = 18)) %>% 
           addTiles() %>% 
           setView(lat = mean(coordinates(capa_sp)[,2]), lng=mean(coordinates(capa_sp)[,1]), zoom=11) %>% 
