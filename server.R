@@ -7,6 +7,7 @@ library(raster)
 library(sp)
 library(pxR)
 library(leaflet)
+library(maptools)
 
 #comunidades <- read.csv("datos_csv/codccaa.csv", fileEncoding = "UTF-8")
 provincias <- read.csv("datos_csv/codprov.csv", fileEncoding = "UTF-8")
@@ -33,7 +34,7 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$calcularSecciones, {
     output$mapa <- renderLeaflet({
-      municipio <- sprintf("%05d", municipios$COD_MUN[which(input$selectMunicipio == municipios$NOMBRE)])
+      municipio <<- sprintf("%05d", municipios$COD_MUN[which(input$selectMunicipio == municipios$NOMBRE)])
       capa <- secciones[secciones@data$CUMUN == municipio,]
       
       capa@data$seccionCensal <- paste0(capa@data$CUMUN, capa@data$CDIS, capa@data$CSEC)
@@ -91,7 +92,7 @@ shinyServer(function(input, output, session) {
       return
     proxy <- leafletProxy("mapa")
     clickedIds$ids <- c(clickedIds$ids, click$id)
-    clickedPolys <- capa_sp[capa_sp@data$seccionCensal %in% clickedIds$ids, ]
+    clickedPolys <<- capa_sp[capa_sp@data$seccionCensal %in% clickedIds$ids, ]
     
     
     if(click$id %in% clickedPolys@data$download){
@@ -115,6 +116,17 @@ shinyServer(function(input, output, session) {
       
     }
   })
+  
+  output$descargaKML <- downloadHandler(
+    filename = function() {
+      paste0(input$selectMunicipio,".kml")
+    },
+    content = function(file) {
+      kmlPolygons(obj = clickedPolys["seccionCensal"], kmlfile = file, name = paste0("Sección Censal ", clickedPolys@data$CDIS, clickedPolys@data$CSEC),
+                  description = clickedPolys@data$numPoblacionElegida, col = "Green", visibility = 0.5, lwd = 0, kmlname = "Polígonos búsqueda")
+      #writeOGR(clickedPolys, file, layer = paste0("Secciones Censales ", input$selectMunicipio), driver = "KML")
+    }
+  )
   
 })
 
