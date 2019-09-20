@@ -47,16 +47,16 @@ shinyServer(function(input, output, session) {
       
       capa_sp <- spTransform(capa, CRS("+proj=longlat +datum=WGS84 +no_defs"))
       
-      if(sum(capa_sp@data$numPoblacionElegida, na.rm = T) == 0) {
+      if(max(capa_sp@data$numPoblacionElegida,  na.rm = T) - min(capa_sp@data$numPoblacionElegida,  na.rm = T) == 0) {
         leaflet(capa_sp, options = leafletOptions(minZoom = 10, maxZoom = 18)) %>% 
           addTiles() %>% 
           setView(lat = mean(coordinates(capa_sp)[,2]), lng=mean(coordinates(capa_sp)[,1]), zoom=11) %>% 
-          addPolygons(weight = 2, fillColor = "#00FF00", fillOpacity = "0.4", stroke = T, color = "black", opacity = 0.8,
+          addPolygons(weight = 2, fillColor = "#FFFF00", fillOpacity = "0.4", stroke = T, color = "black", opacity = 0.8,
                       highlightOptions = highlightOptions(color = "white", weight = 4, bringToFront = TRUE),
                       popup = paste0("Sección Censal: <b>", paste0(capa_sp@data$CUMUN, "-", capa_sp@data$CDIS, "-", capa_sp@data$CSEC), "</b><br>",
                                      "Población: <b>", capa_sp@data$numPoblacionElegida, "</b>")) %>% 
-          addLegend(colors = "#00FF00",
-                    labels = "0 - 0",
+          addLegend(colors = "#FFFF00",
+                    labels = paste0(min(capa_sp@data$numPoblacionElegida,  na.rm = T), " - ", max(capa_sp@data$numPoblacionElegida,  na.rm = T)),
                     na.label = "Valor no disponible", title = "Población", opacity = "0.4", bins = 2)
       }
       else{
