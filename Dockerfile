@@ -1,9 +1,9 @@
 FROM openanalytics/r-base
 MAINTAINER Sergio Fernández "acsdesk@protonmail.com"
 
-#RUN apt-get update && apt-get install -y sudo pandoc pandoc-citeproc libcurl4-gnutls-dev libcairo2-dev libxt-dev libssl-dev libssh2-1-dev libssl1.0.0 libv8-dev
+RUN apt-get update && apt-get install -y libgdal-dev
 
-RUN R -e "install.packages(c('shiny', 'shinydashboard', 'rgdal', 'raster', 'sp'), repos='https://cloud.r-project.org/')"
+RUN R -e "install.packages(c('shiny', 'shinydashboard', 'rgdal', 'raster', 'sp', 'pxR', 'leaflet'), repos='https://cloud.r-project.org/')"
 
 RUN mkdir -p /root/secciones_censales
 COPY . /root/secciones_censales
