@@ -23,6 +23,8 @@ SXnacional <- readRDS("SXnacional2019.rds") # saveRDS(SXnacional, "SXnacional201
 
 shinyServer(function(input, output, session) {
   
+  clickedIds <- reactiveValues(ids = vector())
+  
   observeEvent(input$selectProvincia,{
     provincia <- provincias$ID[which(input$selectProvincia == provincias$Nombre)]
     municipiosElegibles <- municipios$NOMBRE[which(provincia == municipios$CPRO)]
@@ -45,7 +47,7 @@ shinyServer(function(input, output, session) {
       max <- max(capa@data$numPoblacionElegida, na.rm = T)
       pal <- colorQuantile(colorRamp(c("#00FF00", "#FF0000")), domain = min:max)
       
-      capa_sp <- spTransform(capa, CRS("+proj=longlat +datum=WGS84 +no_defs"))
+      capa_sp <<- spTransform(capa, CRS("+proj=longlat +datum=WGS84 +no_defs"))
       
       if(max(capa_sp@data$numPoblacionElegida,  na.rm = T) - min(capa_sp@data$numPoblacionElegida,  na.rm = T) == 0) {
         leaflet(capa_sp, options = leafletOptions(minZoom = 10, maxZoom = 18)) %>% 
@@ -54,19 +56,21 @@ shinyServer(function(input, output, session) {
           addPolygons(weight = 2, fillColor = "#FFFF00", fillOpacity = "0.4", stroke = T, color = "black", opacity = 0.8,
                       highlightOptions = highlightOptions(color = "white", weight = 4, bringToFront = TRUE),
                       popup = paste0("Sección Censal: <b>", paste0(capa_sp@data$CUMUN, "-", capa_sp@data$CDIS, "-", capa_sp@data$CSEC), "</b><br>",
-                                     "Población: <b>", capa_sp@data$numPoblacionElegida, "</b>")) %>% 
+                                     "Población: <b>", capa_sp@data$numPoblacionElegida, "</b>"),
+        layerId = capa_sp@data$seccionCensal, group = "censussections", label = capa_sp@data$seccionCensal) %>% 
           addLegend(colors = "#FFFF00",
                     labels = paste0(min(capa_sp@data$numPoblacionElegida,  na.rm = T), " - ", max(capa_sp@data$numPoblacionElegida,  na.rm = T)),
                     na.label = "Valor no disponible", title = "Población", opacity = "0.4", bins = 2)
       }
-      else{
+      else {
         leaflet(capa_sp, options = leafletOptions(minZoom = 10, maxZoom = 18)) %>% 
           addTiles() %>% 
           setView(lat = mean(coordinates(capa_sp)[,2]), lng=mean(coordinates(capa_sp)[,1]), zoom=11) %>% 
           addPolygons(weight = 2, fillColor = ~pal(numPoblacionElegida), fillOpacity = "0.4", stroke = T, color = "black", opacity = 0.8,
                       highlightOptions = highlightOptions(color = "white", weight = 4, bringToFront = TRUE),
                       popup = paste0("Sección Censal: <b>", paste0(capa_sp@data$CUMUN, "-", capa_sp@data$CDIS, "-", capa_sp@data$CSEC), "</b><br>",
-                                     "Población: <b>", capa_sp@data$numPoblacionElegida, "</b>")) %>% 
+                                     "Población: <b>", capa_sp@data$numPoblacionElegida, "</b>"),
+                      layerId = capa_sp@data$seccionCensal, group = "censussections", label = capa_sp@data$seccionCensal) %>% 
           addLegend(colors = c(pal(max), pal((3*max+2*min)/5), pal((2*max+3*min)/5), pal(min)),
                     labels = c(paste0(round((2*max+min)/3, digits = 2), " - <b>", max, "</b>"),
                                paste0(round((max+min)/2, digits = 2), " - ", round((2*max+min)/3, digits = 2)),
@@ -77,6 +81,37 @@ shinyServer(function(input, output, session) {
       
       #pal=pal, values=~numPoblacionElegida
     })
+  })
+  
+  observeEvent(input$mapa_shape_click, {
+    click <- input$mapa_shape_click
+    print(click)
+    proxy <- leafletProxy("mapa")
+    clickedIds$ids <- c(clickedIds$ids, click$id)
+    print(capa_sp@data)
+    print(capa_sp@data$seccionCensal)
+    print(clickedIds$ids)
+    print(capa_sp@data$seccionCensal %in% clickedIds$ids)
+    clickedPolys <- capa_sp[capa_sp@data$seccionCensal %in% clickedIds$ids, ]
+    
+    if(click$id %in% clickedPolys@data$seccionCensalClickada){
+      
+      nameMatch <- clickedPolys@data$seccionCensal[clickedPolys@data$seccionCensalClickada == click$id]
+      clickedIds$ids <- clickedIds$ids[!clickedIds$ids %in% click$id] 
+      clickedIds$ids <- clickedIds$ids[!clickedIds$ids %in% nameMatch]
+      proxy %>% removeShape(layerId = click$id)
+      
+    } else {
+      
+      proxy %>% addPolygons(data = clickedPolys,
+                            fillColor = "blue",
+                            fillOpacity = 1,
+                            weight = 1,
+                            color = "black",
+                            stroke = T,
+                            label = clickedPolys@data$seccionCensalClickada, 
+                            layerId = clickedPolys@data$seccionCensalClickada)
+    }
   })
   
 })
