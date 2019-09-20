@@ -37,6 +37,7 @@ shinyServer(function(input, output, session) {
       capa <- secciones[secciones@data$CUMUN == municipio,]
       
       capa@data$seccionCensal <- paste0(capa@data$CUMUN, capa@data$CDIS, capa@data$CSEC)
+      capa@data$download <- paste0("download-", capa@data$CUMUN, capa@data$CDIS, capa@data$CSEC)
       #capa@data <- subset(capa@data, select = -c(CDIS, CSEC, CUMUN, CMUN, CPRO, CCA)) # Eliminamos la info extra ya condensada
       
       nacionalidad <- SXnacional[which(input$selectNacionalidad == SXnacional$nacionalidad), ]
@@ -85,18 +86,17 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$mapa_shape_click, {
     click <- input$mapa_shape_click
-    print(click)
+    
+    if(is.null(click$id))
+      return
     proxy <- leafletProxy("mapa")
     clickedIds$ids <- c(clickedIds$ids, click$id)
-    print(capa_sp@data)
-    print(capa_sp@data$seccionCensal)
-    print(clickedIds$ids)
-    print(capa_sp@data$seccionCensal %in% clickedIds$ids)
     clickedPolys <- capa_sp[capa_sp@data$seccionCensal %in% clickedIds$ids, ]
     
-    if(click$id %in% clickedPolys@data$seccionCensalClickada){
+    
+    if(click$id %in% clickedPolys@data$download){
       
-      nameMatch <- clickedPolys@data$seccionCensal[clickedPolys@data$seccionCensalClickada == click$id]
+      nameMatch <- clickedPolys@data$seccionCensal[clickedPolys@data$download == click$id]
       clickedIds$ids <- clickedIds$ids[!clickedIds$ids %in% click$id] 
       clickedIds$ids <- clickedIds$ids[!clickedIds$ids %in% nameMatch]
       proxy %>% removeShape(layerId = click$id)
@@ -105,12 +105,14 @@ shinyServer(function(input, output, session) {
       
       proxy %>% addPolygons(data = clickedPolys,
                             fillColor = "blue",
-                            fillOpacity = 1,
+                            fillOpacity = 0.8,
                             weight = 1,
                             color = "black",
                             stroke = T,
-                            label = clickedPolys@data$seccionCensalClickada, 
-                            layerId = clickedPolys@data$seccionCensalClickada)
+                            label = clickedPolys@data$download,
+                            group = "censussections",
+                            layerId = clickedPolys@data$download)
+      
     }
   })
   
