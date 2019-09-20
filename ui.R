@@ -21,7 +21,7 @@ ui <- dashboardPage(
                     selectizeInput("selectMunicipio", label = "Selecciona Municipio", choices = c("Cargando...")),
                     selectizeInput("selectNacionalidad", label = "Selecciona Nacionalidad", choices = levels(SXnacional$nacionalidad)),
                     actionButton("calcularSecciones", label = "Generar mapa"),
-                    downloadButton("descargaKMZ", label = "Descargar polígonos seleccionados")
+                    downloadButton("descargaKML", label = "Descargar polígonos seleccionados")
                 ),
                 box(width = 10, title = "Mapa", status = "warning", solidHeader = F,
                     leafletOutput("mapa", width = "auto")
