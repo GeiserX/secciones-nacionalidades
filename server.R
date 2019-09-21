@@ -9,6 +9,7 @@ library(pxR)
 library(leaflet)
 library(plotKML)
 
+
 #comunidades <- read.csv("datos_csv/codccaa.csv", fileEncoding = "UTF-8")
 provincias <- read.csv("datos_csv/codprov.csv", fileEncoding = "UTF-8")
 municipios <- read.csv("datos_csv/Municipios_Censo_2011.csv", fileEncoding = "UTF-8")
@@ -123,11 +124,14 @@ shinyServer(function(input, output, session) {
       paste0(input$selectMunicipio,".kml")
     },
     content = function(file) {
+      
+      plotKML::kml(obj = clickedPolys, file = file, kmz = F, colour = "green", alpha = 0.5,
+                     html.table = paste0("Poblacion: ", clickedPolys@data$numPoblacionElegida),
+                     labels = paste0("Seccion Censal ", clickedPolys@data$CDIS, clickedPolys@data$CSEC))
+        
       # kmlPolygons(obj = clickedPolys["seccionCensal"], kmlfile = file, name = paste0("Sección Censal ", clickedPolys@data$CDIS, clickedPolys@data$CSEC),
       #             description = clickedPolys@data$numPoblacionElegida, col = "Green", visibility = 0.5, lwd = 0, kmlname = "Polígonos búsqueda")
-      plotKML::kml(obj = clickedPolys, file = file, kmz = F, colour = "green", alpha = 0.5,
-                   html.table = paste0("Poblacion: ", clickedPolys@data$numPoblacionElegida),
-                   labels = paste0("Seccion Censal ", clickedPolys@data$CDIS, clickedPolys@data$CSEC))
+      
       #writeOGR(clickedPolys, file, layer = paste0("Secciones Censales ", input$selectMunicipio), driver = "KML")
     }
   )
