@@ -76,10 +76,10 @@ shinyServer(function(input, output, session) {
                                      "Población: <b>", capa_sp@data$numPoblacionElegida, "</b>"),
                       layerId = capa_sp@data$seccionCensal, group = "censussections", label = capa_sp@data$seccionCensal) %>% 
           addLegend(colors = c(pal(max), pal((3*max+2*min)/5), pal((2*max+3*min)/5), pal(min)),
-                    labels = c(paste0(round((2*max+min)/3, digits = 2), " - <b>", max, "</b>"),
-                               paste0(round((max+min)/2, digits = 2), " - ", round((2*max+min)/3, digits = 2)),
-                               paste0(round((max+2*min)/3, digits = 2), " - ", round((max+min)/2, digits = 2)),
-                               paste0("<b>", min, "</b> - ", round((max+2*min)/3, digits = 2))),
+                    labels = c(paste0(round((3*max+min)/4, digits = 2), " - <b>", max, "</b>"),
+                               paste0(round((max+min)/2, digits = 2), " - ", round((3*max+min)/4, digits = 2)),
+                               paste0(round((max+3*min)/4, digits = 2), " - ", round((max+min)/2, digits = 2)),
+                               paste0("<b>", min, "</b> - ", round((max+3*min)/4, digits = 2))),
                     na.label = "Valor no disponible", title = "Población", opacity = "0.4", bins = 2)
       }
       
