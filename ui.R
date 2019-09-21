@@ -21,7 +21,8 @@ dashboardPage(
                     selectizeInput("selectMunicipio", label = "Selecciona Municipio", choices = c("Cargando...")),
                     selectizeInput("selectNacionalidad", label = "Selecciona Nacionalidad", choices = levels(SXnacional$nacionalidad)),
                     actionButton("calcularSecciones", label = "Generar mapa"),
-                    downloadButton("descargaKMZ", label = "Descargar seleccionados")
+                    downloadButton("descargaKMZ", label = "Descargar seleccionados"),
+                    htmlOutput("info")
                 ),
                 box(width = 10, title = "Mapa", status = "warning", solidHeader = F,
                     leafletOutput("mapa", width = "auto")
