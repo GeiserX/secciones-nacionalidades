@@ -3,7 +3,7 @@ MAINTAINER Sergio Fernández "acsdesk@protonmail.com"
 
 RUN apt-get update && apt-get install -y libgdal-dev
 
-RUN R -e "install.packages(c('shiny', 'shinydashboard', 'rgdal', 'raster', 'sp', 'pxR', 'leaflet', 'plotKML'), repos='https://cloud.r-project.org/')"
+RUN R -e "install.packages(c('shiny', 'shinydashboard', 'shinyalert', 'rgdal', 'raster', 'sp', 'pxR', 'leaflet', 'plotKML'), repos='https://cloud.r-project.org/')"
 
 RUN mkdir -p /root/secciones_censales
 COPY . /root/secciones_censales

@@ -29,6 +29,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$selectProvincia,{
     provincia <- provincias$ID[which(input$selectProvincia == provincias$Nombre)]
     municipiosElegibles <- municipios$NOMBRE[which(provincia == municipios$CPRO)]
+    #trimmedMunicipios <- trimws(gsub("\\([^()]*\\)", "", municipiosElegibles))
     updateSelectizeInput(session = session, "selectMunicipio", choices = municipiosElegibles)
   })
   
@@ -117,14 +118,16 @@ shinyServer(function(input, output, session) {
     }
   })
   
-  output$descargaKML <- downloadHandler(
+  output$descargaKMZ <- downloadHandler(
     filename = function() {
       paste0(input$selectMunicipio,".kml")
     },
     content = function(file) {
       # kmlPolygons(obj = clickedPolys["seccionCensal"], kmlfile = file, name = paste0("Sección Censal ", clickedPolys@data$CDIS, clickedPolys@data$CSEC),
       #             description = clickedPolys@data$numPoblacionElegida, col = "Green", visibility = 0.5, lwd = 0, kmlname = "Polígonos búsqueda")
-      plotKML::kml(obj = clickedPolys, file = file, kmz = F)
+      plotKML::kml(obj = clickedPolys, file = file, kmz = F, colour = "green", alpha = 0.5,
+                   html.table = paste0("Poblacion: ", clickedPolys@data$numPoblacionElegida),
+                   labels = paste0("Seccion Censal ", clickedPolys@data$CDIS, clickedPolys@data$CSEC))
       #writeOGR(clickedPolys, file, layer = paste0("Secciones Censales ", input$selectMunicipio), driver = "KML")
     }
   )
