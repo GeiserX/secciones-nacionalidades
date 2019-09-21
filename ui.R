@@ -1,12 +1,13 @@
 library(shiny)
 library(shinydashboard)
-library(shinyalert)
 library(leaflet)
 
 provincias <- read.csv("datos_csv/codprov.csv", fileEncoding = "UTF-8")
 SXnacional <- readRDS("SXnacional2019.rds") # saveRDS(SXnacional, "SXnacional2019.rds")
 
-ui <- dashboardPage(
+useShinyalert()
+
+dashboardPage(
   dashboardHeader(title = "Extranjeros por Secciones Censales España"),
     dashboardSidebar(
       sidebarMenu(
