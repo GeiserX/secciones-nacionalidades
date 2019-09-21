@@ -1,5 +1,6 @@
 library(shiny)
 library(shinydashboard)
+library(shinyalert)
 library(leaflet)
 
 provincias <- read.csv("datos_csv/codprov.csv", fileEncoding = "UTF-8")
@@ -21,7 +22,7 @@ ui <- dashboardPage(
                     selectizeInput("selectMunicipio", label = "Selecciona Municipio", choices = c("Cargando...")),
                     selectizeInput("selectNacionalidad", label = "Selecciona Nacionalidad", choices = levels(SXnacional$nacionalidad)),
                     actionButton("calcularSecciones", label = "Generar mapa"),
-                    downloadButton("descargaKML", label = "Descargar polígonos seleccionados")
+                    downloadButton("descargaKMZ", label = "Descargar seleccionados")
                 ),
                 box(width = 10, title = "Mapa", status = "warning", solidHeader = F,
                     leafletOutput("mapa", width = "auto")
