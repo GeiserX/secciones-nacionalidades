@@ -7,7 +7,7 @@ library(raster)
 library(sp)
 library(pxR)
 library(leaflet)
-library(maptools)
+library(plotKML)
 
 #comunidades <- read.csv("datos_csv/codccaa.csv", fileEncoding = "UTF-8")
 provincias <- read.csv("datos_csv/codprov.csv", fileEncoding = "UTF-8")
@@ -122,8 +122,9 @@ shinyServer(function(input, output, session) {
       paste0(input$selectMunicipio,".kml")
     },
     content = function(file) {
-      kmlPolygons(obj = clickedPolys["seccionCensal"], kmlfile = file, name = paste0("Sección Censal ", clickedPolys@data$CDIS, clickedPolys@data$CSEC),
-                  description = clickedPolys@data$numPoblacionElegida, col = "Green", visibility = 0.5, lwd = 0, kmlname = "Polígonos búsqueda")
+      # kmlPolygons(obj = clickedPolys["seccionCensal"], kmlfile = file, name = paste0("Sección Censal ", clickedPolys@data$CDIS, clickedPolys@data$CSEC),
+      #             description = clickedPolys@data$numPoblacionElegida, col = "Green", visibility = 0.5, lwd = 0, kmlname = "Polígonos búsqueda")
+      plotKML::kml(obj = clickedPolys, file = file, kmz = F)
       #writeOGR(clickedPolys, file, layer = paste0("Secciones Censales ", input$selectMunicipio), driver = "KML")
     }
   )
