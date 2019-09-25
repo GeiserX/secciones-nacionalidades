@@ -2,6 +2,7 @@
 
 library(shiny)
 library(shinydashboard)
+library(shinyjs)
 library(rgdal)
 library(raster) 
 library(sp)
@@ -27,12 +28,19 @@ shinyServer(function(input, output, session) {
   
   output$info <- renderText({
     paste0("<hr>Cartografía obtenida de <a href=https://www.ine.es/censos2011_datos/cen11_datos_resultados_seccen.htm> los datos disponibles públicamente ",
-    "en la web del Instituto Nacional de Estadística</a><br> Datos sobre población obtenida gracias a la ",
+    "en la web del Instituto Nacional de Estadística</a><hr> Datos sobre población obtenida gracias a la ",
     "<a href=https://www.ine.es/dyngs/INEbase/es/operacion.htm?c=Estadistica_C&cid=1254736177012&menu=resultados&secc=1254736195461&idp=1254734710990>",
       "información disponible públicamente en la web del Istituto Nacional de Estadística</a>")
   })
   
   clickedIds <- reactiveValues(ids = vector())
+  
+  observeEvent(input$selectMunicipio,{
+    disable("descargaKMZ")
+  })
+    
+  
+  
   
   observeEvent(input$selectProvincia,{
     provincia <- provincias$ID[which(input$selectProvincia == provincias$Nombre)]
@@ -101,9 +109,11 @@ shinyServer(function(input, output, session) {
     
     if(is.null(click$id))
       return
+    
     proxy <- leafletProxy("mapa")
     clickedIds$ids <- c(clickedIds$ids, click$id)
     clickedPolys <<- capa_sp[capa_sp@data$seccionCensal %in% clickedIds$ids, ]
+    
     
     
     if(click$id %in% clickedPolys@data$download){
@@ -113,7 +123,13 @@ shinyServer(function(input, output, session) {
       clickedIds$ids <- clickedIds$ids[!clickedIds$ids %in% nameMatch]
       proxy %>% removeShape(layerId = click$id)
       
+      if(length(clickedIds$ids) == 0) {
+        disable("descargaKMZ")
+      }
+      
     } else {
+      
+      enable("descargaKMZ")
       
       proxy %>% addPolygons(data = clickedPolys,
                             fillColor = "blue",
