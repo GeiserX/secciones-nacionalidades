@@ -20,9 +20,13 @@ secciones <- readRDS("cartografia_censo2011_nacional/secciones.rds") # saveRDS(s
 #seccionesTransform <- spTransform(seccionesRaw, CRS("+proj=longlat +datum=WGS84"))
 #seccionesGoogleMapsz <- fortify(seccionesTransform)
 
-SXnacionalTodosSexos <- as.data.frame(read.px("scPrincNacionalidades.px"))
-SXnacionalAmbos <- SXnacionalTodosSexos[which(SXnacionalTodosSexos$sexo == "Ambos Sexos"), ]
-SXnacional <- readRDS("SXnacional2019.rds") # saveRDS(SXnacional, "SXnacional2019.rds")
+#SXnacional <- as.data.frame(read.px("scPrincNacionalidades.px"))
+#SXnacionalAmbos <- SXnacionalTodosSexos[which(SXnacional$sexo == "Ambos Sexos"), ]
+#SXnacionalHombres <- SXnacionalTodosSexos[which(SXnacional$sexo == "Hombres"), ]
+#SXnacionalMujeres <- SXnacionalTodosSexos[which(SXnacional$sexo == "Mujeres"), ]
+SXnacionalAmbos <- readRDS("SXnacional2019ambos.rds") # saveRDS(SXnacionalAmbos, "SXnacional2019ambos.rds")
+SXnacionalHombres <- readRDS("SXnacional2019hombres.rds") # saveRDS(SXnacionalHombres, "SXnacional2019hombres.rds")
+SXnacionalMujeres <- readRDS("SXnacional2019mujeres.rds") # saveRDS(SXnacionalMujeres, "SXnacional2019mujeres.rds")
 
 shinyServer(function(input, output, session) {
   
@@ -75,11 +79,17 @@ shinyServer(function(input, output, session) {
               capa@data$seccionCensal <- paste0(capa@data$CUMUN, capa@data$CDIS, capa@data$CSEC)
               capa@data$download <- paste0("download-", capa@data$CUMUN, capa@data$CDIS, capa@data$CSEC)
               
-              nacionalidad <- SXnacional[which(input$selectNacionalidad == SXnacional$nacionalidad), ]
-              totalPoblacion <- SXnacional[which("Total Población" == SXnacional$nacionalidad), ]
+              nacionalidad <- SXnacionalAmbos[which(input$selectNacionalidad == SXnacionalAmbos$nacionalidad), ]
+              nacionalidadHombres <- SXnacionalHombres[which(input$selectNacionalidad == SXnacionalHombres$nacionalidad), ]
+              nacionalidadMujeres <- SXnacionalMujeres[which(input$selectNacionalidad == SXnacionalMujeres$nacionalidad), ]
+              totalPoblacion <- SXnacionalAmbos[which("Total Población" == SXnacionalAmbos$nacionalidad), ]
               nacionalidadPorSeccion <- nacionalidad[match(capa@data$seccionCensal, nacionalidad$sección), "value"]
+              nacionalidadPorSeccionHombres <- nacionalidadHombres[match(capa@data$seccionCensal, nacionalidadHombres$sección), "value"]
+              nacionalidadPorSeccionMujeres <- nacionalidadMujeres[match(capa@data$seccionCensal, nacionalidadMujeres$sección), "value"]
               
               capa@data$numPoblacionElegida <- nacionalidadPorSeccion
+              capa@data$numPoblacionElegidaHombres <- nacionalidadPorSeccionHombres
+              capa@data$numPoblacionElegidaMujeres <- nacionalidadPorSeccionMujeres
               capa@data$porcentajePoblacion <- 100 * as.numeric(nacionalidadPorSeccion) / as.numeric(totalPoblacion[match(capa@data$seccionCensal, totalPoblacion$sección), "value"])
               
               min <- floor(min(capa@data$porcentajePoblacion, na.rm = T))
@@ -95,7 +105,10 @@ shinyServer(function(input, output, session) {
                   addPolygons(weight = 2, fillColor = "#FFFF00", fillOpacity = "0.4", stroke = T, color = "black", opacity = 0.8,
                               highlightOptions = highlightOptions(color = "white", weight = 4, bringToFront = TRUE),
                               popup = paste0("Sección Censal: <b>", paste0(capa_sp@data$CUMUN, "-", capa_sp@data$CDIS, "-", capa_sp@data$CSEC), "</b><br>",
-                                             "Porcentaje de población: <b>", round(capa_sp@data$porcentajePoblacion, digits = 2), "%</b>"),
+                                             "Población: <b>", capa_sp@data$numPoblacionElegida, "</b><br>",
+                                             "Porcentaje de población: <b>", round(capa_sp@data$porcentajePoblacion, digits = 2), "%</b><br>",
+                                             "Hombres: <b>", capa_sp@data$numPoblacionElegidaHombres, "</b><br>",
+                                             "Mujeres: <b>", capa_sp@data$numPoblacionElegidaMujeres, "</b>"),
                               layerId = capa_sp@data$seccionCensal, group = "censussections", label = capa_sp@data$seccionCensal) %>% 
                   addLegend(colors = "#FFFF00",
                             labels = paste0(min(capa_sp@data$porcentajePoblacion,  na.rm = T), "% - ", max(capa_sp@data$porcentajePoblacion,  na.rm = T), "%"),
@@ -109,7 +122,9 @@ shinyServer(function(input, output, session) {
                               highlightOptions = highlightOptions(color = "white", weight = 4, bringToFront = TRUE),
                               popup = paste0("Sección Censal: <b>", paste0(capa_sp@data$CUMUN, "-", capa_sp@data$CDIS, "-", capa_sp@data$CSEC), "</b><br>",
                                              "Población: <b>", capa_sp@data$numPoblacionElegida, "</b><br>",
-                                             "Porcentaje de población: <b>", round(capa_sp@data$porcentajePoblacion, digits = 2), "%</b>"),
+                                             "Porcentaje de población: <b>", round(capa_sp@data$porcentajePoblacion, digits = 2), "%</b><br>",
+                                             "Hombres: <b>", capa_sp@data$numPoblacionElegidaHombres, "</b><br>",
+                                             "Mujeres: <b>", capa_sp@data$numPoblacionElegidaMujeres, "</b>"),
                               layerId = capa_sp@data$seccionCensal, group = "censussections", label = capa_sp@data$seccionCensal)  %>% 
                   addLegend(colors = c(pal(max), pal((3*max+2*min)/5), pal((2*max+3*min)/5), pal(min)),
                             labels = c(paste0(round((3*max+min)/4, digits = 2), " - <b>", max, "%</b>"),
@@ -136,8 +151,8 @@ shinyServer(function(input, output, session) {
               capa@data$seccionCensal <- paste0(capa@data$CUMUN, capa@data$CDIS, capa@data$CSEC)
               capa@data$download <- paste0("download-", capa@data$CUMUN, capa@data$CDIS, capa@data$CSEC)
               
-              nacionalidad <- SXnacional[which(input$selectNacionalidad == SXnacional$nacionalidad), ]
-              totalPoblacion <- SXnacional[which("Total Población" == SXnacional$nacionalidad), ]
+              nacionalidad <- SXnacionalAmbos[which(input$selectNacionalidad == SXnacionalAmbos$nacionalidad), ]
+              totalPoblacion <- SXnacionalAmbos[which("Total Población" == SXnacionalAmbos$nacionalidad), ]
               nacionalidadPorSeccion <- nacionalidad[match(capa@data$seccionCensal, nacionalidad$sección), "value"]
               
               capa@data$numPoblacionElegida <- nacionalidadPorSeccion
@@ -156,6 +171,7 @@ shinyServer(function(input, output, session) {
                   addPolygons(weight = 2, fillColor = "#FFFF00", fillOpacity = "0.4", stroke = T, color = "black", opacity = 0.8,
                               highlightOptions = highlightOptions(color = "white", weight = 4, bringToFront = TRUE),
                               popup = paste0("Sección Censal: <b>", paste0(capa_sp@data$CUMUN, "-", capa_sp@data$CDIS, "-", capa_sp@data$CSEC), "</b><br>",
+                                             "Población: <b>", capa_sp@data$numPoblacionElegida, "</b><br>",
                                              "Porcentaje de población: <b>", round(capa_sp@data$porcentajePoblacion, digits = 2), "%</b>"),
                               layerId = capa_sp@data$seccionCensal, group = "censussections", label = capa_sp@data$seccionCensal) %>% 
                   addLegend(colors = "#FFFF00",
@@ -203,7 +219,7 @@ shinyServer(function(input, output, session) {
             capa@data$download <- paste0("download-", capa@data$CUMUN, capa@data$CDIS, capa@data$CSEC)
             #capa@data <- subset(capa@data, select = -c(CDIS, CSEC, CUMUN, CMUN, CPRO, CCA)) # Eliminamos la info extra ya condensada
             
-            nacionalidad <- SXnacional[which(input$selectNacionalidad == SXnacional$nacionalidad), ]
+            nacionalidad <- SXnacionalAmbos[which(input$selectNacionalidad == SXnacionalAmbos$nacionalidad), ]
             
             capa@data$numPoblacionElegida <- nacionalidad[match(capa@data$seccionCensal, nacionalidad$sección), "value"]
             
@@ -298,14 +314,24 @@ shinyServer(function(input, output, session) {
     content = function(file) {
       
       if("porcentajePoblacion" %in% colnames(clickedPolys@data)){
-        plotKML::kml(obj = clickedPolys, file = file, kmz = F, colour = "green", alpha = 0.5,
-                     html.table = paste0("Poblacion: <b>", clickedPolys@data$numPoblacionElegida, "</b><br>",
-                                         "Porcentaje: <b>", round(clickedPolys@data$porcentajePoblacion, digits = 2), "%</b>"),
-                     labels = paste0("Seccion Censal ", clickedPolys@data$CDIS, clickedPolys@data$CSEC)) 
+        if("numPoblacionElegidaHombres" %in% colnames(clickedPolys@data)){
+          plotKML::kml(obj = clickedPolys, file = file, kmz = F, colour = "green", alpha = 0.5,
+                       html.table = paste0("Poblacion - ", clickedPolys@data$numPoblacionElegida, "<br>",
+                                           "Porcentaje - ", round(clickedPolys@data$porcentajePoblacion, digits = 2), "%<br>",
+                                           "Hombres - ", clickedPolys@data$numPoblacionElegidaHombres, "<br>",
+                                           "Mujeres - ", clickedPolys@data$numPoblacionElegidaMujeres),
+                       labels = paste0("Seccion Censal ", clickedPolys@data$CDIS, clickedPolys@data$CSEC)) 
+        }
+        else{
+          plotKML::kml(obj = clickedPolys, file = file, kmz = F, colour = "green", alpha = 0.5,
+                       html.table = paste0("Poblacion - <b>", clickedPolys@data$numPoblacionElegida, "</b><br>",
+                                           "Porcentaje - <b>", round(clickedPolys@data$porcentajePoblacion, digits = 2), "%</b>"),
+                       labels = paste0("Seccion Censal ", clickedPolys@data$CDIS, clickedPolys@data$CSEC))  
+        }
       }
       else{
         plotKML::kml(obj = clickedPolys, file = file, kmz = F, colour = "green", alpha = 0.5,
-                     html.table = paste0("Poblacion: ", clickedPolys@data$numPoblacionElegida),
+                     html.table = paste0("Poblacion - ", clickedPolys@data$numPoblacionElegida),
                      labels = paste0("Seccion Censal ", clickedPolys@data$CDIS, clickedPolys@data$CSEC))
       }
         
