@@ -20,11 +20,22 @@ secciones <- readRDS("cartografia_censo2011_nacional/secciones.rds") # saveRDS(s
 #seccionesTransform <- spTransform(seccionesRaw, CRS("+proj=longlat +datum=WGS84"))
 #seccionesGoogleMapsz <- fortify(seccionesTransform)
 
-#SXnacionalTodosSexos <- as.data.frame(read.px("scPrincNacionalidades.px"))
-#SXnacional <- SXnacionalTodosSexos[which(SXnacionalTodosSexos$sexo == "Ambos Sexos"), ]
+SXnacionalTodosSexos <- as.data.frame(read.px("scPrincNacionalidades.px"))
+SXnacionalAmbos <- SXnacionalTodosSexos[which(SXnacionalTodosSexos$sexo == "Ambos Sexos"), ]
 SXnacional <- readRDS("SXnacional2019.rds") # saveRDS(SXnacional, "SXnacional2019.rds")
 
 shinyServer(function(input, output, session) {
+  
+  observe({
+    if(input$porcentaje == T){
+      updateSelectizeInput(session, "selectNacionalidad", choices = levels(SXnacional$nacionalidad)[-1])
+      enable("hombreMujer")
+    }
+    else{
+      updateSelectizeInput(session, "selectNacionalidad", choices = levels(SXnacional$nacionalidad))
+      disable("hombreMujer")
+    }
+  })
   
   output$info <- renderText({
     paste0("<hr>Cartografía obtenida de <a href=https://www.ine.es/censos2011_datos/cen11_datos_resultados_seccen.htm> los datos disponibles públicamente ",
@@ -40,67 +51,203 @@ shinyServer(function(input, output, session) {
   })
     
   
-  
-  
   observeEvent(input$selectProvincia,{
     provincia <- provincias$ID[which(input$selectProvincia == provincias$Nombre)]
-    municipiosElegibles <- municipios$NOMBRE[which(provincia == municipios$CPRO)]
+    municipiosElegibles <<- municipios$NOMBRE[which(provincia == municipios$CPRO)]
     #trimmedMunicipios <- trimws(gsub("\\([^()]*\\)", "", municipiosElegibles))
     updateSelectizeInput(session = session, "selectMunicipio", choices = municipiosElegibles)
   })
   
-  observeEvent(input$calcularSecciones, {
+  observe({
     if(!is.null(input$selectMunicipio)){
-      output$mapa <- renderLeaflet({
-        municipio <<- sprintf("%05d", municipios$COD_MUN[which(input$selectMunicipio == municipios$NOMBRE)])
-        capa <- secciones[secciones@data$CUMUN == municipio,]
-        
-        capa@data$seccionCensal <- paste0(capa@data$CUMUN, capa@data$CDIS, capa@data$CSEC)
-        capa@data$download <- paste0("download-", capa@data$CUMUN, capa@data$CDIS, capa@data$CSEC)
-        #capa@data <- subset(capa@data, select = -c(CDIS, CSEC, CUMUN, CMUN, CPRO, CCA)) # Eliminamos la info extra ya condensada
-        
-        nacionalidad <- SXnacional[which(input$selectNacionalidad == SXnacional$nacionalidad), ]
-        
-        capa@data$numPoblacionElegida <- nacionalidad[match(capa@data$seccionCensal, nacionalidad$sección), "value"]
-        
-        min <- min(capa@data$numPoblacionElegida, na.rm = T)
-        max <- max(capa@data$numPoblacionElegida, na.rm = T)
-        pal <- colorQuantile(colorRamp(c("#00FF00", "#FF0000")), domain = min:max)
-        
-        capa_sp <<- spTransform(capa, CRS("+proj=longlat +datum=WGS84 +no_defs"))
-        
-        if(max(capa_sp@data$numPoblacionElegida,  na.rm = T) - min(capa_sp@data$numPoblacionElegida,  na.rm = T) == 0) {
-          leaflet(capa_sp, options = leafletOptions(minZoom = 10, maxZoom = 18)) %>% 
-            addTiles() %>% 
-            setView(lat = mean(coordinates(capa_sp)[,2]), lng=mean(coordinates(capa_sp)[,1]), zoom=11) %>% 
-            addPolygons(weight = 2, fillColor = "#FFFF00", fillOpacity = "0.4", stroke = T, color = "black", opacity = 0.8,
-                        highlightOptions = highlightOptions(color = "white", weight = 4, bringToFront = TRUE),
-                        popup = paste0("Sección Censal: <b>", paste0(capa_sp@data$CUMUN, "-", capa_sp@data$CDIS, "-", capa_sp@data$CSEC), "</b><br>",
-                                       "Población: <b>", capa_sp@data$numPoblacionElegida, "</b>"),
-          layerId = capa_sp@data$seccionCensal, group = "censussections", label = capa_sp@data$seccionCensal) %>% 
-            addLegend(colors = "#FFFF00",
-                      labels = paste0(min(capa_sp@data$numPoblacionElegida,  na.rm = T), " - ", max(capa_sp@data$numPoblacionElegida,  na.rm = T)),
-                      na.label = "Valor no disponible", title = "Población", opacity = "0.4", bins = 2)
+      if(input$selectMunicipio != "Cargando..." && input$selectMunicipio %in% municipiosElegibles){
+        if(input$porcentaje == T){
+          if(input$hombreMujer == T){
+            
+            ####################################################
+            ## Mapa con porcentajes y Distinción Hombre/Mujer ##
+            ####################################################
+            
+            output$mapa <- renderLeaflet({
+              municipio <<- sprintf("%05d", municipios$COD_MUN[which(input$selectMunicipio == municipios$NOMBRE)])
+              capa <- secciones[secciones@data$CUMUN == municipio,]
+              
+              capa@data$seccionCensal <- paste0(capa@data$CUMUN, capa@data$CDIS, capa@data$CSEC)
+              capa@data$download <- paste0("download-", capa@data$CUMUN, capa@data$CDIS, capa@data$CSEC)
+              
+              nacionalidad <- SXnacional[which(input$selectNacionalidad == SXnacional$nacionalidad), ]
+              totalPoblacion <- SXnacional[which("Total Población" == SXnacional$nacionalidad), ]
+              nacionalidadPorSeccion <- nacionalidad[match(capa@data$seccionCensal, nacionalidad$sección), "value"]
+              
+              capa@data$numPoblacionElegida <- nacionalidadPorSeccion
+              capa@data$porcentajePoblacion <- 100 * as.numeric(nacionalidadPorSeccion) / as.numeric(totalPoblacion[match(capa@data$seccionCensal, totalPoblacion$sección), "value"])
+              
+              min <- floor(min(capa@data$porcentajePoblacion, na.rm = T))
+              max <- ceiling(max(capa@data$porcentajePoblacion, na.rm = T))
+              pal <- colorQuantile(colorRamp(c("#00FF00", "#FF0000")), domain = min:max)
+              
+              capa_sp <<- spTransform(capa, CRS("+proj=longlat +datum=WGS84 +no_defs"))
+              
+              if(max(capa_sp@data$numPoblacionElegida,  na.rm = T) - min(capa_sp@data$numPoblacionElegida,  na.rm = T) == 0) {
+                leaflet(capa_sp, options = leafletOptions(minZoom = 10, maxZoom = 18)) %>% 
+                  addTiles() %>% 
+                  setView(lat = mean(coordinates(capa_sp)[,2]), lng=mean(coordinates(capa_sp)[,1]), zoom=11) %>% 
+                  addPolygons(weight = 2, fillColor = "#FFFF00", fillOpacity = "0.4", stroke = T, color = "black", opacity = 0.8,
+                              highlightOptions = highlightOptions(color = "white", weight = 4, bringToFront = TRUE),
+                              popup = paste0("Sección Censal: <b>", paste0(capa_sp@data$CUMUN, "-", capa_sp@data$CDIS, "-", capa_sp@data$CSEC), "</b><br>",
+                                             "Porcentaje de población: <b>", round(capa_sp@data$porcentajePoblacion, digits = 2), "%</b>"),
+                              layerId = capa_sp@data$seccionCensal, group = "censussections", label = capa_sp@data$seccionCensal) %>% 
+                  addLegend(colors = "#FFFF00",
+                            labels = paste0(min(capa_sp@data$porcentajePoblacion,  na.rm = T), "% - ", max(capa_sp@data$porcentajePoblacion,  na.rm = T), "%"),
+                            na.label = "Valor no disponible", title = "Población", opacity = "0.4", bins = 2)
+              }
+              else {
+                leaflet(capa_sp, options = leafletOptions(minZoom = 10, maxZoom = 18)) %>% 
+                  addTiles() %>% 
+                  setView(lat = mean(coordinates(capa_sp)[,2]), lng=mean(coordinates(capa_sp)[,1]), zoom=11) %>% 
+                  addPolygons(weight = 2, fillColor = ~pal(porcentajePoblacion), fillOpacity = "0.4", stroke = T, color = "black", opacity = 0.8,
+                              highlightOptions = highlightOptions(color = "white", weight = 4, bringToFront = TRUE),
+                              popup = paste0("Sección Censal: <b>", paste0(capa_sp@data$CUMUN, "-", capa_sp@data$CDIS, "-", capa_sp@data$CSEC), "</b><br>",
+                                             "Población: <b>", capa_sp@data$numPoblacionElegida, "</b><br>",
+                                             "Porcentaje de población: <b>", round(capa_sp@data$porcentajePoblacion, digits = 2), "%</b>"),
+                              layerId = capa_sp@data$seccionCensal, group = "censussections", label = capa_sp@data$seccionCensal)  %>% 
+                  addLegend(colors = c(pal(max), pal((3*max+2*min)/5), pal((2*max+3*min)/5), pal(min)),
+                            labels = c(paste0(round((3*max+min)/4, digits = 2), " - <b>", max, "%</b>"),
+                                       paste0(round((max+min)/2, digits = 2), " - ", round((3*max+min)/4, digits = 2), "%"),
+                                       paste0(round((max+3*min)/4, digits = 2), " - ", round((max+min)/2, digits = 2), "%"),
+                                       paste0("<b>", min, "</b> - ", round((max+3*min)/4, digits = 2), "%")),
+                            na.label = "Valor no disponible", title = "Población", opacity = "0.4", bins = 2)
+              }
+              
+              
+            })
+            
+          }
+          else{
+            
+            ###############################################
+            ## Mapa únicamente con valores y porcentajes ##
+            ###############################################
+            
+            output$mapa <- renderLeaflet({
+              municipio <<- sprintf("%05d", municipios$COD_MUN[which(input$selectMunicipio == municipios$NOMBRE)])
+              capa <- secciones[secciones@data$CUMUN == municipio,]
+              
+              capa@data$seccionCensal <- paste0(capa@data$CUMUN, capa@data$CDIS, capa@data$CSEC)
+              capa@data$download <- paste0("download-", capa@data$CUMUN, capa@data$CDIS, capa@data$CSEC)
+              
+              nacionalidad <- SXnacional[which(input$selectNacionalidad == SXnacional$nacionalidad), ]
+              totalPoblacion <- SXnacional[which("Total Población" == SXnacional$nacionalidad), ]
+              nacionalidadPorSeccion <- nacionalidad[match(capa@data$seccionCensal, nacionalidad$sección), "value"]
+              
+              capa@data$numPoblacionElegida <- nacionalidadPorSeccion
+              capa@data$porcentajePoblacion <- 100 * as.numeric(nacionalidadPorSeccion) / as.numeric(totalPoblacion[match(capa@data$seccionCensal, totalPoblacion$sección), "value"])
+              
+              min <- floor(min(capa@data$porcentajePoblacion, na.rm = T))
+              max <- ceiling(max(capa@data$porcentajePoblacion, na.rm = T))
+              pal <- colorQuantile(colorRamp(c("#00FF00", "#FF0000")), domain = min:max)
+              
+              capa_sp <<- spTransform(capa, CRS("+proj=longlat +datum=WGS84 +no_defs"))
+              
+              if(max(capa_sp@data$numPoblacionElegida,  na.rm = T) - min(capa_sp@data$numPoblacionElegida,  na.rm = T) == 0) {
+                leaflet(capa_sp, options = leafletOptions(minZoom = 10, maxZoom = 18)) %>% 
+                  addTiles() %>% 
+                  setView(lat = mean(coordinates(capa_sp)[,2]), lng=mean(coordinates(capa_sp)[,1]), zoom=11) %>% 
+                  addPolygons(weight = 2, fillColor = "#FFFF00", fillOpacity = "0.4", stroke = T, color = "black", opacity = 0.8,
+                              highlightOptions = highlightOptions(color = "white", weight = 4, bringToFront = TRUE),
+                              popup = paste0("Sección Censal: <b>", paste0(capa_sp@data$CUMUN, "-", capa_sp@data$CDIS, "-", capa_sp@data$CSEC), "</b><br>",
+                                             "Porcentaje de población: <b>", round(capa_sp@data$porcentajePoblacion, digits = 2), "%</b>"),
+                              layerId = capa_sp@data$seccionCensal, group = "censussections", label = capa_sp@data$seccionCensal) %>% 
+                  addLegend(colors = "#FFFF00",
+                            labels = paste0(min(capa_sp@data$porcentajePoblacion,  na.rm = T), "% - ", max(capa_sp@data$porcentajePoblacion,  na.rm = T), "%"),
+                            na.label = "Valor no disponible", title = "Población", opacity = "0.4", bins = 2)
+              }
+              else {
+                leaflet(capa_sp, options = leafletOptions(minZoom = 10, maxZoom = 18)) %>% 
+                  addTiles() %>% 
+                  setView(lat = mean(coordinates(capa_sp)[,2]), lng=mean(coordinates(capa_sp)[,1]), zoom=11) %>% 
+                  addPolygons(weight = 2, fillColor = ~pal(porcentajePoblacion), fillOpacity = "0.4", stroke = T, color = "black", opacity = 0.8,
+                              highlightOptions = highlightOptions(color = "white", weight = 4, bringToFront = TRUE),
+                              popup = paste0("Sección Censal: <b>", paste0(capa_sp@data$CUMUN, "-", capa_sp@data$CDIS, "-", capa_sp@data$CSEC), "</b><br>",
+                                             "Población: <b>", capa_sp@data$numPoblacionElegida, "</b><br>",
+                                             "Porcentaje de población: <b>", round(capa_sp@data$porcentajePoblacion, digits = 2), "%</b>"),
+                              layerId = capa_sp@data$seccionCensal, group = "censussections", label = capa_sp@data$seccionCensal)  %>% 
+                  addLegend(colors = c(pal(max), pal((3*max+2*min)/5), pal((2*max+3*min)/5), pal(min)),
+                            labels = c(paste0(round((3*max+min)/4, digits = 2), " - <b>", max, "%</b>"),
+                                       paste0(round((max+min)/2, digits = 2), " - ", round((3*max+min)/4, digits = 2), "%"),
+                                       paste0(round((max+3*min)/4, digits = 2), " - ", round((max+min)/2, digits = 2), "%"),
+                                       paste0("<b>", min, "</b> - ", round((max+3*min)/4, digits = 2), "%")),
+                            na.label = "Valor no disponible", title = "Población", opacity = "0.4", bins = 2)
+              }
+              
+              
+            })
+            
+          }
+          
+
+          
+
         }
-        else {
-          leaflet(capa_sp, options = leafletOptions(minZoom = 10, maxZoom = 18)) %>% 
-            addTiles() %>% 
-            setView(lat = mean(coordinates(capa_sp)[,2]), lng=mean(coordinates(capa_sp)[,1]), zoom=11) %>% 
-            addPolygons(weight = 2, fillColor = ~pal(numPoblacionElegida), fillOpacity = "0.4", stroke = T, color = "black", opacity = 0.8,
-                        highlightOptions = highlightOptions(color = "white", weight = 4, bringToFront = TRUE),
-                        popup = paste0("Sección Censal: <b>", paste0(capa_sp@data$CUMUN, "-", capa_sp@data$CDIS, "-", capa_sp@data$CSEC), "</b><br>",
-                                       "Población: <b>", capa_sp@data$numPoblacionElegida, "</b>"),
-                        layerId = capa_sp@data$seccionCensal, group = "censussections", label = capa_sp@data$seccionCensal) %>% 
-            addLegend(colors = c(pal(max), pal((3*max+2*min)/5), pal((2*max+3*min)/5), pal(min)),
-                      labels = c(paste0(round((3*max+min)/4, digits = 2), " - <b>", max, "</b>"),
-                                 paste0(round((max+min)/2, digits = 2), " - ", round((3*max+min)/4, digits = 2)),
-                                 paste0(round((max+3*min)/4, digits = 2), " - ", round((max+min)/2, digits = 2)),
-                                 paste0("<b>", min, "</b> - ", round((max+3*min)/4, digits = 2))),
-                      na.label = "Valor no disponible", title = "Población", opacity = "0.4", bins = 2)
+        else{
+          
+          #################################
+          ## Mapa únicamente con valores ##
+          #################################
+          
+          output$mapa <- renderLeaflet({
+            municipio <<- sprintf("%05d", municipios$COD_MUN[which(input$selectMunicipio == municipios$NOMBRE)])
+            capa <- secciones[secciones@data$CUMUN == municipio,]
+            
+            capa@data$seccionCensal <- paste0(capa@data$CUMUN, capa@data$CDIS, capa@data$CSEC)
+            capa@data$download <- paste0("download-", capa@data$CUMUN, capa@data$CDIS, capa@data$CSEC)
+            #capa@data <- subset(capa@data, select = -c(CDIS, CSEC, CUMUN, CMUN, CPRO, CCA)) # Eliminamos la info extra ya condensada
+            
+            nacionalidad <- SXnacional[which(input$selectNacionalidad == SXnacional$nacionalidad), ]
+            
+            capa@data$numPoblacionElegida <- nacionalidad[match(capa@data$seccionCensal, nacionalidad$sección), "value"]
+            
+            min <- min(capa@data$numPoblacionElegida, na.rm = T)
+            max <- max(capa@data$numPoblacionElegida, na.rm = T)
+            pal <- colorQuantile(colorRamp(c("#00FF00", "#FF0000")), domain = min:max)
+            
+            capa_sp <<- spTransform(capa, CRS("+proj=longlat +datum=WGS84 +no_defs"))
+            
+            if(max(capa_sp@data$numPoblacionElegida,  na.rm = T) - min(capa_sp@data$numPoblacionElegida,  na.rm = T) == 0) {
+              leaflet(capa_sp, options = leafletOptions(minZoom = 10, maxZoom = 18)) %>% 
+                addTiles() %>% 
+                setView(lat = mean(coordinates(capa_sp)[,2]), lng=mean(coordinates(capa_sp)[,1]), zoom=11) %>% 
+                addPolygons(weight = 2, fillColor = "#FFFF00", fillOpacity = "0.4", stroke = T, color = "black", opacity = 0.8,
+                            highlightOptions = highlightOptions(color = "white", weight = 4, bringToFront = TRUE),
+                            popup = paste0("Sección Censal: <b>", paste0(capa_sp@data$CUMUN, "-", capa_sp@data$CDIS, "-", capa_sp@data$CSEC), "</b><br>",
+                                           "Población: <b>", capa_sp@data$numPoblacionElegida, "</b>"),
+                            layerId = capa_sp@data$seccionCensal, group = "censussections", label = capa_sp@data$seccionCensal) %>% 
+                addLegend(colors = "#FFFF00",
+                          labels = paste0(min(capa_sp@data$numPoblacionElegida,  na.rm = T), " - ", max(capa_sp@data$numPoblacionElegida,  na.rm = T)),
+                          na.label = "Valor no disponible", title = "Población", opacity = "0.4", bins = 2)
+            }
+            else {
+              leaflet(capa_sp, options = leafletOptions(minZoom = 10, maxZoom = 18)) %>% 
+                addTiles() %>% 
+                setView(lat = mean(coordinates(capa_sp)[,2]), lng=mean(coordinates(capa_sp)[,1]), zoom=11) %>% 
+                addPolygons(weight = 2, fillColor = ~pal(numPoblacionElegida), fillOpacity = "0.4", stroke = T, color = "black", opacity = 0.8,
+                            highlightOptions = highlightOptions(color = "white", weight = 4, bringToFront = TRUE),
+                            popup = paste0("Sección Censal: <b>", paste0(capa_sp@data$CUMUN, "-", capa_sp@data$CDIS, "-", capa_sp@data$CSEC), "</b><br>",
+                                           "Población: <b>", capa_sp@data$numPoblacionElegida, "</b>"),
+                            layerId = capa_sp@data$seccionCensal, group = "censussections", label = capa_sp@data$seccionCensal) %>% 
+                addLegend(colors = c(pal(max), pal((3*max+2*min)/5), pal((2*max+3*min)/5), pal(min)),
+                          labels = c(paste0(round((3*max+min)/4, digits = 2), " - <b>", max, "</b>"),
+                                     paste0(round((max+min)/2, digits = 2), " - ", round((3*max+min)/4, digits = 2)),
+                                     paste0(round((max+3*min)/4, digits = 2), " - ", round((max+min)/2, digits = 2)),
+                                     paste0("<b>", min, "</b> - ", round((max+3*min)/4, digits = 2))),
+                          na.label = "Valor no disponible", title = "Población", opacity = "0.4", bins = 2)
+            }
+            
+          })
+          
         }
         
-        #pal=pal, values=~numPoblacionElegida
-      })
+        }
     }
   })
   
@@ -150,9 +297,17 @@ shinyServer(function(input, output, session) {
     },
     content = function(file) {
       
-      plotKML::kml(obj = clickedPolys, file = file, kmz = F, colour = "green", alpha = 0.5,
+      if("porcentajePoblacion" %in% colnames(clickedPolys@data)){
+        plotKML::kml(obj = clickedPolys, file = file, kmz = F, colour = "green", alpha = 0.5,
+                     html.table = paste0("Poblacion: <b>", clickedPolys@data$numPoblacionElegida, "</b><br>",
+                                         "Porcentaje: <b>", round(clickedPolys@data$porcentajePoblacion, digits = 2), "%</b>"),
+                     labels = paste0("Seccion Censal ", clickedPolys@data$CDIS, clickedPolys@data$CSEC)) 
+      }
+      else{
+        plotKML::kml(obj = clickedPolys, file = file, kmz = F, colour = "green", alpha = 0.5,
                      html.table = paste0("Poblacion: ", clickedPolys@data$numPoblacionElegida),
                      labels = paste0("Seccion Censal ", clickedPolys@data$CDIS, clickedPolys@data$CSEC))
+      }
         
       # kmlPolygons(obj = clickedPolys["seccionCensal"], kmlfile = file, name = paste0("Sección Censal ", clickedPolys@data$CDIS, clickedPolys@data$CSEC),
       #             description = clickedPolys@data$numPoblacionElegida, col = "Green", visibility = 0.5, lwd = 0, kmlname = "Polígonos búsqueda")
