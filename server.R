@@ -32,11 +32,11 @@ shinyServer(function(input, output, session) {
   
   observe({
     if(input$porcentaje == T){
-      updateSelectizeInput(session, "selectNacionalidad", choices = levels(SXnacional$nacionalidad)[-1])
+      updateSelectizeInput(session, "selectNacionalidad", choices = levels(SXnacionalAmbos$nacionalidad)[-1])
       enable("hombreMujer")
     }
     else{
-      updateSelectizeInput(session, "selectNacionalidad", choices = levels(SXnacional$nacionalidad))
+      updateSelectizeInput(session, "selectNacionalidad", choices = levels(SXnacionalAmbos$nacionalidad))
       disable("hombreMujer")
     }
   })
