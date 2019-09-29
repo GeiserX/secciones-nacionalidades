@@ -50,7 +50,7 @@ shinyServer(function(input, output, session) {
   clickedIds <- reactiveValues(ids = vector())
   
   observeEvent(input$selectMunicipio,{
-    disable("descargaKMZ")
+    disable("descargaKML")
   })
     
   
@@ -286,12 +286,12 @@ shinyServer(function(input, output, session) {
       proxy %>% removeShape(layerId = click$id)
       
       if(length(clickedIds$ids) == 0) {
-        disable("descargaKMZ")
+        disable("descargaKML")
       }
       
     } else {
       
-      enable("descargaKMZ")
+      enable("descargaKML")
       
       proxy %>% addPolygons(data = clickedPolys,
                             fillColor = "blue",
@@ -306,7 +306,7 @@ shinyServer(function(input, output, session) {
     }
   })
   
-  output$descargaKMZ <- downloadHandler(
+  output$descargaKML <- downloadHandler(
     filename = function() {
       paste0(input$selectMunicipio,".kml")
     },
