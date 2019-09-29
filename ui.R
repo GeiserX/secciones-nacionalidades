@@ -20,7 +20,7 @@ dashboardPage(
         tabItem(tabName = "tab1",
                 box(width = 3, title = "Selecciona Municipio y Nacionalidad", status = "primary", solidHeader = TRUE,
                     selectizeInput("selectProvincia", "Selecciona Provincia", choices = provincias$Nombre, multiple = F, selected = "Murcia"),
-                    selectizeInput("selectMunicipio", label = "Selecciona Municipio", choices = c("Cargando...")),
+                    selectizeInput("selectMunicipio", label = "Selecciona Municipio", choices = c("Cargando..."), multiple = T),
                     selectizeInput("selectNacionalidad", label = "Selecciona Nacionalidad", choices = levels(SXnacional$nacionalidad)),
                     checkboxInput("porcentaje", "Aplicar porcentaje sobre población total", value = F),
                     disabled(checkboxInput("hombreMujer", "Distinguir entre hombre/mujer", value = F)),
