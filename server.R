@@ -10,7 +10,6 @@ library(pxR)
 library(leaflet)
 library(plotKML)
 
-
 #comunidades <- read.csv("datos_csv/codccaa.csv", fileEncoding = "UTF-8")
 provincias <- read.csv("datos_csv/codprov.csv", fileEncoding = "UTF-8")
 municipios <- read.csv("datos_csv/Municipios_Censo_2011.csv", fileEncoding = "UTF-8")
@@ -73,8 +72,8 @@ shinyServer(function(input, output, session) {
             ####################################################
             
             output$mapa <- renderLeaflet({
-              municipio <<- sprintf("%05d", municipios$COD_MUN[which(input$selectMunicipio == municipios$NOMBRE)])
-              capa <- secciones[secciones@data$CUMUN == municipio,]
+              municipio <<- sprintf("%05d", municipios$COD_MUN[municipios$NOMBRE %in% input$selectMunicipio])
+              capa <- secciones[secciones@data$CUMUN %in% municipio,]
               
               capa@data$seccionCensal <- paste0(capa@data$CUMUN, capa@data$CDIS, capa@data$CSEC)
               capa@data$download <- paste0("download-", capa@data$CUMUN, capa@data$CDIS, capa@data$CSEC)
@@ -99,7 +98,7 @@ shinyServer(function(input, output, session) {
               capa_sp <<- spTransform(capa, CRS("+proj=longlat +datum=WGS84 +no_defs"))
               
               if(max(capa_sp@data$numPoblacionElegida,  na.rm = T) - min(capa_sp@data$numPoblacionElegida,  na.rm = T) == 0) {
-                leaflet(capa_sp, options = leafletOptions(minZoom = 10, maxZoom = 18)) %>% 
+                leaflet(capa_sp, options = leafletOptions(minZoom = 9, maxZoom = 18)) %>% 
                   addTiles() %>% 
                   setView(lat = mean(coordinates(capa_sp)[,2]), lng=mean(coordinates(capa_sp)[,1]), zoom=11) %>% 
                   addPolygons(weight = 2, fillColor = "#FFFF00", fillOpacity = "0.4", stroke = T, color = "black", opacity = 0.8,
@@ -115,7 +114,7 @@ shinyServer(function(input, output, session) {
                             na.label = "Valor no disponible", title = "Población", opacity = "0.4", bins = 2)
               }
               else {
-                leaflet(capa_sp, options = leafletOptions(minZoom = 10, maxZoom = 18)) %>% 
+                leaflet(capa_sp, options = leafletOptions(minZoom = 9, maxZoom = 18)) %>% 
                   addTiles() %>% 
                   setView(lat = mean(coordinates(capa_sp)[,2]), lng=mean(coordinates(capa_sp)[,1]), zoom=11) %>% 
                   addPolygons(weight = 2, fillColor = ~pal(porcentajePoblacion), fillOpacity = "0.4", stroke = T, color = "black", opacity = 0.8,
@@ -145,8 +144,8 @@ shinyServer(function(input, output, session) {
             ###############################################
             
             output$mapa <- renderLeaflet({
-              municipio <<- sprintf("%05d", municipios$COD_MUN[which(input$selectMunicipio == municipios$NOMBRE)])
-              capa <- secciones[secciones@data$CUMUN == municipio,]
+              municipio <<- sprintf("%05d", municipios$COD_MUN[municipios$NOMBRE %in% input$selectMunicipio])
+              capa <- secciones[secciones@data$CUMUN %in% municipio,]
               
               capa@data$seccionCensal <- paste0(capa@data$CUMUN, capa@data$CDIS, capa@data$CSEC)
               capa@data$download <- paste0("download-", capa@data$CUMUN, capa@data$CDIS, capa@data$CSEC)
@@ -165,7 +164,7 @@ shinyServer(function(input, output, session) {
               capa_sp <<- spTransform(capa, CRS("+proj=longlat +datum=WGS84 +no_defs"))
               
               if(max(capa_sp@data$numPoblacionElegida,  na.rm = T) - min(capa_sp@data$numPoblacionElegida,  na.rm = T) == 0) {
-                leaflet(capa_sp, options = leafletOptions(minZoom = 10, maxZoom = 18)) %>% 
+                leaflet(capa_sp, options = leafletOptions(minZoom = 9, maxZoom = 18)) %>% 
                   addTiles() %>% 
                   setView(lat = mean(coordinates(capa_sp)[,2]), lng=mean(coordinates(capa_sp)[,1]), zoom=11) %>% 
                   addPolygons(weight = 2, fillColor = "#FFFF00", fillOpacity = "0.4", stroke = T, color = "black", opacity = 0.8,
@@ -179,7 +178,7 @@ shinyServer(function(input, output, session) {
                             na.label = "Valor no disponible", title = "Población", opacity = "0.4", bins = 2)
               }
               else {
-                leaflet(capa_sp, options = leafletOptions(minZoom = 10, maxZoom = 18)) %>% 
+                leaflet(capa_sp, options = leafletOptions(minZoom = 9, maxZoom = 18)) %>% 
                   addTiles() %>% 
                   setView(lat = mean(coordinates(capa_sp)[,2]), lng=mean(coordinates(capa_sp)[,1]), zoom=11) %>% 
                   addPolygons(weight = 2, fillColor = ~pal(porcentajePoblacion), fillOpacity = "0.4", stroke = T, color = "black", opacity = 0.8,
@@ -212,8 +211,8 @@ shinyServer(function(input, output, session) {
           #################################
           
           output$mapa <- renderLeaflet({
-            municipio <<- sprintf("%05d", municipios$COD_MUN[which(input$selectMunicipio == municipios$NOMBRE)])
-            capa <- secciones[secciones@data$CUMUN == municipio,]
+            municipio <<- sprintf("%05d", municipios$COD_MUN[municipios$NOMBRE %in% input$selectMunicipio])
+            capa <- secciones[secciones@data$CUMUN %in% municipio,]
             
             capa@data$seccionCensal <- paste0(capa@data$CUMUN, capa@data$CDIS, capa@data$CSEC)
             capa@data$download <- paste0("download-", capa@data$CUMUN, capa@data$CDIS, capa@data$CSEC)
@@ -230,7 +229,7 @@ shinyServer(function(input, output, session) {
             capa_sp <<- spTransform(capa, CRS("+proj=longlat +datum=WGS84 +no_defs"))
             
             if(max(capa_sp@data$numPoblacionElegida,  na.rm = T) - min(capa_sp@data$numPoblacionElegida,  na.rm = T) == 0) {
-              leaflet(capa_sp, options = leafletOptions(minZoom = 10, maxZoom = 18)) %>% 
+              leaflet(capa_sp, options = leafletOptions(minZoom = 9, maxZoom = 18)) %>% 
                 addTiles() %>% 
                 setView(lat = mean(coordinates(capa_sp)[,2]), lng=mean(coordinates(capa_sp)[,1]), zoom=11) %>% 
                 addPolygons(weight = 2, fillColor = "#FFFF00", fillOpacity = "0.4", stroke = T, color = "black", opacity = 0.8,
@@ -243,7 +242,7 @@ shinyServer(function(input, output, session) {
                           na.label = "Valor no disponible", title = "Población", opacity = "0.4", bins = 2)
             }
             else {
-              leaflet(capa_sp, options = leafletOptions(minZoom = 10, maxZoom = 18)) %>% 
+              leaflet(capa_sp, options = leafletOptions(minZoom = 9, maxZoom = 18)) %>% 
                 addTiles() %>% 
                 setView(lat = mean(coordinates(capa_sp)[,2]), lng=mean(coordinates(capa_sp)[,1]), zoom=11) %>% 
                 addPolygons(weight = 2, fillColor = ~pal(numPoblacionElegida), fillOpacity = "0.4", stroke = T, color = "black", opacity = 0.8,
