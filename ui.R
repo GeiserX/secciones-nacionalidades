@@ -4,14 +4,14 @@ library(shinyjs)
 library(leaflet)
 
 provincias <- read.csv("datos_csv/codprov.csv", fileEncoding = "UTF-8")
-SXnacional <- readRDS("SXnacional2019.rds") # saveRDS(SXnacional, "SXnacional2019.rds")
+SXnacional <- readRDS("SXnacional2019ambos.rds") # saveRDS(SXnacional, "SXnacional2019.rds")
 
 dashboardPage(
   dashboardHeader(title = "Foreign Statix"),
     dashboardSidebar(
       sidebarMenu(
-        menuItem("Municipios", tabName = "tab1", icon = shiny::icon("bulding")),
-        menuItem("Provincias", tabName = "tab2", icon = shiny::icon("binoculars"))
+        menuItem("Municipios", tabName = "tab1", icon = shiny::icon("building")),
+        menuItem("Acerca de", tabName = "tab2", icon = shiny::icon("info"))
     )
   ),
   dashboardBody(
@@ -25,7 +25,7 @@ dashboardPage(
                     checkboxInput("porcentaje", "Aplicar porcentaje sobre población total", value = F),
                     disabled(checkboxInput("hombreMujer", "Distinguir entre hombre/mujer", value = F)),
                     useShinyjs(),
-                    disabled(downloadButton("descargaKMZ", label = "Descargar seleccionados")),
+                    disabled(downloadButton("descargaKML", label = "Descargar seleccionados")),
                     htmlOutput("info")
                 ),
                 box(width = 9, title = "Mapa", status = "warning", solidHeader = F, 
@@ -34,7 +34,7 @@ dashboardPage(
                 )
         ),
         tabItem(tabName = "tab2",
-                box(width = 2, title = "Selecciona Provincia y Nacionalidad", status = "primary", solidHeader = TRUE
+                box(width = 2, title = "Información", status = "primary", solidHeader = TRUE
                     
                     ),
                 box()
