@@ -14,7 +14,7 @@ library(plotKML)
 provincias <- read.csv("datos_csv/codprov.csv", fileEncoding = "UTF-8")
 municipios <- read.csv("datos_csv/Municipios_Censo_2011.csv", fileEncoding = "UTF-8")
 #secciones <- readOGR(dsn = "seccionado_2018/", layer = "SECC_CE_20180101") # Datos a 2018
-secciones <- readRDS("seccionado_2018/secciones.rds") # saveRDS(secciones, "seccionado_2018/secciones.rds")
+secciones <- readRDS("seccionado_2018/secciones.rds") # saveRDS(secciones, "seccionado_2018/secciones.rds") # git lfs track ..(FILE)..
 #secciones_json <- geojson_json(secciones)
 #seccionesTransform <- spTransform(seccionesRaw, CRS("+proj=longlat +datum=WGS84"))
 #seccionesGoogleMapsz <- fortify(seccionesTransform)
@@ -40,11 +40,14 @@ shinyServer(function(input, output, session) {
     }
   })
   
-  output$info <- renderText({
-    paste0("<hr>Cartografía obtenida de <a href=http://www.ine.es/ss/Satellite?L=es_ES&c=Page&cid=1259952026632&p=1259952026632&pagename=ProductosYServicios%2FPYSLayout>",
-           "los datos disponibles públicamente en la web del Instituto Nacional de Estadística</a><hr> Datos sobre población obtenida gracias a la ",
-    "<a href=https://www.ine.es/dyngs/INEbase/es/operacion.htm?c=Estadistica_C&cid=1254736177012&menu=resultados&secc=1254736195461&idp=1254734710990>",
-      "información disponible públicamente en la web del Istituto Nacional de Estadística</a>")
+  output$mention <- renderText({
+    paste0("<hr>Cartografía obtenida de <a ",
+    "href=http://www.ine.es/ss/Satellite?L=es_ES&c=Page&cid=1259952026632&p=1259952026632&pagename=ProductosYServicios%2FPYSLayout target=_blank>",
+    "los datos disponibles públicamente en la web del Instituto Nacional de Estadística</a><hr> Datos sobre población obtenida gracias a la ",
+    "<a href=https://www.ine.es/dyngs/INEbase/es/operacion.htm?c=Estadistica_C&cid=1254736177012&menu=resultados&secc=1254736195461&idp=1254734710990 target=_blank>",
+    "información disponible públicamente en la web del Istituto Nacional de Estadística</a><hr>",
+    "Código fuente disponible en<a href=https://github.com/DrumSergio/secciones-nacionalidades target=_blank> GitHub</a><br>",
+    "Contenedor Docker disponible  en<a href=https://cloud.docker.com/u/drumsergio/repository/docker/drumsergio/secciones-nacionalidades target=_blank> DockerHub</a>")
   })
   
   clickedIds <- reactiveValues(ids = vector())
@@ -89,7 +92,8 @@ shinyServer(function(input, output, session) {
               capa@data$numPoblacionElegida <- nacionalidadPorSeccion
               capa@data$numPoblacionElegidaHombres <- nacionalidadPorSeccionHombres
               capa@data$numPoblacionElegidaMujeres <- nacionalidadPorSeccionMujeres
-              capa@data$porcentajePoblacion <- 100 * as.numeric(nacionalidadPorSeccion) / as.numeric(totalPoblacion[match(capa@data$seccionCensal, totalPoblacion$sección), "value"])
+              capa@data$porcentajePoblacion <- 100 * as.numeric(nacionalidadPorSeccion) / as.numeric(totalPoblacion[match(capa@data$seccionCensal,
+                                                                                                                          totalPoblacion$sección), "value"])
               
               min <- floor(min(capa@data$porcentajePoblacion, na.rm = T))
               max <- ceiling(max(capa@data$porcentajePoblacion, na.rm = T))
@@ -155,7 +159,8 @@ shinyServer(function(input, output, session) {
               nacionalidadPorSeccion <- nacionalidad[match(capa@data$seccionCensal, nacionalidad$sección), "value"]
               
               capa@data$numPoblacionElegida <- nacionalidadPorSeccion
-              capa@data$porcentajePoblacion <- 100 * as.numeric(nacionalidadPorSeccion) / as.numeric(totalPoblacion[match(capa@data$seccionCensal, totalPoblacion$sección), "value"])
+              capa@data$porcentajePoblacion <- 100 * as.numeric(nacionalidadPorSeccion) / as.numeric(totalPoblacion[match(capa@data$seccionCensal,
+                                                                                                                          totalPoblacion$sección), "value"])
               
               min <- floor(min(capa@data$porcentajePoblacion, na.rm = T))
               max <- ceiling(max(capa@data$porcentajePoblacion, na.rm = T))
