@@ -10,13 +10,13 @@ shinyServer(function(input, output, session) {
   })
   
   output$mention <- renderText({
-    paste0("<hr>Cartografía obtenida de <a ",
+    paste0("<hr>Cartography extracted from <a ",
     "href=http://www.ine.es/ss/Satellite?L=es_ES&c=Page&cid=1259952026632&p=1259952026632&pagename=ProductosYServicios%2FPYSLayout target=_blank>",
-    "los datos disponibles públicamente en la web del Instituto Nacional de Estadística</a><hr> Datos sobre población obtenida gracias a la ",
+    "data publicly available at the Spanish \'Instituto Nacional de Estadística\'</a><hr> Population data extracted thanks to ",
     "<a href=https://www.ine.es/dyngs/INEbase/es/operacion.htm?c=Estadistica_C&cid=1254736177012&menu=resultados&secc=1254736195461&idp=1254734710990 target=_blank>",
-    "información disponible públicamente en la web del Istituto Nacional de Estadística</a><hr>",
-    "Código fuente disponible en<a href=https://github.com/DrumSergio/secciones-nacionalidades target=_blank> GitHub</a><br>",
-    "Contenedor Docker disponible  en <a href=https://hub.docker.com/r/drumsergio/secciones-nacionalidadess target=_blank>DockerHub</a>")
+    "the publicly available information at the Spanish \'Instituto Nacional de Estadística\'</a><hr>",
+    "Source code available at <a href=https://github.com/DrumSergio/secciones-nacionalidades target=_blank>GitHub</a><br>",
+    "Docker container avaialble at <a href=https://hub.docker.com/r/drumsergio/secciones-nacionalidadess target=_blank>DockerHub</a>")
   })
   
   clickedIds <- reactiveValues(ids = vector())
@@ -121,4 +121,37 @@ shinyServer(function(input, output, session) {
     }
   )
   
+  
+  #############
+  ### TAB 2 ###
+  #############
+
+  observe({
+    provincia2 <<- as.numeric(provincias$ID[which(input$selectProvincia2 == provincias$Nombre)])
+    municipiosElegibles2 <<- municipios$NOMBRE[which(provincia2 == municipios$CPRO)]
+  })
+  
+  observe({
+    output$chart <- renderHighchart({
+      
+      nacionalidad <- SXnacionalAmbos[which(input$selectNacionalidad2 == SXnacionalAmbos$nacionalidad), ]
+      #nacionalidad <- nacionalidad[which(substr(nacionalidad$sección, "0", "2") == capa@data$CPRO[1]), ]
+      
+      capa <- secciones[secciones@data$CPRO %in% sprintf("%02d", provincia2),]
+      capa@data$seccionCensal <- paste0(capa@data$CUMUN, capa@data$CDIS, capa@data$CSEC)
+      capa@data$numPoblacionElegida <- nacionalidad[match(capa@data$seccionCensal, nacionalidad$sección), "value"]
+      
+      datos_agregados <- aggregate(capa@data$numPoblacionElegida, by = list(Municipio=capa@data$NMUN), FUN = sum)
+      if(input$sort) datos_agregados <- datos_agregados[order(datos_agregados$x, decreasing = T),]
+      
+      highchart() %>% 
+        hc_chart(type = "column") %>% 
+        hc_title(text = "Population") %>% 
+        hc_xAxis(categories = datos_agregados$Municipio) %>% 
+        hc_add_series(data = datos_agregados$x, name = "Population")
+    })
+  })
+  
+
+    
 })
