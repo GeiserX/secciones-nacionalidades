@@ -2,7 +2,9 @@ dashboardPage(
   dashboardHeader(title = "Foreign Statix"),
     dashboardSidebar(
       sidebarMenu(
-        menuItem("Municipios", tabName = "tab1", icon = shiny::icon("building"))
+        menuItem("Map it", tabName = "tab1", icon = shiny::icon("building")),
+        menuItem("Statistics by Province", tabName = "tab2", icon = shiny::icon("building")),
+        menuItem("Historic data", tabName = "tab3", icon = shiny::icon("binoculars"))
     )
   ),
   dashboardBody(
@@ -14,7 +16,7 @@ dashboardPage(
                     selectizeInput("selectMunicipio", label = "Selecciona Municipio", choices = c(""), multiple = T),
                     selectizeInput("selectNacionalidad", label = "Selecciona Nacionalidad", choices = levels(SXnacionalAmbos$nacionalidad)),
                     checkboxInput("porcentaje", "Aplicar porcentaje sobre población total", value = F),
-                    disabled(checkboxInput("hombreMujer", "Distinguir entre hombre/mujer", value = F)),
+                    checkboxInput("hombreMujer", "Distinguir entre hombre/mujer", value = F),
                     useShinyjs(),
                     disabled(downloadButton("descargaKML", label = "Descargar seleccionados")),
                     htmlOutput("mention")
