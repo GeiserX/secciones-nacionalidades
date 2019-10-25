@@ -9,6 +9,7 @@ library(sp)
 library(pxR)
 library(leaflet)
 library(plotKML)
+library(highcharter)
 
 
 #comunidades <- read.csv("datos_csv/codccaa.csv", fileEncoding = "UTF-8")
