@@ -28,7 +28,7 @@ dashboardPage(
         ),
         tabItem(tabName = "tab2",
                 box(width = 3, title = "Select Province", status = "primary", solidHeader = TRUE,
-                    selectizeInput("selectProvincia2", "Select Province", choices = provincias$Nombre, multiple = F, selected = "Murcia"),
+                    selectizeInput("selectProvincia2", "Select Province", choices = provincias$Nombre, multiple = F),
                     selectizeInput("selectNacionalidad2", label = "Select Nationality", choices = levels(SXnacionalAmbos$nacionalidad)),
                     checkboxInput("sort", "Sort data?", value = F)
                     ),

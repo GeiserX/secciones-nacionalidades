@@ -129,9 +129,7 @@ shinyServer(function(input, output, session) {
   observe({
     provincia2 <<- as.numeric(provincias$ID[which(input$selectProvincia2 == provincias$Nombre)])
     municipiosElegibles2 <<- municipios$NOMBRE[which(provincia2 == municipios$CPRO)]
-  })
-  
-  observe({
+    
     output$chart <- renderHighchart({
       
       nacionalidad <- SXnacionalAmbos[which(input$selectNacionalidad2 == SXnacionalAmbos$nacionalidad), ]
