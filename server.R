@@ -1,32 +1,3 @@
-#install.packages("rgdal", "raster", "sp")
-
-library(shiny)
-library(shinydashboard)
-library(shinyjs)
-library(rgdal)
-library(raster) 
-library(sp)
-library(pxR)
-library(leaflet)
-library(plotKML)
-
-#comunidades <- read.csv("datos_csv/codccaa.csv", fileEncoding = "UTF-8")
-provincias <- read.csv("datos_csv/codprov.csv", fileEncoding = "UTF-8")
-municipios <- read.csv("datos_csv/Municipios_Censo_2011.csv", fileEncoding = "UTF-8")
-#secciones <- readOGR(dsn = "seccionado_2018/", layer = "SECC_CE_20180101") # Datos a 2018
-secciones <- readRDS("seccionado_2018/secciones.rds") # saveRDS(secciones, "seccionado_2018/secciones.rds") # git lfs track ..(FILE)..
-#secciones_json <- geojson_json(secciones)
-#seccionesTransform <- spTransform(seccionesRaw, CRS("+proj=longlat +datum=WGS84"))
-#seccionesGoogleMapsz <- fortify(seccionesTransform)
-
-#SXnacional <- as.data.frame(read.px("scPrincNacionalidades.px"))
-#SXnacionalAmbos <- SXnacionalTodosSexos[which(SXnacional$sexo == "Ambos Sexos"), ]
-#SXnacionalHombres <- SXnacionalTodosSexos[which(SXnacional$sexo == "Hombres"), ]
-#SXnacionalMujeres <- SXnacionalTodosSexos[which(SXnacional$sexo == "Mujeres"), ]
-SXnacionalAmbos <- readRDS("SXnacional2019ambos.rds") # saveRDS(SXnacionalAmbos, "SXnacional2019ambos.rds")
-SXnacionalHombres <- readRDS("SXnacional2019hombres.rds") # saveRDS(SXnacionalHombres, "SXnacional2019hombres.rds")
-SXnacionalMujeres <- readRDS("SXnacional2019mujeres.rds") # saveRDS(SXnacionalMujeres, "SXnacional2019mujeres.rds")
-
 shinyServer(function(input, output, session) {
   
   observe({
@@ -47,7 +18,7 @@ shinyServer(function(input, output, session) {
     "<a href=https://www.ine.es/dyngs/INEbase/es/operacion.htm?c=Estadistica_C&cid=1254736177012&menu=resultados&secc=1254736195461&idp=1254734710990 target=_blank>",
     "información disponible públicamente en la web del Istituto Nacional de Estadística</a><hr>",
     "Código fuente disponible en<a href=https://github.com/DrumSergio/secciones-nacionalidades target=_blank> GitHub</a><br>",
-    "Contenedor Docker disponible  en<a href=https://cloud.docker.com/u/drumsergio/repository/docker/drumsergio/secciones-nacionalidades target=_blank> DockerHub</a>")
+    "Contenedor Docker disponible  en <a href=https://cloud.docker.com/u/drumsergio/repository/docker/drumsergio/secciones-nacionalidades target=_blank>DockerHub</a>")
   })
   
   clickedIds <- reactiveValues(ids = vector())
