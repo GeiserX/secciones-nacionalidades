@@ -128,8 +128,8 @@ simplyMapIt <- function(porcentaje, hombreMujer, municipioSelected, nacionalidad
         capa@data$porcentajePoblacion <- 100 * as.numeric(nacionalidadPorSeccion) / as.numeric(totalPoblacion[match(capa@data$seccionCensal,
                                                                                                                     totalPoblacion$sección), "value"])
         
-        min <- min(capa@data$numPoblacionElegida, na.rm = T)
-        max <- max(capa@data$numPoblacionElegida, na.rm = T)
+        min <- floor(min(capa@data$porcentajePoblacion, na.rm = T))
+        max <- ceiling(max(capa@data$porcentajePoblacion, na.rm = T))
         pal <- colorQuantile(colorRamp(c("#00FF00", "#FF0000")), domain = min:max)
         
         capa_sp <<- spTransform(capa, CRS("+proj=longlat +datum=WGS84 +no_defs"))
