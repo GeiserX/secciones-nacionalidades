@@ -1,14 +1,5 @@
 shinyServer(function(input, output, session) {
-  
-  observe({
-    if(input$porcentaje == T){
-      updateSelectizeInput(session, "selectNacionalidad", choices = levels(SXnacionalAmbos$nacionalidad)[-1])
-    }
-    else{
-      updateSelectizeInput(session, "selectNacionalidad", choices = levels(SXnacionalAmbos$nacionalidad))
-    }
-  })
-  
+
   output$mention <- renderText({
     paste0("<hr>Cartography extracted from <a ",
     "href=http://www.ine.es/ss/Satellite?L=es_ES&c=Page&cid=1259952026632&p=1259952026632&pagename=ProductosYServicios%2FPYSLayout target=_blank>",
@@ -20,6 +11,7 @@ shinyServer(function(input, output, session) {
   })
   
   clickedIds <- reactiveValues(ids = vector())
+  nationalitySaved <- reactiveValues(ids = vector())
   
   observeEvent(input$selectMunicipio,{
     disable("descargaKML")
@@ -32,15 +24,28 @@ shinyServer(function(input, output, session) {
     updateSelectizeInput(session = session, "selectMunicipio", choices = municipiosElegibles)
   })
   
+  observeEvent(input$porcentaje, {
+    if(input$porcentaje == T){
+      if(nationalitySaved$n != "Total Población")
+        updateSelectizeInput(session, "selectNacionalidad", choices = levels(SXnacionalAmbos$nacionalidad)[-1], selected = nationalitySaved$n)
+      else
+        updateSelectizeInput(session, "selectNacionalidad", choices = levels(SXnacionalAmbos$nacionalidad)[-1])
+    }
+    else{
+      
+      updateSelectizeInput(session, "selectNacionalidad", choices = levels(SXnacionalAmbos$nacionalidad), selected = nationalitySaved$n)
+    }
+  })
+  
   observe({
+    nationalitySaved$n <- input$selectNacionalidad
     if(!is.null(input$selectMunicipio)){
-      if(input$selectMunicipio != "Cargando..." && input$selectMunicipio %in% municipiosElegibles){
+      #if(input$selectMunicipio %in% municipiosElegibles){
         
         output$mapa <- simplyMapIt(porcentaje = input$porcentaje, hombreMujer = input$hombreMujer, municipioSelected = input$selectMunicipio,
                                    nacionalidadSelected = input$selectNacionalidad, SXnacionalAmbos = SXnacionalAmbos, SXnacionalHombres = SXnacionalHombres,
                                    SXnacionalMujeres = SXnacionalMujeres)
-        
-        }
+       # }
     }
   })
   
