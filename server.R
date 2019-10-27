@@ -155,28 +155,64 @@ shinyServer(function(input, output, session) {
       }
       
       datos_agregados <- aggregate(capa@data$numPoblacionElegida, by = list(Municipio=capa@data$NMUN), FUN = sum)      
+      
+      if(input$percentage2){
+        nacionalidad <- SXnacionalAmbos[which("Total Población" == SXnacionalAmbos$nacionalidad), ]
+        capa@data$numPoblacionTOTAL <- nacionalidad[match(capa@data$seccionCensal, nacionalidad$sección), "value"]
+        datos_agregadosT <- aggregate(capa@data$numPoblacionTOTAL, by = list(Municipio=capa@data$NMUN), FUN = sum)
+        datos_agregadosTP <- datos_agregadosT
+        datos_agregadosTP$x <- round(100 * as.numeric(datos_agregados$x) / as.numeric(datos_agregadosT$x), digits = 2)
+      }
+      
+      
+      
       if(input$sort) {
-        datos_agregados <- datos_agregados[order(datos_agregados$x, decreasing = T),]
         if(input$manWoman){
-          datos_agregadosH <- datos_agregadosH[order(datos_agregadosH$x, decreasing = T),]
-          datos_agregadosM <- datos_agregadosM[order(datos_agregadosM$x, decreasing = T),]
+          datos_agregadosH <- datos_agregadosH[order(datos_agregados$x, decreasing = T),]
+          datos_agregadosM <- datos_agregadosM[order(datos_agregados$x, decreasing = T),]
         }
+        if(input$percentage2){
+          datos_agregadosTP <- datos_agregadosTP[order(datos_agregados$x, decreasing = T),]
+        }
+        datos_agregados <- datos_agregados[order(datos_agregados$x, decreasing = T),]
       }
       
       if(input$manWoman){
-        highchart() %>% 
-          hc_chart(type = "column", zoomType = "x") %>% 
-          hc_title(text = "Population") %>% 
-          hc_xAxis(categories = datos_agregados$Municipio) %>% 
-          hc_add_series(data = datos_agregados$x, name = "Total Population") %>% 
-          hc_add_series(data = datos_agregadosH$x, name = "Men") %>% 
-          hc_add_series(data = datos_agregadosM$x, name = "Women")
+        if(input$percentage2){
+          highchart() %>% 
+            hc_chart(type = "column", zoomType = "x") %>% 
+            hc_title(text = "Population") %>% 
+            hc_xAxis(categories = datos_agregados$Municipio) %>% 
+            hc_yAxis_multiples(list(title = list(text = "Population")), list(opposite = TRUE, title = list(text = "Percentage"))) %>% 
+            hc_add_series(data = datos_agregados$x, name = "Total Population") %>% 
+            hc_add_series(data = datos_agregadosH$x, name = "Men") %>% 
+            hc_add_series(data = datos_agregadosM$x, name = "Women") %>%
+            hc_add_series(data = datos_agregadosTP$x, name = "Percentage", yAxis = 1)
+        } else {
+          highchart() %>% 
+            hc_chart(type = "column", zoomType = "x") %>% 
+            hc_title(text = "Population") %>% 
+            hc_xAxis(categories = datos_agregados$Municipio) %>% 
+            hc_add_series(data = datos_agregados$x, name = "Total Population") %>% 
+            hc_add_series(data = datos_agregadosH$x, name = "Men") %>% 
+            hc_add_series(data = datos_agregadosM$x, name = "Women")
+        }
       } else {
-        highchart() %>% 
-          hc_chart(type = "column", zoomType = "x") %>% 
-          hc_title(text = "Population") %>% 
-          hc_xAxis(categories = datos_agregados$Municipio) %>% 
-          hc_add_series(data = datos_agregados$x, name = "Total Population")
+        if(input$percentage2){
+          highchart() %>%
+            hc_chart(type = "column", zoomType = "x") %>% 
+            hc_title(text = "Population") %>% 
+            hc_xAxis(categories = datos_agregados$Municipio) %>% 
+            hc_yAxis_multiples(list(title = list(text = "Population")), list(opposite = TRUE, title = list(text = "Percentage"))) %>% 
+            hc_add_series(data = datos_agregados$x, name = "Total Population") %>% 
+            hc_add_series(data = datos_agregadosTP$x, name = "Percentage", yAxis = 1)
+        } else {
+          highchart() %>% 
+            hc_chart(type = "column", zoomType = "x") %>% 
+            hc_title(text = "Population") %>% 
+            hc_xAxis(categories = datos_agregados$Municipio) %>% 
+            hc_add_series(data = datos_agregados$x, name = "Total Population") 
+        }
       }
     })
   })
