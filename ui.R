@@ -1,5 +1,5 @@
 dashboardPage(
-  dashboardHeader(title = "Foreign Statix"),
+  dashboardHeader(title = "Foreign Insight"),
     dashboardSidebar(
       sidebarMenu(
         menuItem("Map it", tabName = "tab1", icon = shiny::icon("building")),
