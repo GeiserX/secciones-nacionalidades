@@ -138,20 +138,46 @@ shinyServer(function(input, output, session) {
     output$chart <- renderHighchart({
       
       nacionalidad <- SXnacionalAmbos[which(input$selectNacionalidad2 == SXnacionalAmbos$nacionalidad), ]
-      #nacionalidad <- nacionalidad[which(substr(nacionalidad$sección, "0", "2") == capa@data$CPRO[1]), ]
       
       capa <- secciones[secciones@data$CPRO %in% sprintf("%02d", provincia2),]
       capa@data$seccionCensal <- paste0(capa@data$CUMUN, capa@data$CDIS, capa@data$CSEC)
       capa@data$numPoblacionElegida <- nacionalidad[match(capa@data$seccionCensal, nacionalidad$sección), "value"]
       
-      datos_agregados <- aggregate(capa@data$numPoblacionElegida, by = list(Municipio=capa@data$NMUN), FUN = sum)
-      if(input$sort) datos_agregados <- datos_agregados[order(datos_agregados$x, decreasing = T),]
+      if(input$manWoman){
+        nacionalidadHombres <- SXnacionalHombres[which(input$selectNacionalidad2 == SXnacionalHombres$nacionalidad), ]
+        nacionalidadMujeres <- SXnacionalMujeres[which(input$selectNacionalidad2 == SXnacionalMujeres$nacionalidad), ]
+
+        capa@data$hombres <- nacionalidadHombres[match(capa@data$seccionCensal, nacionalidadHombres$sección), "value"]
+        capa@data$mujeres <- nacionalidadMujeres[match(capa@data$seccionCensal, nacionalidadMujeres$sección), "value"]
+        
+        datos_agregadosH <- aggregate(capa@data$hombres, by = list(Municipio=capa@data$NMUN), FUN = sum)
+        datos_agregadosM <- aggregate(capa@data$mujeres, by = list(Municipio=capa@data$NMUN), FUN = sum)
+      }
       
-      highchart() %>% 
-        hc_chart(type = "column") %>% 
-        hc_title(text = "Population") %>% 
-        hc_xAxis(categories = datos_agregados$Municipio) %>% 
-        hc_add_series(data = datos_agregados$x, name = "Population")
+      datos_agregados <- aggregate(capa@data$numPoblacionElegida, by = list(Municipio=capa@data$NMUN), FUN = sum)      
+      if(input$sort) {
+        datos_agregados <- datos_agregados[order(datos_agregados$x, decreasing = T),]
+        if(input$manWoman){
+          datos_agregadosH <- datos_agregadosH[order(datos_agregadosH$x, decreasing = T),]
+          datos_agregadosM <- datos_agregadosM[order(datos_agregadosM$x, decreasing = T),]
+        }
+      }
+      
+      if(input$manWoman){
+        highchart() %>% 
+          hc_chart(type = "column", zoomType = "x") %>% 
+          hc_title(text = "Population") %>% 
+          hc_xAxis(categories = datos_agregados$Municipio) %>% 
+          hc_add_series(data = datos_agregados$x, name = "Total Population") %>% 
+          hc_add_series(data = datos_agregadosH$x, name = "Men") %>% 
+          hc_add_series(data = datos_agregadosM$x, name = "Women")
+      } else {
+        highchart() %>% 
+          hc_chart(type = "column", zoomType = "x") %>% 
+          hc_title(text = "Population") %>% 
+          hc_xAxis(categories = datos_agregados$Municipio) %>% 
+          hc_add_series(data = datos_agregados$x, name = "Total Population")
+      }
     })
   })
   
