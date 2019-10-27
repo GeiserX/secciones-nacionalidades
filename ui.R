@@ -31,7 +31,7 @@ dashboardPage(
                     selectizeInput("selectProvincia2", "Select Province", choices = provincias$Nombre, multiple = F, selected = "Murcia"),
                     selectizeInput("selectNacionalidad2", label = "Select Nationality", choices = levels(SXnacionalAmbos$nacionalidad)),
                     checkboxInput("sort", "Sort data", value = F),
-                    checkboxInput("manWoman", "Add man/woman data", value = F)
+                    checkboxInput("manWoman", "Add men/women data", value = F)
                     ),
                 box(width = 10, title = "Chart", status = "info", solidHeader = F, 
                     tags$style(type = "text/css", "#chart {height: calc(100vh - 163px) !important;}"),
