@@ -16,7 +16,7 @@ dashboardPage(
                     selectizeInput("selectMunicipio", label = "Select Municipality", choices = c(""), multiple = T),
                     selectizeInput("selectNacionalidad", label = "Select Nationality", choices = levels(SXnacionalAmbos$nacionalidad)),
                     checkboxInput("porcentaje", "Apply percentage over total population", value = F),
-                    checkboxInput("hombreMujer", "Distinguish between man/womanr", value = F),
+                    checkboxInput("hombreMujer", "Distinguish between man/woman", value = F),
                     useShinyjs(),
                     disabled(downloadButton("descargaKML", label = "Download selected (blue) areas")),
                     htmlOutput("mention")
@@ -30,7 +30,7 @@ dashboardPage(
                 box(width = 2, title = "Select Province", status = "primary", solidHeader = TRUE,
                     selectizeInput("selectProvincia2", "Select Province", choices = provincias$Nombre, multiple = F, selected = "Murcia"),
                     selectizeInput("selectNacionalidad2", label = "Select Nationality", choices = levels(SXnacionalAmbos$nacionalidad)),
-                    checkboxInput("sort", "Sort data?", value = F)
+                    checkboxInput("sort", "Sort data", value = F)
                     ),
                 box(width = 10, title = "Chart", status = "info", solidHeader = F, 
                     tags$style(type = "text/css", "#chart {height: calc(100vh - 163px) !important;}"),
