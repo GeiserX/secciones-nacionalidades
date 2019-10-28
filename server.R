@@ -217,6 +217,27 @@ shinyServer(function(input, output, session) {
     })
   })
   
-
+  observeEvent(input$selectNacionalidad3,{
+    output$spainmap <- renderHighchart({
+      nacionalidad <- SXnacionalAmbos[which(input$selectNacionalidad3 == SXnacionalAmbos$nacionalidad), ]
+      secciones@data$seccionCensal <- paste0(secciones@data$CUMUN, secciones@data$CDIS, secciones@data$CSEC)
+      secciones@data$poblacion <- nacionalidad[match(secciones@data$seccionCensal, nacionalidad$sección), "value"]
+      
+      datos_agregados <- aggregate(secciones@data$poblacion, by = list(Provincia=secciones@data$CPRO), FUN = sum)     
+      
+      codes <- sprintf('%02d', seq(1,52))
+      names <- c('es-vi', 'es-ab', 'es-a', 'es-al', 'es-av', 'es-ba', 'es-pm', 'es-b', 'es-bu', 'es-cc',
+                 'es-ca', 'es-cs', 'es-cr', 'es-co', 'es-c', 'es-cu', 'es-gi', 'es-gr', 'es-gu', 'es-ss',
+                 'es-h', 'es-hu', 'es-j', 'es-le', 'es-l', 'es-lo', 'es-lu', 'es-m', 'es-ma', 'es-mu',
+                 'es-na', 'es-or', 'es-o', 'es-p', 'es-gc', 'es-po', 'es-sa', 'es-tf', 'es-s', 'es-sg',
+                 'es-se', 'es-so', 'es-t', 'es-te', 'es-to', 'es-v', 'es-va', 'es-bi', 'es-za', 'es-z',
+                 'es-ce', 'es-me')
+      codenames <- data.frame(codes, names)
+      datos_agregados$Provincia <- codenames$names[match(datos_agregados$Provincia, codenames$codes)]
+      colnames(datos_agregados) <- c("Province", "Value")
+      
+      hcmap("countries/es/es-all", data = datos_agregados, joinBy = c("hc-key", "Province"), value = "Value", name = "Population")
+    })
+  })
     
 })
