@@ -8,7 +8,6 @@ addons:
 warnings_are_errors: false
 os:
   - linux
-  - osx
 
 install:
   - R -e 'if (system.file(package="packrat") == "") install.packages("packrat")'
@@ -33,4 +32,4 @@ before_install:
   - "phantomjs --version"
 
 script:
-  - R -f tests/run_test.R
+  - R -f run_test.R
