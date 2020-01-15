@@ -6,7 +6,7 @@ library(shinytest)
 print(getwd())
 
 test_that("Application works", {
-  expect_pass(testApp(".", compareImages = T))
+  expect_pass(testApp("~/tests/mytest.R", compareImages = T))
 })
 
 #recordTest(".")
