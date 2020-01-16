@@ -1,7 +1,7 @@
 dashboardPage(skin = "blue", title = "Foreign Insight",
   dashboardHeader(title = "Foreign Insight"),
     dashboardSidebar(
-      sidebarMenu(
+      sidebarMenu(id = "tabs",
         menuItem("Map it", tabName = "tab1", icon = shiny::icon("building")),
         menuItem("Statistics by Province", tabName = "tab2", icon = shiny::icon("brain")),
         menuItem("Spain Map", tabName = "tab3", icon = shiny::icon("binoculars"))#,
