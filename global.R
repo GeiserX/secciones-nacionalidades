@@ -43,7 +43,6 @@ simplyMapIt <- function(porcentaje, hombreMujer, municipioSelected, nacionalidad
       return({renderLeaflet({
         municipio <<- sprintf("%05d", municipios$COD_MUN[municipios$NOMBRE %in% municipioSelected])
         capa <- secciones[secciones@data$CUMUN %in% municipio,]
-        
         capa@data$seccionCensal <- paste0(capa@data$CUMUN, capa@data$CDIS, capa@data$CSEC)
         capa@data$download <- paste0("download-", capa@data$CUMUN, capa@data$CDIS, capa@data$CSEC)
         
