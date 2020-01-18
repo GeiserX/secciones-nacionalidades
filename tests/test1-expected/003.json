@@ -1,38 +1,4 @@
 {
-  "input": {
-    "hombreMujer": true,
-    "manWoman": true,
-    "mapa_bounds": {
-      "north": 38.6077493609348,
-      "east": -1.51679992675781,
-      "south": 38.3928007171461,
-      "west": -1.87522888183594
-    },
-    "mapa_center": {
-      "lng": -1.69570784923549,
-      "lat": 38.5005142251315
-    },
-    "mapa_groups": "censussections",
-    "mapa_zoom": 11,
-    "percentage2": true,
-    "porcentaje": true,
-    "selectMunicipio": "Hellín (Albacete)",
-    "selectMunicipio-selectized": "",
-    "selectNacionalidad": "Total Unión Europea",
-    "selectNacionalidad-selectized": "",
-    "selectNacionalidad2": "Bulgaria",
-    "selectNacionalidad2-selectized": "",
-    "selectNacionalidad3": "Bulgaria",
-    "selectNacionalidad3-selectized": "",
-    "selectProvincia": "Albacete",
-    "selectProvincia-selectized": "",
-    "selectProvincia2": "Murcia",
-    "selectProvincia2-selectized": "",
-    "sidebarCollapsed": false,
-    "sidebarItemExpanded": null,
-    "sort": true,
-    "tabs": "tab2"
-  },
   "output": {
     "chart": {
       "x": {
