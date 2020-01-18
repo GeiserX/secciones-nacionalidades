@@ -9,4 +9,4 @@ test_that("Application works", {
 
 
 #recordTest()
-#testApp(".", "mytest")
+#testApp(".", "test1")
