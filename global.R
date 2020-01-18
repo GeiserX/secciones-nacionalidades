@@ -70,7 +70,8 @@ simplyMapIt <- function(porcentaje, hombreMujer, municipioSelected, nacionalidad
         if(max(capa_sp@data$numPoblacionElegida,  na.rm = T) - min(capa_sp@data$numPoblacionElegida,  na.rm = T) == 0) {
           leaflet(capa_sp, options = leafletOptions(minZoom = 9, maxZoom = 18)) %>% 
             addTiles() %>% 
-            setView(lat = mean(coordinates(capa_sp)[,2]), lng=mean(coordinates(capa_sp)[,1]), zoom=11) %>% 
+            setView(lat = round(mean(coordinates(capa_sp)[,2]), digits = 6),
+                    lng=round(mean(coordinates(capa_sp)[,1]), digits = 6), zoom=11) %>% 
             addPolygons(weight = 2, fillColor = "#FFFF00", fillOpacity = "0.4", stroke = T, color = "black", opacity = 0.8,
                         highlightOptions = highlightOptions(color = "white", weight = 4, bringToFront = TRUE),
                         popup = paste0("Sección Censal: <b>", paste0(capa_sp@data$CUMUN, "-", capa_sp@data$CDIS, "-", capa_sp@data$CSEC), "</b><br>",
