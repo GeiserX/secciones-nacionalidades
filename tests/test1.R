@@ -1,0 +1,21 @@
+app <- ShinyDriver$new("../", loadTimeout = 10000) # app <- ShinyDriver$new(".", loadTimeout = 10000)
+app$snapshotInit("test1", screenshot = F)
+
+app$snapshot(items = list(output = TRUE, export = TRUE))
+app$setInputs(sidebarCollapsed = FALSE, wait_ = F, values_ = F)
+app$setInputs(selectProvincia = "Murcia")
+app$setInputs(selectMunicipio = "Cartagena (Murcia)")
+app$setInputs(selectNacionalidad = "Total Unión Europea")
+app$setInputs(porcentaje = TRUE)
+app$setInputs(hombreMujer = TRUE)
+app$snapshot(items = list(output = F, export = TRUE, input=T))
+
+app$setInputs(tabs = "tab2")
+app$setInputs(sort = TRUE)
+app$setInputs(manWoman = TRUE)
+app$setInputs(percentage2 = TRUE)
+app$snapshot(items = list(output = F, export = TRUE, input=T))
+
+app$setInputs(tabs = "tab3")
+app$setInputs(selectNacionalidad3 = "Italia")
+app$snapshot(items = list(output = F, export = TRUE, input=T))
