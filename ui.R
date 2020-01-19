@@ -4,9 +4,9 @@ dashboardPage(skin = "blue", title = "Foreign Insight",
       sidebarMenu(id = "tabs",
         menuItem("Map it", tabName = "tab1", icon = shiny::icon("building")),
         menuItem("Statistics by Province", tabName = "tab2", icon = shiny::icon("brain")),
-        menuItem("Spain Map", tabName = "tab3", icon = shiny::icon("binoculars"))#,
+        menuItem("Spain Map", tabName = "tab3", icon = shiny::icon("binoculars")),
         #menuItem("Historic data", tabName = "tab4", icon = shiny::icon(""))
-        
+        sliderInput("selectYear", "Select year to display", min = 2012, max = 2018, value = 2018, sep = "")
     )
   ),
   dashboardBody(
