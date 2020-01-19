@@ -1,4 +1,4 @@
-app <- ShinyDriver$new("../", loadTimeout = 10000)
+app <- ShinyDriver$new("../", loadTimeout = 10000) # app <- ShinyDriver$new(".", loadTimeout = 10000)
 app$snapshotInit("test1", screenshot = FALSE)
 
 app$snapshot(items = list(output = TRUE, export = TRUE))
@@ -8,7 +8,7 @@ app$setInputs(selectMunicipio = "Hellín (Albacete)")
 app$setInputs(selectNacionalidad = "Total Unión Europea")
 app$setInputs(porcentaje = TRUE)
 app$setInputs(hombreMujer = TRUE)
-app$snapshot(items = list(output = TRUE, export = TRUE))
+app$snapshot(items = list(output = FALSE, export = TRUE))
 
 app$setInputs(tabs = "tab2")
 app$setInputs(sort = TRUE)
