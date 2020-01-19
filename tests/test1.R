@@ -1,7 +1,7 @@
 app <- ShinyDriver$new("../", loadTimeout = 10000) # app <- ShinyDriver$new(".", loadTimeout = 10000)
 app$snapshotInit("test1", screenshot = T)
 
-app$snapshot(items = list(output = TRUE, export = TRUE), screenshot = T)
+app$snapshot(items = list(output = TRUE, export = TRUE), screenshot = F)
 app$setInputs(sidebarCollapsed = FALSE, wait_ = F, values_ = F)
 app$setInputs(selectProvincia = "Murcia")
 app$setInputs(selectMunicipio = "Cartagena (Murcia)")
