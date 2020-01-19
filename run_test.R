@@ -4,7 +4,7 @@ library(testthat)
 library(shinytest)
 
 test_that("Application works", {
-  expect_pass(testApp(appDir = getwd(), compareImages = T))
+  expect_pass(testApp(appDir = getwd(), compareImages = F))
 })
 
 
