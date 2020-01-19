@@ -1,4 +1,23 @@
 shinyServer(function(input, output, session) {
+  
+  observeEvent(input$selectYear,{
+    # SXnacional <- as.data.frame(read.px("poblacion/2018/0003.px"))
+    #
+    # SXnacionalAmbos <- SXnacional[which(SXnacional$sexo == "Ambos Sexos"), ]
+    # SXnacionalHombres <- SXnacional[which(SXnacional$sexo == "Hombres"), ]
+    # SXnacionalMujeres <- SXnacional[which(SXnacional$sexo == "Mujeres"), ]
+    #
+    # saveRDS(SXnacionalAmbos, "poblacion/2018/SXnacional2018ambos.rds")
+    # saveRDS(SXnacionalHombres, "poblacion/2018/SXnacional2018hombres.rds")
+    # saveRDS(SXnacionalMujeres, "poblacion/2018/SXnacional2018mujeres.rds")
+    year <- input$selectYear
+    SXnacionalAmbos <<- readRDS(paste0("poblacion/", year, "/SXnacional", year, "ambos.rds"))
+    SXnacionalHombres <<- readRDS(paste0("poblacion/", year, "/SXnacional", year, "hombres.rds"))
+    SXnacionalMujeres <<- readRDS(paste0("poblacion/", year, "/SXnacional", year, "mujeres.rds"))
+    
+    #secciones <- readOGR(dsn = "seccionado/", layer = "SECC_CE_20180101") # Datos a 2018
+    secciones <<- readRDS(paste0("seccionado/", year, "/secciones.rds")) # saveRDS(secciones, "seccionado/secciones.rds") # git lfs track ..(FILE)..
+  })
 
   output$mention <- renderText({
     paste0("<hr>Cartography extracted from <a ",
@@ -40,12 +59,10 @@ shinyServer(function(input, output, session) {
   observe({
     nationalitySaved$n <- input$selectNacionalidad
     if(!is.null(input$selectMunicipio)){
-      #if(input$selectMunicipio %in% municipiosElegibles){
-        
-        output$mapa <- simplyMapIt(porcentaje = input$porcentaje, hombreMujer = input$hombreMujer, municipioSelected = input$selectMunicipio,
+      año <- input$selectYear
+      output$mapa <- simplyMapIt(porcentaje = input$porcentaje, hombreMujer = input$hombreMujer, municipioSelected = input$selectMunicipio,
                                    nacionalidadSelected = input$selectNacionalidad, SXnacionalAmbos = SXnacionalAmbos, SXnacionalHombres = SXnacionalHombres,
-                                   SXnacionalMujeres = SXnacionalMujeres)
-       # }
+                                   SXnacionalMujeres = SXnacionalMujeres, Year = año)
     }
   })
   
@@ -137,6 +154,7 @@ shinyServer(function(input, output, session) {
     
     output$chart <- renderHighchart({
       
+      year <- input$selectYear
       nacionalidad <- SXnacionalAmbos[which(input$selectNacionalidad2 == SXnacionalAmbos$nacionalidad), ]
       
       capa <- secciones[secciones@data$CPRO %in% sprintf("%02d", provincia2),]
@@ -181,19 +199,19 @@ shinyServer(function(input, output, session) {
         if(input$percentage2){
           highchart() %>% 
             hc_chart(type = "column", zoomType = "x") %>% 
-            hc_title(text = "Population") %>% 
+            hc_title(text = paste0("Population ", year)) %>% 
             hc_xAxis(categories = datos_agregados$Municipio) %>% 
-            hc_yAxis_multiples(list(title = list(text = "Population")), list(opposite = TRUE, title = list(text = "Percentage"))) %>% 
-            hc_add_series(data = datos_agregados$x, name = "Total Population") %>% 
+            hc_yAxis_multiples(list(title = list(text = paste0("Population ", year))), list(opposite = TRUE, title = list(text = "Percentage"))) %>% 
+            hc_add_series(data = datos_agregados$x, name = paste0("Total Population ", year)) %>% 
             hc_add_series(data = datos_agregadosH$x, name = "Men") %>% 
             hc_add_series(data = datos_agregadosM$x, name = "Women") %>%
             hc_add_series(data = datos_agregadosTP$x, name = "Percentage", yAxis = 1)
         } else {
           highchart() %>% 
             hc_chart(type = "column", zoomType = "x") %>% 
-            hc_title(text = "Population") %>% 
+            hc_title(text = paste0("Population ", year)) %>% 
             hc_xAxis(categories = datos_agregados$Municipio) %>% 
-            hc_add_series(data = datos_agregados$x, name = "Total Population") %>% 
+            hc_add_series(data = datos_agregados$x, name = paste0("Total Population ", year)) %>% 
             hc_add_series(data = datos_agregadosH$x, name = "Men") %>% 
             hc_add_series(data = datos_agregadosM$x, name = "Women")
         }
@@ -201,17 +219,17 @@ shinyServer(function(input, output, session) {
         if(input$percentage2){
           highchart() %>%
             hc_chart(type = "column", zoomType = "x") %>% 
-            hc_title(text = "Population") %>% 
+            hc_title(text = paste0("Population ", year)) %>% 
             hc_xAxis(categories = datos_agregados$Municipio) %>% 
-            hc_yAxis_multiples(list(title = list(text = "Population")), list(opposite = TRUE, title = list(text = "Percentage"))) %>% 
-            hc_add_series(data = datos_agregados$x, name = "Total Population") %>% 
+            hc_yAxis_multiples(list(title = list(text = paste0("Population ", year))), list(opposite = TRUE, title = list(text = "Percentage"))) %>% 
+            hc_add_series(data = datos_agregados$x, name = paste0("Total Population ", year)) %>% 
             hc_add_series(data = datos_agregadosTP$x, name = "Percentage", yAxis = 1)
         } else {
           highchart() %>% 
             hc_chart(type = "column", zoomType = "x") %>% 
-            hc_title(text = "Population") %>% 
+            hc_title(text = paste0("Population ", year)) %>% 
             hc_xAxis(categories = datos_agregados$Municipio) %>% 
-            hc_add_series(data = datos_agregados$x, name = "Total Population") 
+            hc_add_series(data = datos_agregados$x, name = paste0("Total Population ", year)) 
         }
       }
     })
@@ -223,6 +241,7 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$selectNacionalidad3,{
     output$spainmap <- renderHighchart({
+      year <- input$selectYear
       nacionalidad <- SXnacionalAmbos[which(input$selectNacionalidad3 == SXnacionalAmbos$nacionalidad), ]
       secciones@data$seccionCensal <- paste0(secciones@data$CUMUN, secciones@data$CDIS, secciones@data$CSEC)
       secciones@data$poblacion <- nacionalidad[match(secciones@data$seccionCensal, nacionalidad$sección), "value"]
@@ -240,7 +259,7 @@ shinyServer(function(input, output, session) {
       datos_agregados$Provincia <- codenames$names[match(datos_agregados$Provincia, codenames$codes)]
       colnames(datos_agregados) <- c("Province", "Value")
       
-      hcmap("countries/es/es-all", data = datos_agregados, joinBy = c("hc-key", "Province"), value = "Value", name = "Population")
+      hcmap("countries/es/es-all", data = datos_agregados, joinBy = c("hc-key", "Province"), value = "Value", name = paste0("Population ", year))
     })
   })
     
