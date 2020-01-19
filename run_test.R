@@ -10,3 +10,4 @@ test_that("Application works", {
 
 #recordTest()
 #testApp(".", "test1")
+#snapshotUpdate(".", "test1")
