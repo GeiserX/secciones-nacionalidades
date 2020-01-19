@@ -29,8 +29,8 @@ shinyServer(function(input, output, session) {
     "data publicly available at the Spanish \'Instituto Nacional de Estadística\'</a><hr> Population data extracted thanks to ",
     "<a href=https://www.ine.es/dyngs/INEbase/es/operacion.htm?c=Estadistica_C&cid=1254736177012&menu=resultados&secc=1254736195461&idp=1254734710990 target=_blank>",
     "the publicly available information at the Spanish \'Instituto Nacional de Estadística\'</a><hr>",
-    "Source code available at <a href=https://github.com/DrumSergio/secciones-nacionalidades target=_blank>GitHub</a><br>",
-    "Docker container avaialble at <a href=https://hub.docker.com/r/drumsergio/secciones-nacionalidades target=_blank>DockerHub</a>")
+    "Source code available at <a href=https://github.com/DrumSergio/secciones-nacionalidades target=_blank>GitHub</a>, so if you find any errors, please, kindly open an issue there.<br>",
+    "Docker container avaialble at <a href=https://hub.docker.com/r/drumsergio/secciones-nacionalidades target=_blank>DockerHub</a>.")
   })
   
   clickedIds <- reactiveValues(ids = vector())
