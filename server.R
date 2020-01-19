@@ -217,6 +217,10 @@ shinyServer(function(input, output, session) {
     })
   })
   
+  #############
+  ### TAB 3 ###
+  #############
+  
   observeEvent(input$selectNacionalidad3,{
     output$spainmap <- renderHighchart({
       nacionalidad <- SXnacionalAmbos[which(input$selectNacionalidad3 == SXnacionalAmbos$nacionalidad), ]
