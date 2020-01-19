@@ -15,8 +15,12 @@ shinyServer(function(input, output, session) {
     SXnacionalHombres <<- readRDS(paste0("poblacion/", year, "/SXnacional", year, "hombres.rds"))
     SXnacionalMujeres <<- readRDS(paste0("poblacion/", year, "/SXnacional", year, "mujeres.rds"))
     
-    #secciones <- readOGR(dsn = "seccionado/", layer = "SECC_CE_20180101") # Datos a 2018
-    secciones <<- readRDS(paste0("seccionado/", year, "/secciones.rds")) # saveRDS(secciones, "seccionado/secciones.rds") # git lfs track ..(FILE)..
+    #secciones <- readOGR(dsn = paste0("seccionado/", year, "/"), layer = paste0("SECC_CE_", year, "0101"))
+    #secciones <- readOGR(dsn = paste0("seccionado/", year, "/"), layer = paste0("SECC_CE_", year, "0101_01_R_INE"))
+    #secciones <- readOGR(dsn = paste0("seccionado/", year, "/"), layer = paste0("SECC_CE_", year, "0101_00_R_INE"))
+    #saveRDS(secciones, paste0("seccionado/", year, "/secciones.rds")) 
+    #git lfs track ..(FILE)..
+    secciones <<- readRDS(paste0("seccionado/", year, "/secciones.rds"))
   })
 
   output$mention <- renderText({
