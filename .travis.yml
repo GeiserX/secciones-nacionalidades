@@ -34,5 +34,5 @@ before_install:
 script:
   - R -f run_test.R
   
-after_success:
-  - Rscript -e 'lintr::lint("ui.R"); lintr::lint("server.R"); lintr::lint("general.R");'
+#after_success:
+#  - Rscript -e 'lintr::lint("ui.R"); lintr::lint("server.R"); lintr::lint("general.R");'
