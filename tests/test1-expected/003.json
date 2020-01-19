@@ -1,0 +1,39 @@
+{
+  "input": {
+    "hombreMujer": true,
+    "manWoman": true,
+    "mapa_bounds": {
+      "north": 37.7359692085905,
+      "east": -0.801315307617188,
+      "south": 37.5184402388786,
+      "west": -1.15974426269531
+    },
+    "mapa_center": {
+      "lng": -0.9802911,
+      "lat": 37.6272057
+    },
+    "mapa_groups": "censussections",
+    "mapa_zoom": 11,
+    "percentage2": true,
+    "porcentaje": true,
+    "selectMunicipio": "Cartagena (Murcia)",
+    "selectMunicipio-selectized": "",
+    "selectNacionalidad": "Total Unión Europea",
+    "selectNacionalidad-selectized": "",
+    "selectNacionalidad2": "Bulgaria",
+    "selectNacionalidad2-selectized": "",
+    "selectNacionalidad3": "Bulgaria",
+    "selectNacionalidad3-selectized": "",
+    "selectProvincia": "Murcia",
+    "selectProvincia-selectized": "",
+    "selectProvincia2": "Murcia",
+    "selectProvincia2-selectized": "",
+    "sidebarCollapsed": false,
+    "sidebarItemExpanded": null,
+    "sort": true,
+    "tabs": "tab2"
+  },
+  "export": {
+
+  }
+}

@@ -1,16 +1,16 @@
 #install.packages('shiny', 'shinydashboard', 'shinyjs', 'rgdal', 'raster', 'sp', 'pxR', 'leaflet', 'plotKML')
-
-library(shiny)
-library(shinydashboard)
-library(shinyjs)
-library(rgdal)
-library(raster) 
-library(sp)
-library(pxR)
-library(leaflet)
-library(plotKML)
-library(highcharter)
-
+suppressPackageStartupMessages({
+  library(shiny)
+  library(shinydashboard)
+  library(shinyjs)
+  library(rgdal)
+  library(raster)
+  library(sp)
+  library(pxR)
+  library(leaflet)
+  library(plotKML)
+  library(highcharter)
+})
 
 #comunidades <- read.csv("datos_csv/codccaa.csv", fileEncoding = "UTF-8")
 provincias <- read.csv("datos_csv/codprov.csv", fileEncoding = "UTF-8")
@@ -19,16 +19,16 @@ municipios <- read.csv("datos_csv/Municipios_Censo_2011.csv", fileEncoding = "UT
 secciones <- readRDS("seccionado/secciones.rds") # saveRDS(secciones, "seccionado/secciones.rds") # git lfs track ..(FILE)..
 
 # SXnacional <- as.data.frame(read.px("poblacion/2018/0003.px"))
-# 
+#
 # SXnacionalAmbos <- SXnacional[which(SXnacional$sexo == "Ambos Sexos"), ]
 # SXnacionalHombres <- SXnacional[which(SXnacional$sexo == "Hombres"), ]
 # SXnacionalMujeres <- SXnacional[which(SXnacional$sexo == "Mujeres"), ]
-# 
+#
 # saveRDS(SXnacionalAmbos, "poblacion/2018/SXnacional2018ambos.rds")
 # saveRDS(SXnacionalHombres, "poblacion/2018/SXnacional2018hombres.rds")
 # saveRDS(SXnacionalMujeres, "poblacion/2018/SXnacional2018mujeres.rds")
 
-SXnacionalAmbos <- readRDS("poblacion/2018/SXnacional2018ambos.rds") 
+SXnacionalAmbos <- readRDS("poblacion/2018/SXnacional2018ambos.rds")
 SXnacionalHombres <- readRDS("poblacion/2018/SXnacional2018hombres.rds")
 SXnacionalMujeres <- readRDS("poblacion/2018/SXnacional2018mujeres.rds")
 
@@ -70,7 +70,8 @@ simplyMapIt <- function(porcentaje, hombreMujer, municipioSelected, nacionalidad
         if(max(capa_sp@data$numPoblacionElegida,  na.rm = T) - min(capa_sp@data$numPoblacionElegida,  na.rm = T) == 0) {
           leaflet(capa_sp, options = leafletOptions(minZoom = 9, maxZoom = 18)) %>% 
             addTiles() %>% 
-            setView(lat = mean(coordinates(capa_sp)[,2]), lng=mean(coordinates(capa_sp)[,1]), zoom=11) %>% 
+            setView(lat = round(mean(coordinates(capa_sp)[,2]), digits = 7),
+                    lng = round(mean(coordinates(capa_sp)[,1]), digits = 7), zoom=11) %>% 
             addPolygons(weight = 2, fillColor = "#FFFF00", fillOpacity = "0.4", stroke = T, color = "black", opacity = 0.8,
                         highlightOptions = highlightOptions(color = "white", weight = 4, bringToFront = TRUE),
                         popup = paste0("Sección Censal: <b>", paste0(capa_sp@data$CUMUN, "-", capa_sp@data$CDIS, "-", capa_sp@data$CSEC), "</b><br>",
@@ -86,7 +87,8 @@ simplyMapIt <- function(porcentaje, hombreMujer, municipioSelected, nacionalidad
         else {
           leaflet(capa_sp, options = leafletOptions(minZoom = 9, maxZoom = 18)) %>% 
             addTiles() %>% 
-            setView(lat = mean(coordinates(capa_sp)[,2]), lng=mean(coordinates(capa_sp)[,1]), zoom=11) %>% 
+            setView(lat = round(mean(coordinates(capa_sp)[,2]), digits = 7),
+                    lng = round(mean(coordinates(capa_sp)[,1]), digits = 7), zoom=11) %>% 
             addPolygons(weight = 2, fillColor = ~pal(porcentajePoblacion), fillOpacity = "0.4", stroke = T, color = "black", opacity = 0.8,
                         highlightOptions = highlightOptions(color = "white", weight = 4, bringToFront = TRUE),
                         popup = paste0("Sección Censal: <b>", paste0(capa_sp@data$CUMUN, "-", capa_sp@data$CDIS, "-", capa_sp@data$CSEC), "</b><br>",
@@ -137,7 +139,8 @@ simplyMapIt <- function(porcentaje, hombreMujer, municipioSelected, nacionalidad
         if(max(capa_sp@data$numPoblacionElegida,  na.rm = T) - min(capa_sp@data$numPoblacionElegida,  na.rm = T) == 0) {
           leaflet(capa_sp, options = leafletOptions(minZoom = 9, maxZoom = 18)) %>% 
             addTiles() %>% 
-            setView(lat = mean(coordinates(capa_sp)[,2]), lng=mean(coordinates(capa_sp)[,1]), zoom=11) %>% 
+            setView(lat = round(mean(coordinates(capa_sp)[,2]), digits = 7),
+                    lng = round(mean(coordinates(capa_sp)[,1]), digits = 7), zoom=11) %>% 
             addPolygons(weight = 2, fillColor = "#FFFF00", fillOpacity = "0.4", stroke = T, color = "black", opacity = 0.8,
                         highlightOptions = highlightOptions(color = "white", weight = 4, bringToFront = TRUE),
                         popup = paste0("Sección Censal: <b>", paste0(capa_sp@data$CUMUN, "-", capa_sp@data$CDIS, "-", capa_sp@data$CSEC), "</b><br>",
@@ -150,7 +153,8 @@ simplyMapIt <- function(porcentaje, hombreMujer, municipioSelected, nacionalidad
         else {
           leaflet(capa_sp, options = leafletOptions(minZoom = 9, maxZoom = 18)) %>% 
             addTiles() %>% 
-            setView(lat = mean(coordinates(capa_sp)[,2]), lng=mean(coordinates(capa_sp)[,1]), zoom=11) %>% 
+            setView(lat = round(mean(coordinates(capa_sp)[,2]), digits = 7),
+                    lng = round(mean(coordinates(capa_sp)[,1]), digits = 7), zoom=11) %>% 
             addPolygons(weight = 2, fillColor = ~pal(porcentajePoblacion), fillOpacity = "0.4", stroke = T, color = "black", opacity = 0.8,
                         highlightOptions = highlightOptions(color = "white", weight = 4, bringToFront = TRUE),
                         popup = paste0("Sección Censal: <b>", paste0(capa_sp@data$CUMUN, "-", capa_sp@data$CDIS, "-", capa_sp@data$CSEC), "</b><br>",
@@ -209,7 +213,8 @@ simplyMapIt <- function(porcentaje, hombreMujer, municipioSelected, nacionalidad
         if(max(capa_sp@data$numPoblacionElegida,  na.rm = T) - min(capa_sp@data$numPoblacionElegida,  na.rm = T) == 0) {
           leaflet(capa_sp, options = leafletOptions(minZoom = 9, maxZoom = 18)) %>% 
             addTiles() %>% 
-            setView(lat = mean(coordinates(capa_sp)[,2]), lng=mean(coordinates(capa_sp)[,1]), zoom=11) %>% 
+            setView(lat = round(mean(coordinates(capa_sp)[,2]), digits = 7),
+                    lng = round(mean(coordinates(capa_sp)[,1]), digits = 7), zoom=11) %>% 
             addPolygons(weight = 2, fillColor = "#FFFF00", fillOpacity = "0.4", stroke = T, color = "black", opacity = 0.8,
                         highlightOptions = highlightOptions(color = "white", weight = 4, bringToFront = TRUE),
                         popup = paste0("Sección Censal: <b>", paste0(capa_sp@data$CUMUN, "-", capa_sp@data$CDIS, "-", capa_sp@data$CSEC), "</b><br>",
@@ -224,7 +229,8 @@ simplyMapIt <- function(porcentaje, hombreMujer, municipioSelected, nacionalidad
         else {
           leaflet(capa_sp, options = leafletOptions(minZoom = 9, maxZoom = 18)) %>% 
             addTiles() %>% 
-            setView(lat = mean(coordinates(capa_sp)[,2]), lng=mean(coordinates(capa_sp)[,1]), zoom=11) %>% 
+            setView(lat = round(mean(coordinates(capa_sp)[,2]), digits = 7),
+                    lng = round(mean(coordinates(capa_sp)[,1]), digits = 7), zoom=11) %>% 
             addPolygons(weight = 2, fillColor = ~pal(numPoblacionElegida), fillOpacity = "0.4", stroke = T, color = "black", opacity = 0.8,
                         highlightOptions = highlightOptions(color = "white", weight = 4, bringToFront = TRUE),
                         popup = paste0("Sección Censal: <b>", paste0(capa_sp@data$CUMUN, "-", capa_sp@data$CDIS, "-", capa_sp@data$CSEC), "</b><br>",
@@ -271,7 +277,8 @@ simplyMapIt <- function(porcentaje, hombreMujer, municipioSelected, nacionalidad
         if(max(capa_sp@data$numPoblacionElegida,  na.rm = T) - min(capa_sp@data$numPoblacionElegida,  na.rm = T) == 0) {
           leaflet(capa_sp, options = leafletOptions(minZoom = 9, maxZoom = 18)) %>% 
             addTiles() %>% 
-            setView(lat = mean(coordinates(capa_sp)[,2]), lng=mean(coordinates(capa_sp)[,1]), zoom=11) %>% 
+            setView(lat = round(mean(coordinates(capa_sp)[,2]), digits = 7),
+                    lng = round(mean(coordinates(capa_sp)[,1]), digits = 7), zoom=11) %>% 
             addPolygons(weight = 2, fillColor = "#FFFF00", fillOpacity = "0.4", stroke = T, color = "black", opacity = 0.8,
                         highlightOptions = highlightOptions(color = "white", weight = 4, bringToFront = TRUE),
                         popup = paste0("Sección Censal: <b>", paste0(capa_sp@data$CUMUN, "-", capa_sp@data$CDIS, "-", capa_sp@data$CSEC), "</b><br>",
@@ -284,7 +291,8 @@ simplyMapIt <- function(porcentaje, hombreMujer, municipioSelected, nacionalidad
         else {
           leaflet(capa_sp, options = leafletOptions(minZoom = 9, maxZoom = 18)) %>% 
             addTiles() %>% 
-            setView(lat = mean(coordinates(capa_sp)[,2]), lng=mean(coordinates(capa_sp)[,1]), zoom=11) %>% 
+            setView(lat = round(mean(coordinates(capa_sp)[,2]), digits = 7),
+                    lng = round(mean(coordinates(capa_sp)[,1]), digits = 7), zoom=11) %>% 
             addPolygons(weight = 2, fillColor = ~pal(numPoblacionElegida), fillOpacity = "0.4", stroke = T, color = "black", opacity = 0.8,
                         highlightOptions = highlightOptions(color = "white", weight = 4, bringToFront = TRUE),
                         popup = paste0("Sección Censal: <b>", paste0(capa_sp@data$CUMUN, "-", capa_sp@data$CDIS, "-", capa_sp@data$CSEC), "</b><br>",
