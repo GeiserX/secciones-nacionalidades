@@ -1,5 +1,5 @@
 dashboardPage(skin = "blue", title = "Foreign Insight",
-  dashboardHeader(title = "Foreign Insight"),
+  dashboardHeader(title = "Foreign Insight v1.1"),
     dashboardSidebar(
       sidebarMenu(id = "tabs",
         menuItem("Map it", tabName = "tab1", icon = shiny::icon("building")),

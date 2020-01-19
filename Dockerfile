@@ -7,6 +7,8 @@ RUN R -e "install.packages(c('shiny', 'shinydashboard', 'shinyjs', 'rgdal', 'ras
 
 COPY Rprofile.site /usr/lib/R/etc/
 RUN mkdir -p /root/secciones_censales
+COPY seccionado/ /root/secciones_censales/seccionado
+COPY poblacion/ /root/secciones_censales/poblacion
 COPY . /root/secciones_censales
 VOLUME /root/secciones_censales/cache
 
