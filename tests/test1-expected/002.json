@@ -3,20 +3,20 @@
     "hombreMujer": true,
     "manWoman": false,
     "mapa_bounds": {
-      "north": 38.6077493609348,
-      "east": -1.51679992675781,
-      "south": 38.3928007171461,
-      "west": -1.87522888183594
+      "north": 37.7359692085905,
+      "east": -0.801315307617188,
+      "south": 37.5184402388786,
+      "west": -1.15974426269531
     },
     "mapa_center": {
-      "lng": -1.69570784923549,
-      "lat": 38.5005142251315
+      "lng": -0.98029112715613,
+      "lat": 37.627205734694
     },
     "mapa_groups": "censussections",
     "mapa_zoom": 11,
     "percentage2": false,
     "porcentaje": true,
-    "selectMunicipio": "Hellín (Albacete)",
+    "selectMunicipio": "Cartagena (Murcia)",
     "selectMunicipio-selectized": "",
     "selectNacionalidad": "Total Unión Europea",
     "selectNacionalidad-selectized": "",
@@ -24,7 +24,7 @@
     "selectNacionalidad2-selectized": "",
     "selectNacionalidad3": "Bulgaria",
     "selectNacionalidad3-selectized": "",
-    "selectProvincia": "Albacete",
+    "selectProvincia": "Murcia",
     "selectProvincia-selectized": "",
     "selectProvincia2": "Murcia",
     "selectProvincia2-selectized": "",
