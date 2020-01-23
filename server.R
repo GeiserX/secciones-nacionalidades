@@ -17,12 +17,16 @@ shinyServer(function(input, output, session) {
     SXnacionalHombres <<- readRDS(paste0("poblacion/", year, "/SXnacional", year, "hombres.rds"))
     SXnacionalMujeres <<- readRDS(paste0("poblacion/", year, "/SXnacional", year, "mujeres.rds"))
     
-    #secciones <- readOGR(dsn = paste0("seccionado/", year, "/"), layer = paste0("SECC_CE_", year, "0101"))
-    #secciones <- readOGR(dsn = paste0("seccionado/", year, "/"), layer = paste0("SECC_CE_", year, "0101_01_R_INE"))
-    #secciones <- readOGR(dsn = paste0("seccionado/", year, "/"), layer = paste0("SECC_CE_", year, "0101_00_R_INE"))
-    #saveRDS(secciones, paste0("seccionado/", year, "/secciones.rds")) 
-    #git lfs track ..(FILE)..
+    # secciones <- readOGR(dsn = paste0("seccionado/", year, "/"), layer = paste0("SECC_CE_", year, "0101"))
+    # secciones <- readOGR(dsn = paste0("seccionado/", year, "/"), layer = paste0("SECC_CE_", year, "0101_01_R_INE"))
+    # secciones <- readOGR(dsn = paste0("seccionado/", year, "/"), layer = paste0("SECC_CE_", year, "0101_00_R_INE"))
+    # saveRDS(secciones, paste0("seccionado/", year, "/secciones.rds")) 
+    # git lfs track ..(FILE)..
     secciones <<- readRDS(paste0("seccionado/", year, "/secciones.rds"))
+    
+    # es_map <- download_map_data(url = "countries/es/es-all", showinfo = F)
+    # saveRDS(es_map, "es-all.rds")
+    es_map <<- readRDS("es-all.rds")
   })
 
   output$mention <- renderText({
@@ -249,6 +253,7 @@ shinyServer(function(input, output, session) {
     output$spainmap <- renderHighchart({
       year <- input$selectYear
       nacionalidad <- SXnacionalAmbos[which(input$selectNacionalidad3 == SXnacionalAmbos$nacionalidad), ]
+      total <- nacionalidad$value[nacionalidad$sección == "TOTAL"]
       secciones@data$seccionCensal <- paste0(secciones@data$CUMUN, secciones@data$CDIS, secciones@data$CSEC)
       secciones@data$poblacion <- nacionalidad[match(secciones@data$seccionCensal, nacionalidad$sección), "value"]
       
@@ -265,7 +270,12 @@ shinyServer(function(input, output, session) {
       datos_agregados$Provincia <- codenames$names[match(datos_agregados$Provincia, codenames$codes)]
       colnames(datos_agregados) <- c("Province", "Value")
       
-      hcmap("countries/es/es-all", data = datos_agregados, joinBy = c("hc-key", "Province"), value = "Value", name = paste0("Population ", year))
+      highchart(type = "map") %>% 
+        hc_add_series_map(map = es_map, df = datos_agregados, joinBy = c("hc-key", "Province"),
+                          value = "Value", name = paste0("Population ", year)) %>% 
+        hc_subtitle(text = paste0("Population: ", format(total, big.mark = ".")))
+      # hcmap(map = es_map, data = datos_agregados, joinBy = c("hc-key", "Province"), download_map_data = F,
+      #       value = "Value", name = paste0("Population ", year))
     })
   })
     
