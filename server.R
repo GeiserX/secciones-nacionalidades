@@ -1,16 +1,18 @@
 shinyServer(function(input, output, session) {
   
   observeEvent(input$selectYear,{
-    # SXnacional <- as.data.frame(read.px("poblacion/2018/0003.px"))
-    #
+    year <- input$selectYear
+    
+    # SXnacional <- as.data.frame(read.px(paste0("poblacion/", year, "/0003.px")))
+    # 
     # SXnacionalAmbos <- SXnacional[which(SXnacional$sexo == "Ambos Sexos"), ]
     # SXnacionalHombres <- SXnacional[which(SXnacional$sexo == "Hombres"), ]
     # SXnacionalMujeres <- SXnacional[which(SXnacional$sexo == "Mujeres"), ]
-    #
-    # saveRDS(SXnacionalAmbos, "poblacion/2018/SXnacional2018ambos.rds")
-    # saveRDS(SXnacionalHombres, "poblacion/2018/SXnacional2018hombres.rds")
-    # saveRDS(SXnacionalMujeres, "poblacion/2018/SXnacional2018mujeres.rds")
-    year <- input$selectYear
+    # 
+    # saveRDS(SXnacionalAmbos, paste0("poblacion/", year, "/SXnacional", year, "ambos.rds"))
+    # saveRDS(SXnacionalHombres, paste0("poblacion/", year, "/SXnacional", year, "hombres.rds"))
+    # saveRDS(SXnacionalMujeres, paste0("poblacion/", year, "/SXnacional", year, "mujeres.rds"))
+    
     SXnacionalAmbos <<- readRDS(paste0("poblacion/", year, "/SXnacional", year, "ambos.rds"))
     SXnacionalHombres <<- readRDS(paste0("poblacion/", year, "/SXnacional", year, "hombres.rds"))
     SXnacionalMujeres <<- readRDS(paste0("poblacion/", year, "/SXnacional", year, "mujeres.rds"))
