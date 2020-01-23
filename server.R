@@ -273,7 +273,7 @@ shinyServer(function(input, output, session) {
       highchart(type = "map") %>% 
         hc_add_series_map(map = es_map, df = datos_agregados, joinBy = c("hc-key", "Province"),
                           value = "Value", name = paste0("Population ", year)) %>% 
-        hc_subtitle(text = paste0("Population: ", format(total, big.mark = ".")))
+        hc_subtitle(text = paste0("Population: ", suppressWarnings(format(total, big.mark = "."))))
       # hcmap(map = es_map, data = datos_agregados, joinBy = c("hc-key", "Province"), download_map_data = F,
       #       value = "Value", name = paste0("Population ", year))
     })
