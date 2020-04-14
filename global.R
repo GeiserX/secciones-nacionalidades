@@ -27,7 +27,7 @@ simplyMapIt <- function(porcentaje, hombreMujer, municipioSelected, nacionalidad
     if(hombreMujer == T){
       
       ####################################################
-      ## Mapa con porcentajes y Distincion Hombre/Mujer ##
+      ## Mapa con porcentajes y Distinción Hombre/Mujer ##
       ####################################################
       
       return({renderLeaflet({
@@ -104,7 +104,7 @@ simplyMapIt <- function(porcentaje, hombreMujer, municipioSelected, nacionalidad
     else{
       
       ###############################################
-      ## Mapa unicamente con valores y porcentajes ##
+      ## Mapa únicamente con valores y porcentajes ##
       ###############################################
       
       return({renderLeaflet({
@@ -135,12 +135,12 @@ simplyMapIt <- function(porcentaje, hombreMujer, municipioSelected, nacionalidad
                     lng = round(mean(coordinates(capa_sp)[,1]), digits = 7), zoom=11) %>% 
             addPolygons(weight = 2, fillColor = "#FFFF00", fillOpacity = "0.4", stroke = T, color = "black", opacity = 0.8,
                         highlightOptions = highlightOptions(color = "white", weight = 4, bringToFront = TRUE),
-                        popup = paste0("Seccion Censal: <b>", paste0(capa_sp@data$CUMUN, "-", capa_sp@data$CDIS, "-", capa_sp@data$CSEC), "</b><br>",
-                                       "Poblacion: <b>", capa_sp@data$numPoblacionElegida, " </b> Fecha: <b>", Year, "</b><br>"),
+                        popup = paste0("Sección Censal: <b>", paste0(capa_sp@data$CUMUN, "-", capa_sp@data$CDIS, "-", capa_sp@data$CSEC), "</b><br>",
+                                       "Población: <b>", capa_sp@data$numPoblacionElegida, " </b> Fecha: <b>", Year, "</b><br>"),
                         layerId = capa_sp@data$seccionCensal, group = "censussections", label = capa_sp@data$seccionCensal) %>% 
             addLegend(colors = "#FFFF00",
                       labels = paste0(min(capa_sp@data$porcentajePoblacion,  na.rm = T), "% - ", max(capa_sp@data$porcentajePoblacion,  na.rm = T), "%"),
-                      na.label = "Valor no disponible", title = "Poblacion", opacity = "0.4", bins = 2)
+                      na.label = "Valor no disponible", title = "Población", opacity = "0.4", bins = 2)
         }
         else {
           leaflet(capa_sp, options = leafletOptions(minZoom = 9, maxZoom = 18)) %>% 
@@ -159,7 +159,7 @@ simplyMapIt <- function(porcentaje, hombreMujer, municipioSelected, nacionalidad
                                  paste0(round((max+min)/2, digits = 2), " - ", round((3*max+min)/4, digits = 2), "%"),
                                  paste0(round((max+3*min)/4, digits = 2), " - ", round((max+min)/2, digits = 2), "%"),
                                  paste0("<b>", min, "</b> - ", round((max+3*min)/4, digits = 2), "%")),
-                      na.label = "Valor no disponible", title = "Poblacion", opacity = "0.4", bins = 2)
+                      na.label = "Valor no disponible", title = "Población", opacity = "0.4", bins = 2)
         }
         
         
@@ -175,7 +175,7 @@ simplyMapIt <- function(porcentaje, hombreMujer, municipioSelected, nacionalidad
   else{
     if(hombreMujer == T){
       ###############################################
-      ## Mapa unicamente con valores y hombreMujer ##
+      ## Mapa únicamente con valores y hombreMujer ##
       ###############################################
       
       return({renderLeaflet({
@@ -188,7 +188,7 @@ simplyMapIt <- function(porcentaje, hombreMujer, municipioSelected, nacionalidad
         nacionalidad <- SXnacionalAmbos[which(nacionalidadSelected == SXnacionalAmbos$nacionalidad), ]
         nacionalidadHombres <- SXnacionalHombres[which(nacionalidadSelected == SXnacionalHombres$nacionalidad), ]
         nacionalidadMujeres <- SXnacionalMujeres[which(nacionalidadSelected == SXnacionalMujeres$nacionalidad), ]
-        totalPoblacion <- SXnacionalAmbos[which("Total Poblacion" == SXnacionalAmbos$nacionalidad), ]
+        totalPoblacion <- SXnacionalAmbos[which("Total Población" == SXnacionalAmbos$nacionalidad), ]
         nacionalidadPorSeccion <- nacionalidad[match(capa@data$seccionCensal, nacionalidad$sección), "value"]
         nacionalidadPorSeccionHombres <- nacionalidadHombres[match(capa@data$seccionCensal, nacionalidadHombres$sección), "value"]
         nacionalidadPorSeccionMujeres <- nacionalidadMujeres[match(capa@data$seccionCensal, nacionalidadMujeres$sección), "value"]
@@ -218,7 +218,7 @@ simplyMapIt <- function(porcentaje, hombreMujer, municipioSelected, nacionalidad
                         layerId = capa_sp@data$seccionCensal, group = "censussections", label = capa_sp@data$seccionCensal) %>% 
             addLegend(colors = "#FFFF00",
                       labels = paste0(min(capa_sp@data$numPoblacionElegida,  na.rm = T), " - ", max(capa_sp@data$numPoblacionElegida,  na.rm = T)),
-                      na.label = "Valor no disponible", title = "Poblacion", opacity = "0.4", bins = 2)
+                      na.label = "Valor no disponible", title = "Población", opacity = "0.4", bins = 2)
         }
         else {
           leaflet(capa_sp, options = leafletOptions(minZoom = 9, maxZoom = 18)) %>% 
@@ -238,7 +238,7 @@ simplyMapIt <- function(porcentaje, hombreMujer, municipioSelected, nacionalidad
                                  paste0(round((max+min)/2, digits = 2), " - ", round((3*max+min)/4, digits = 2)),
                                  paste0(round((max+3*min)/4, digits = 2), " - ", round((max+min)/2, digits = 2)),
                                  paste0("<b>", min, "</b> - ", round((max+3*min)/4, digits = 2))),
-                      na.label = "Valor no disponible", title = "Poblacion", opacity = "0.4", bins = 2)
+                      na.label = "Valor no disponible", title = "Población", opacity = "0.4", bins = 2)
         }
         
         
@@ -248,7 +248,7 @@ simplyMapIt <- function(porcentaje, hombreMujer, municipioSelected, nacionalidad
     }
     else{
       #################################
-      ## Mapa unicamente con valores ##
+      ## Mapa únicamente con valores ##
       #################################
       
       return({renderLeaflet({
@@ -282,7 +282,7 @@ simplyMapIt <- function(porcentaje, hombreMujer, municipioSelected, nacionalidad
                         layerId = capa_sp@data$seccionCensal, group = "censussections", label = capa_sp@data$seccionCensal) %>% 
             addLegend(colors = "#FFFF00",
                       labels = paste0(min(capa_sp@data$numPoblacionElegida,  na.rm = T), " - ", max(capa_sp@data$numPoblacionElegida,  na.rm = T)),
-                      na.label = "Valor no disponible", title = "Poblacion", opacity = "0.4", bins = 2)
+                      na.label = "Valor no disponible", title = "Población", opacity = "0.4", bins = 2)
         }
         else {
           leaflet(capa_sp, options = leafletOptions(minZoom = 9, maxZoom = 18)) %>% 
@@ -300,7 +300,7 @@ simplyMapIt <- function(porcentaje, hombreMujer, municipioSelected, nacionalidad
                                  paste0(round((max+min)/2, digits = 2), " - ", round((3*max+min)/4, digits = 2)),
                                  paste0(round((max+3*min)/4, digits = 2), " - ", round((max+min)/2, digits = 2)),
                                  paste0("<b>", min, "</b> - ", round((max+3*min)/4, digits = 2))),
-                      na.label = "Valor no disponible", title = "Poblacion", opacity = "0.4", bins = 2)
+                      na.label = "Valor no disponible", title = "Población", opacity = "0.4", bins = 2)
         }
         
       })
