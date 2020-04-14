@@ -1,4 +1,4 @@
-FROM arm32v7/debian:buster
+FROM arm32v7/debian:bullseye
 MAINTAINER Sergio Fernández "acsdesk@protonmail.com"
 
 RUN apt-get update && apt-get install -y libgdal-dev r-base
@@ -12,3 +12,4 @@ VOLUME /root/secciones_censales/cache
 
 EXPOSE 8080
 CMD ["R", "-e", "shiny::runApp('/root/secciones_censales', port = 8080, host = '0.0.0.0')"]
+
