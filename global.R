@@ -18,11 +18,8 @@ municipios <- read.csv("datos_csv/Municipios_Censo_2011.csv", fileEncoding = "UT
 
 year <- 2018
 SXnacionalAmbos <<- readRDS(paste0("poblacion/", year, "/SXnacional", year, "ambos.rds"))
-names(SXnacionalAmbos)[2] <- "seccion"
 SXnacionalHombres <<- readRDS(paste0("poblacion/", year, "/SXnacional", year, "hombres.rds"))
-names(SXnacionalHombres)[2] <- "seccion"
 SXnacionalMujeres <<- readRDS(paste0("poblacion/", year, "/SXnacional", year, "mujeres.rds"))
-names(SXnacionalMujeres)[2] <- "seccion"
 secciones <<- readRDS(paste0("seccionado/", year, "/secciones.rds"))
 
 simplyMapIt <- function(porcentaje, hombreMujer, municipioSelected, nacionalidadSelected, SXnacionalAmbos, SXnacionalHombres, SXnacionalMujeres, Year){
@@ -44,15 +41,15 @@ simplyMapIt <- function(porcentaje, hombreMujer, municipioSelected, nacionalidad
         nacionalidadHombres <- SXnacionalHombres[which(nacionalidadSelected == SXnacionalHombres$nacionalidad), ]
         nacionalidadMujeres <- SXnacionalMujeres[which(nacionalidadSelected == SXnacionalMujeres$nacionalidad), ]
         totalPoblacion <- SXnacionalAmbos[which("Total Poblacion" == SXnacionalAmbos$nacionalidad), ]
-        nacionalidadPorSeccion <- nacionalidad[match(capa@data$seccionCensal, nacionalidad$seccion), "value"]
-        nacionalidadPorSeccionHombres <- nacionalidadHombres[match(capa@data$seccionCensal, nacionalidadHombres$seccion), "value"]
-        nacionalidadPorSeccionMujeres <- nacionalidadMujeres[match(capa@data$seccionCensal, nacionalidadMujeres$seccion), "value"]
+        nacionalidadPorSeccion <- nacionalidad[match(capa@data$seccionCensal, nacionalidad$sección), "value"]
+        nacionalidadPorSeccionHombres <- nacionalidadHombres[match(capa@data$seccionCensal, nacionalidadHombres$sección), "value"]
+        nacionalidadPorSeccionMujeres <- nacionalidadMujeres[match(capa@data$seccionCensal, nacionalidadMujeres$sección), "value"]
         
         capa@data$numPoblacionElegida <- nacionalidadPorSeccion
         capa@data$numPoblacionElegidaHombres <- nacionalidadPorSeccionHombres
         capa@data$numPoblacionElegidaMujeres <- nacionalidadPorSeccionMujeres
         capa@data$porcentajePoblacion <- 100 * as.numeric(nacionalidadPorSeccion) / as.numeric(totalPoblacion[match(capa@data$seccionCensal,
-                                                                                                                    totalPoblacion$seccion), "value"])
+                                                                                                                    totalPoblacion$sección), "value"])
         
         min <- floor(min(capa@data$porcentajePoblacion, na.rm = T))
         max <- ceiling(max(capa@data$porcentajePoblacion, na.rm = T))
@@ -67,9 +64,9 @@ simplyMapIt <- function(porcentaje, hombreMujer, municipioSelected, nacionalidad
                     lng = round(mean(coordinates(capa_sp)[,1]), digits = 7), zoom=11) %>% 
             addPolygons(weight = 2, fillColor = "#FFFF00", fillOpacity = "0.4", stroke = T, color = "black", opacity = 0.8,
                         highlightOptions = highlightOptions(color = "white", weight = 4, bringToFront = TRUE),
-                        popup = paste0("Seccion Censal: <b>", paste0(capa_sp@data$CUMUN, "-", capa_sp@data$CDIS, "-", capa_sp@data$CSEC), "</b><br>",
-                                       "Poblacion: <b>", capa_sp@data$numPoblacionElegida, "</b><br>",
-                                       "Porcentaje de poblacion: <b>", round(capa_sp@data$porcentajePoblacion, digits = 2), "%</b><br>",
+                        popup = paste0("Sección Censal: <b>", paste0(capa_sp@data$CUMUN, "-", capa_sp@data$CDIS, "-", capa_sp@data$CSEC), "</b><br>",
+                                       "Población: <b>", capa_sp@data$numPoblacionElegida, "</b><br>",
+                                       "Porcentaje de población: <b>", round(capa_sp@data$porcentajePoblacion, digits = 2), "%</b><br>",
                                        "Hombres: <b>", capa_sp@data$numPoblacionElegidaHombres, "</b><br>",
                                        "Mujeres: <b>", capa_sp@data$numPoblacionElegidaMujeres, "</b><br>",
                                        "Fecha: <b>", Year, "</b>"),
@@ -85,9 +82,9 @@ simplyMapIt <- function(porcentaje, hombreMujer, municipioSelected, nacionalidad
                     lng = round(mean(coordinates(capa_sp)[,1]), digits = 7), zoom=11) %>% 
             addPolygons(weight = 2, fillColor = ~pal(porcentajePoblacion), fillOpacity = "0.4", stroke = T, color = "black", opacity = 0.8,
                         highlightOptions = highlightOptions(color = "white", weight = 4, bringToFront = TRUE),
-                        popup = paste0("Seccion Censal: <b>", paste0(capa_sp@data$CUMUN, "-", capa_sp@data$CDIS, "-", capa_sp@data$CSEC), "</b><br>",
-                                       "Poblacion: <b>", capa_sp@data$numPoblacionElegida, "</b><br>",
-                                       "Porcentaje de poblacion: <b>", round(capa_sp@data$porcentajePoblacion, digits = 2), "%</b><br>",
+                        popup = paste0("Sección Censal: <b>", paste0(capa_sp@data$CUMUN, "-", capa_sp@data$CDIS, "-", capa_sp@data$CSEC), "</b><br>",
+                                       "Población: <b>", capa_sp@data$numPoblacionElegida, "</b><br>",
+                                       "Porcentaje de población: <b>", round(capa_sp@data$porcentajePoblacion, digits = 2), "%</b><br>",
                                        "Hombres: <b>", capa_sp@data$numPoblacionElegidaHombres, "</b><br>",
                                        "Mujeres: <b>", capa_sp@data$numPoblacionElegidaMujeres, "</b><br>",
                                        "Fecha: <b>", Year, "</b>"),
@@ -119,11 +116,11 @@ simplyMapIt <- function(porcentaje, hombreMujer, municipioSelected, nacionalidad
         
         nacionalidad <- SXnacionalAmbos[which(nacionalidadSelected == SXnacionalAmbos$nacionalidad), ]
         totalPoblacion <- SXnacionalAmbos[which("Total Poblacion" == SXnacionalAmbos$nacionalidad), ]
-        nacionalidadPorSeccion <- nacionalidad[match(capa@data$seccionCensal, nacionalidad$seccion), "value"]
+        nacionalidadPorSeccion <- nacionalidad[match(capa@data$seccionCensal, nacionalidad$sección), "value"]
         
         capa@data$numPoblacionElegida <- nacionalidadPorSeccion
         capa@data$porcentajePoblacion <- 100 * as.numeric(nacionalidadPorSeccion) / as.numeric(totalPoblacion[match(capa@data$seccionCensal,
-                                                                                                                    totalPoblacion$seccion), "value"])
+                                                                                                                    totalPoblacion$sección), "value"])
         
         min <- floor(min(capa@data$porcentajePoblacion, na.rm = T))
         max <- ceiling(max(capa@data$porcentajePoblacion, na.rm = T))
@@ -152,9 +149,9 @@ simplyMapIt <- function(porcentaje, hombreMujer, municipioSelected, nacionalidad
                     lng = round(mean(coordinates(capa_sp)[,1]), digits = 7), zoom=11) %>% 
             addPolygons(weight = 2, fillColor = ~pal(porcentajePoblacion), fillOpacity = "0.4", stroke = T, color = "black", opacity = 0.8,
                         highlightOptions = highlightOptions(color = "white", weight = 4, bringToFront = TRUE),
-                        popup = paste0("Seccion Censal: <b>", paste0(capa_sp@data$CUMUN, "-", capa_sp@data$CDIS, "-", capa_sp@data$CSEC), "</b><br>",
-                                       "Poblacion: <b>", capa_sp@data$numPoblacionElegida, "</b><br>",
-                                       "Porcentaje de poblacion: <b>", round(capa_sp@data$porcentajePoblacion, digits = 2), "%</b><br>",
+                        popup = paste0("Sección Censal: <b>", paste0(capa_sp@data$CUMUN, "-", capa_sp@data$CDIS, "-", capa_sp@data$CSEC), "</b><br>",
+                                       "Población: <b>", capa_sp@data$numPoblacionElegida, "</b><br>",
+                                       "Porcentaje de población: <b>", round(capa_sp@data$porcentajePoblacion, digits = 2), "%</b><br>",
                                        "Fecha: <b>", Year, "</b>"),
                         layerId = capa_sp@data$seccionCensal, group = "censussections", label = capa_sp@data$seccionCensal)  %>% 
             addLegend(colors = c(pal(max), pal((3*max+2*min)/5), pal((2*max+3*min)/5), pal(min)),
@@ -192,9 +189,9 @@ simplyMapIt <- function(porcentaje, hombreMujer, municipioSelected, nacionalidad
         nacionalidadHombres <- SXnacionalHombres[which(nacionalidadSelected == SXnacionalHombres$nacionalidad), ]
         nacionalidadMujeres <- SXnacionalMujeres[which(nacionalidadSelected == SXnacionalMujeres$nacionalidad), ]
         totalPoblacion <- SXnacionalAmbos[which("Total Poblacion" == SXnacionalAmbos$nacionalidad), ]
-        nacionalidadPorSeccion <- nacionalidad[match(capa@data$seccionCensal, nacionalidad$seccion), "value"]
-        nacionalidadPorSeccionHombres <- nacionalidadHombres[match(capa@data$seccionCensal, nacionalidadHombres$seccion), "value"]
-        nacionalidadPorSeccionMujeres <- nacionalidadMujeres[match(capa@data$seccionCensal, nacionalidadMujeres$seccion), "value"]
+        nacionalidadPorSeccion <- nacionalidad[match(capa@data$seccionCensal, nacionalidad$sección), "value"]
+        nacionalidadPorSeccionHombres <- nacionalidadHombres[match(capa@data$seccionCensal, nacionalidadHombres$sección), "value"]
+        nacionalidadPorSeccionMujeres <- nacionalidadMujeres[match(capa@data$seccionCensal, nacionalidadMujeres$sección), "value"]
         
         capa@data$numPoblacionElegida <- nacionalidadPorSeccion
         capa@data$numPoblacionElegidaHombres <- nacionalidadPorSeccionHombres
@@ -213,8 +210,8 @@ simplyMapIt <- function(porcentaje, hombreMujer, municipioSelected, nacionalidad
                     lng = round(mean(coordinates(capa_sp)[,1]), digits = 7), zoom=11) %>% 
             addPolygons(weight = 2, fillColor = "#FFFF00", fillOpacity = "0.4", stroke = T, color = "black", opacity = 0.8,
                         highlightOptions = highlightOptions(color = "white", weight = 4, bringToFront = TRUE),
-                        popup = paste0("Seccion Censal: <b>", paste0(capa_sp@data$CUMUN, "-", capa_sp@data$CDIS, "-", capa_sp@data$CSEC), "</b><br>",
-                                       "Poblacion: <b>", capa_sp@data$numPoblacionElegida, "</b><br>",
+                        popup = paste0("Sección Censal: <b>", paste0(capa_sp@data$CUMUN, "-", capa_sp@data$CDIS, "-", capa_sp@data$CSEC), "</b><br>",
+                                       "Población: <b>", capa_sp@data$numPoblacionElegida, "</b><br>",
                                        "Hombres: <b>", capa_sp@data$numPoblacionElegidaHombres, "</b><br>",
                                        "Mujeres: <b>", capa_sp@data$numPoblacionElegidaMujeres, "</b><br>",
                                        "Fecha: <b>", Year, "</b>"),
@@ -230,8 +227,8 @@ simplyMapIt <- function(porcentaje, hombreMujer, municipioSelected, nacionalidad
                     lng = round(mean(coordinates(capa_sp)[,1]), digits = 7), zoom=11) %>% 
             addPolygons(weight = 2, fillColor = ~pal(numPoblacionElegida), fillOpacity = "0.4", stroke = T, color = "black", opacity = 0.8,
                         highlightOptions = highlightOptions(color = "white", weight = 4, bringToFront = TRUE),
-                        popup = paste0("Seccion Censal: <b>", paste0(capa_sp@data$CUMUN, "-", capa_sp@data$CDIS, "-", capa_sp@data$CSEC), "</b><br>",
-                                       "Poblacion: <b>", capa_sp@data$numPoblacionElegida, "</b><br>",
+                        popup = paste0("Sección Censal: <b>", paste0(capa_sp@data$CUMUN, "-", capa_sp@data$CDIS, "-", capa_sp@data$CSEC), "</b><br>",
+                                       "Población: <b>", capa_sp@data$numPoblacionElegida, "</b><br>",
                                        "Hombres: <b>", capa_sp@data$numPoblacionElegidaHombres, "</b><br>",
                                        "Mujeres: <b>", capa_sp@data$numPoblacionElegidaMujeres, "</b><br>",
                                        "Fecha: <b>", Year, "</b>"),
@@ -264,7 +261,7 @@ simplyMapIt <- function(porcentaje, hombreMujer, municipioSelected, nacionalidad
         
         nacionalidad <- SXnacionalAmbos[which(nacionalidadSelected == SXnacionalAmbos$nacionalidad), ]
         
-        capa@data$numPoblacionElegida <- nacionalidad[match(capa@data$seccionCensal, nacionalidad$seccion), "value"]
+        capa@data$numPoblacionElegida <- nacionalidad[match(capa@data$seccionCensal, nacionalidad$sección), "value"]
         
         min <- min(capa@data$numPoblacionElegida, na.rm = T)
         max <- max(capa@data$numPoblacionElegida, na.rm = T)
@@ -279,8 +276,8 @@ simplyMapIt <- function(porcentaje, hombreMujer, municipioSelected, nacionalidad
                     lng = round(mean(coordinates(capa_sp)[,1]), digits = 7), zoom=11) %>% 
             addPolygons(weight = 2, fillColor = "#FFFF00", fillOpacity = "0.4", stroke = T, color = "black", opacity = 0.8,
                         highlightOptions = highlightOptions(color = "white", weight = 4, bringToFront = TRUE),
-                        popup = paste0("Seccion Censal: <b>", paste0(capa_sp@data$CUMUN, "-", capa_sp@data$CDIS, "-", capa_sp@data$CSEC), "</b><br>",
-                                       "Poblacion: <b>", capa_sp@data$numPoblacionElegida, "</b><br>",
+                        popup = paste0("Sección Censal: <b>", paste0(capa_sp@data$CUMUN, "-", capa_sp@data$CDIS, "-", capa_sp@data$CSEC), "</b><br>",
+                                       "Población: <b>", capa_sp@data$numPoblacionElegida, "</b><br>",
                                        "Fecha: <b>", Year, "</b>"),
                         layerId = capa_sp@data$seccionCensal, group = "censussections", label = capa_sp@data$seccionCensal) %>% 
             addLegend(colors = "#FFFF00",
@@ -294,8 +291,8 @@ simplyMapIt <- function(porcentaje, hombreMujer, municipioSelected, nacionalidad
                     lng = round(mean(coordinates(capa_sp)[,1]), digits = 7), zoom=11) %>% 
             addPolygons(weight = 2, fillColor = ~pal(numPoblacionElegida), fillOpacity = "0.4", stroke = T, color = "black", opacity = 0.8,
                         highlightOptions = highlightOptions(color = "white", weight = 4, bringToFront = TRUE),
-                        popup = paste0("Seccion Censal: <b>", paste0(capa_sp@data$CUMUN, "-", capa_sp@data$CDIS, "-", capa_sp@data$CSEC), "</b><br>",
-                                       "Poblacion: <b>", capa_sp@data$numPoblacionElegida, "</b><br>",
+                        popup = paste0("Sección Censal: <b>", paste0(capa_sp@data$CUMUN, "-", capa_sp@data$CDIS, "-", capa_sp@data$CSEC), "</b><br>",
+                                       "Población: <b>", capa_sp@data$numPoblacionElegida, "</b><br>",
                                        "Fecha: <b>", Year, "</b>"),
                         layerId = capa_sp@data$seccionCensal, group = "censussections", label = capa_sp@data$seccionCensal) %>% 
             addLegend(colors = c(pal(max), pal((3*max+2*min)/5), pal((2*max+3*min)/5), pal(min)),
