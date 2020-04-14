@@ -32,9 +32,9 @@ shinyServer(function(input, output, session) {
   output$mention <- renderText({
     paste0("<hr>Cartography extracted from <a ",
     "href=http://www.ine.es/ss/Satellite?L=es_ES&c=Page&cid=1259952026632&p=1259952026632&pagename=ProductosYServicios%2FPYSLayout target=_blank>",
-    "data publicly available at the Spanish \'Instituto Nacional de Estadística\'</a><hr> Population data extracted thanks to ",
+    "data publicly available at the Spanish \'Instituto Nacional de Estadistica\'</a><hr> Population data extracted thanks to ",
     "<a href=https://www.ine.es/dyngs/INEbase/es/operacion.htm?c=Estadistica_C&cid=1254736177012&menu=resultados&secc=1254736195461&idp=1254734710990 target=_blank>",
-    "the publicly available information at the Spanish \'Instituto Nacional de Estadística\'</a><hr>",
+    "the publicly available information at the Spanish \'Instituto Nacional de Estadistica\'</a><hr>",
     "Source code available at <a href=https://github.com/DrumSergio/secciones-nacionalidades target=_blank>GitHub</a>, so if you find any errors, please, kindly open an issue there.<br>",
     "Docker container avaialble at <a href=https://hub.docker.com/r/drumsergio/secciones-nacionalidades target=_blank>DockerHub</a>.")
   })
@@ -55,7 +55,7 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$porcentaje, {
     if(input$porcentaje == T){
-      if(nationalitySaved$n != "Total Población")
+      if(nationalitySaved$n != "Total Poblacion")
         updateSelectizeInput(session, "selectNacionalidad", choices = levels(SXnacionalAmbos$nacionalidad)[-1], selected = nationalitySaved$n)
       else
         updateSelectizeInput(session, "selectNacionalidad", choices = levels(SXnacionalAmbos$nacionalidad)[-1])
@@ -69,10 +69,10 @@ shinyServer(function(input, output, session) {
   observe({
     nationalitySaved$n <- input$selectNacionalidad
     if(!is.null(input$selectMunicipio)){
-      año <- input$selectYear
+      year <- input$selectYear
       output$mapa <- simplyMapIt(porcentaje = input$porcentaje, hombreMujer = input$hombreMujer, municipioSelected = input$selectMunicipio,
                                    nacionalidadSelected = input$selectNacionalidad, SXnacionalAmbos = SXnacionalAmbos, SXnacionalHombres = SXnacionalHombres,
-                                   SXnacionalMujeres = SXnacionalMujeres, Year = año)
+                                   SXnacionalMujeres = SXnacionalMujeres, Year = year)
     }
   })
   
@@ -169,14 +169,14 @@ shinyServer(function(input, output, session) {
       
       capa <- secciones[secciones@data$CPRO %in% sprintf("%02d", provincia2),]
       capa@data$seccionCensal <- paste0(capa@data$CUMUN, capa@data$CDIS, capa@data$CSEC)
-      capa@data$numPoblacionElegida <- nacionalidad[match(capa@data$seccionCensal, nacionalidad$sección), "value"]
+      capa@data$numPoblacionElegida <- nacionalidad[match(capa@data$seccionCensal, nacionalidad$seccion), "value"]
       
       if(input$manWoman){
         nacionalidadHombres <- SXnacionalHombres[which(input$selectNacionalidad2 == SXnacionalHombres$nacionalidad), ]
         nacionalidadMujeres <- SXnacionalMujeres[which(input$selectNacionalidad2 == SXnacionalMujeres$nacionalidad), ]
 
-        capa@data$hombres <- nacionalidadHombres[match(capa@data$seccionCensal, nacionalidadHombres$sección), "value"]
-        capa@data$mujeres <- nacionalidadMujeres[match(capa@data$seccionCensal, nacionalidadMujeres$sección), "value"]
+        capa@data$hombres <- nacionalidadHombres[match(capa@data$seccionCensal, nacionalidadHombres$seccion), "value"]
+        capa@data$mujeres <- nacionalidadMujeres[match(capa@data$seccionCensal, nacionalidadMujeres$seccion), "value"]
         
         datos_agregadosH <- aggregate(capa@data$hombres, by = list(Municipio=capa@data$NMUN), FUN = sum)
         datos_agregadosM <- aggregate(capa@data$mujeres, by = list(Municipio=capa@data$NMUN), FUN = sum)
@@ -185,8 +185,8 @@ shinyServer(function(input, output, session) {
       datos_agregados <- aggregate(capa@data$numPoblacionElegida, by = list(Municipio=capa@data$NMUN), FUN = sum)      
       
       if(input$percentage2){
-        nacionalidad <- SXnacionalAmbos[which("Total Población" == SXnacionalAmbos$nacionalidad), ]
-        capa@data$numPoblacionTOTAL <- nacionalidad[match(capa@data$seccionCensal, nacionalidad$sección), "value"]
+        nacionalidad <- SXnacionalAmbos[which("Total Poblacion" == SXnacionalAmbos$nacionalidad), ]
+        capa@data$numPoblacionTOTAL <- nacionalidad[match(capa@data$seccionCensal, nacionalidad$seccion), "value"]
         datos_agregadosT <- aggregate(capa@data$numPoblacionTOTAL, by = list(Municipio=capa@data$NMUN), FUN = sum)
         datos_agregadosTP <- datos_agregadosT
         datos_agregadosTP$x <- round(100 * as.numeric(datos_agregados$x) / as.numeric(datos_agregadosT$x), digits = 2)
@@ -253,9 +253,9 @@ shinyServer(function(input, output, session) {
     output$spainmap <- renderHighchart({
       year <- input$selectYear
       nacionalidad <- SXnacionalAmbos[which(input$selectNacionalidad3 == SXnacionalAmbos$nacionalidad), ]
-      total <- nacionalidad$value[nacionalidad$sección == "TOTAL"]
+      total <- nacionalidad$value[nacionalidad$seccion == "TOTAL"]
       secciones@data$seccionCensal <- paste0(secciones@data$CUMUN, secciones@data$CDIS, secciones@data$CSEC)
-      secciones@data$poblacion <- nacionalidad[match(secciones@data$seccionCensal, nacionalidad$sección), "value"]
+      secciones@data$poblacion <- nacionalidad[match(secciones@data$seccionCensal, nacionalidad$seccion), "value"]
       
       datos_agregados <- aggregate(secciones@data$poblacion, by = list(Provincia=secciones@data$CPRO), FUN = sum)     
       
