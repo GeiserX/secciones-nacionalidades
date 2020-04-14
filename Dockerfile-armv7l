@@ -5,6 +5,12 @@ RUN apt-get update && apt-get install -y libgdal-dev r-base
 
 RUN R -e "install.packages(c('shiny', 'shinydashboard', 'shinyjs', 'rgdal', 'raster', 'sp', 'pxR', 'leaflet', 'plotKML', 'highcharter'), repos='https://cloud.r-project.org/')"
 
+RUN apt-get install -y locales
+RUN sed -i -e 's/# es_ES.UTF-8 UTF-8/es_ES.UTF-8 UTF-8/' /etc/locale.gen && \
+    dpkg-reconfigure --frontend=noninteractive locales && \
+    update-locale LANG=es_ES.UTF-8
+ENV LANG en_US.UTF-8 
+
 COPY Rprofile.site /usr/lib/R/etc/
 RUN mkdir -p /root/secciones_censales
 COPY . /root/secciones_censales
