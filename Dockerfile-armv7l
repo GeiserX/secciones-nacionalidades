@@ -8,7 +8,6 @@ RUN R -e "install.packages(c('shiny', 'shinydashboard', 'shinyjs', 'rgdal', 'ras
 COPY Rprofile.site /usr/lib/R/etc/
 RUN mkdir -p /root/secciones_censales
 COPY . /root/secciones_censales
-VOLUME /root/secciones_censales/cache
 
 EXPOSE 8080
 CMD ["R", "-e", "shiny::runApp('/root/secciones_censales', port = 8080, host = '0.0.0.0')"]
