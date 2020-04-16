@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: "2020-04-12T21:36:14Z"
+  labels:
+    app: sec-nac
+  name: sec-nac
+  namespace: sec-nac
+  resourceVersion: "146968"
+  selfLink: /api/v1/namespaces/sec-nac/services/sec-nac
+spec:
+  clusterIP: 10.43.142.208
+  externalTrafficPolicy: Cluster
+  ports:
+  - nodePort: 31030
+    port: 80
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: sec-nac
+  sessionAffinity: None
+  type: LoadBalancer
+status:
+  loadBalancer:
+    ingress:
+    - ip: 10.0.0.151
