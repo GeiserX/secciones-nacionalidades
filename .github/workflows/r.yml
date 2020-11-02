@@ -23,6 +23,16 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        
+#      - name: Install dependencies
+#        run: |
+#          install.packages(c("remotes", "rcmdcheck"))
+#          remotes::install_deps(dependencies = TRUE)
+#        shell: Rscript {0}
+#      - name: Test WebApp
+#        run: rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "error")
+#        shell: Rscript {0}
+     
       - name: Build and Push Dockerfile
         uses: ryanjfrizzell/action-bpd@master
         with:
@@ -34,9 +44,7 @@ jobs:
           dockerfile: 'test/Dockerfile.test'
       - name: Get the output
         run: |
-          echo "imageinfo was ${{ steps.test.outputs.imageinfo }}"
-      - name: Build Dockerfile
-   
+          echo "imageinfo was ${{ steps.test.outputs.imageinfo }}"   
 
       - name: Deploy to Kubernetes
         uses: steebchen/kubectl@master
@@ -47,11 +55,5 @@ jobs:
           args: set image --record deployment/sec-nac container=${{ github.repository }}:${{ github.sha }}
 
           
-#     - name: Install dependencies
-#       run: |
-#         install.packages(c("remotes", "rcmdcheck"))
-#         remotes::install_deps(dependencies = TRUE)
-#       shell: Rscript {0}
-#     - name: Check
-#       run: rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "error")
-#       shell: Rscript {0}
+
+
