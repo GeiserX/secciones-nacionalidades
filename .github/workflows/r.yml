@@ -1,0 +1,61 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+#
+# See https://github.com/r-lib/actions/tree/master/examples#readme for
+# additional example workflows available for the R community.
+
+name: Test and Deployment to K3s cluster
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: 	ubuntu-latest
+    strategy:
+      matrix:
+        r-version: [3.5, 3.6]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build and Push Dockerfile
+        uses: ryanjfrizzell/action-bpd@master
+        with:
+          docker_registry_owner: 'drumsergio'
+          docker_repository: 'drumsergio'
+          docker_image: 'secciones-nacionalidades'
+          docker_username: ${{ secrets.docker_username }}
+          docker_password: ${{ secrets.docker_password }}
+          dockerfile: 'test/Dockerfile.test'
+      - name: Build Dockerfile
+        run: |
+          docker build -t "$IMAGE_NAME":"$GITHUB_SHA" -f Dockerfile \
+            --build-arg GITHUB_SHA="$GITHUB_SHA" \
+            --build-arg GITHUB_REF="$GITHUB_REF" .
+
+      - name: Push the image to DockerHub
+        run: |
+          docker push $IMAGE_NAME:$GITHUB_SHA
+
+      - name: Deploy to Kubernetes
+        uses: steebchen/kubectl@master
+        env:
+          KUBE_CONFIG_DATA: $KUBE_CONFIG_DATA
+          KUBECTL_VERSION: "1.18"
+        with:
+          args: set image --record deployment/sec-nac container=${{ github.repository }}:${{ github.sha }}
+
+          
+#     - name: Install dependencies
+#       run: |
+#         install.packages(c("remotes", "rcmdcheck"))
+#         remotes::install_deps(dependencies = TRUE)
+#       shell: Rscript {0}
+#     - name: Check
+#       run: rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "error")
+#       shell: Rscript {0}
