@@ -49,10 +49,10 @@ jobs:
       - name: Deploy to Kubernetes
         uses: steebchen/kubectl@master
         env:
-          KUBE_CONFIG_DATA: $KUBE_CONFIG_DATA
+          KUBE_CONFIG_DATA: ${{ secrets.kubeconfig_data }}
           KUBECTL_VERSION: "1.18"
         with:
-          args: set image --record deployment/sec-nac container=${{ github.repository }}:${{ github.sha }}
+          args: set image --record deployment/sec-nac container=${{ github.repository }}:auto-latest
 
           
 
