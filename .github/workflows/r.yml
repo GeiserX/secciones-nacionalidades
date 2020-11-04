@@ -38,10 +38,10 @@ jobs:
         with:
           docker_registry_owner: 'drumsergio'
           docker_repository: 'secciones-nacionalidades'
-          docker_image: ${{ secrets.github_sha }}
+          docker_image: 'auto-latest'
           docker_username: ${{ secrets.docker_username }}
           docker_password: ${{ secrets.docker_password }}
-          dockerfile: 'test/Dockerfile.test'
+          dockerfile: 'Dockerfile'
       - name: Get the output
         run: |
           echo "imageinfo was ${{ steps.test.outputs.imageinfo }}"   
