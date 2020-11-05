@@ -43,6 +43,8 @@ jobs:
           docker_image: 'auto-latest'
           docker_username: ${{ secrets.docker_username }}
           docker_password: ${{ secrets.docker_password }}
+          input_docker_username: ${{ secrets.docker_username }}
+          input_docker_password: ${{ secrets.docker_password }}
           dockerfile: 'Dockerfile'
       - name: Get the output
         run: |
