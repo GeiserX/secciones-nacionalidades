@@ -35,6 +35,7 @@ jobs:
      
       - name: Build and Push Dockerfile
         run: |
+          set -xeo
           echo $docker_password | docker login -u drumsergio --password-stdin
           docker build -t drumsergio/secciones-nacionalidades:auto-latest -f Dockerfile
           docker push drumsergio/secciones-nacionalidades:auto-latest
