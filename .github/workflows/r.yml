@@ -45,7 +45,7 @@ jobs:
           KUBE_CONFIG_DATA: ${{ secrets.kubeconfig_data }}
           KUBECTL_VERSION: "1.18"
         with:
-          args: set image --record deployment/sec-nac container=${{ github.repository }}:auto-latest
+          args: set image --record deployment/sec-nac container=drumsergio/secciones-nacionalidades:auto-latest
 
           
 
