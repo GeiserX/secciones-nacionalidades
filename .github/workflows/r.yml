@@ -31,10 +31,10 @@ jobs:
         with:
           docker_username: ${{ secrets.dockerhub_username }}
           docker_password: ${{ secrets.dockerhub_password }}
-          docker_image_tag: 'auto-latest'
+          docker_image_tag: 'auto-latest-armv7l'
           docker_registry: 'drumsergio/secciones-nacionalidades'
           dockerhub: 'true'
-          dockerfile: 'Dockerfile'
+          dockerfile: 'Dockerfile-armv7l'
       - name: Get the output
         run: |
           echo "imageinfo was ${{ steps.test.outputs.imageinfo }}"
@@ -45,7 +45,7 @@ jobs:
           KUBE_CONFIG_DATA: ${{ secrets.kubeconfig_data }}
           KUBECTL_VERSION: "1.18"
         with:
-          args: set image --record deployment/sec-nac container=drumsergio/secciones-nacionalidades:auto-latest
+          args: set image --record deployment/sec-nac container=drumsergio/secciones-nacionalidades:auto-latest-armv7l
 
           
 
