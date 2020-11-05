@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: 	ubuntu-latest
+    runs-on: 	ubuntu-18.04
 #    strategy:
 #      matrix:
 #        r-version: [3.6]
@@ -25,19 +25,44 @@ jobs:
 #        run: rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "error")
 #        shell: Rscript {0}
      
-      - name: Build and Push Container 
-        id: test
-        uses: ryanjfrizzell/action-bpd@master
-        with:
-          docker_username: ${{ secrets.dockerhub_username }}
-          docker_password: ${{ secrets.dockerhub_password }}
-          docker_image_tag: 'auto-latest-armv7l'
-          docker_registry: 'drumsergio/secciones-nacionalidades'
-          dockerhub: 'true'
-          dockerfile: 'Dockerfile-armv7l'
-      - name: Get the output
-        run: |
-          echo "imageinfo was ${{ steps.test.outputs.imageinfo }}"
+      - name: Set up Docker Buildx      
+        uses: crazy-max/ghaction-docker-buildx@v1      
+        with:        
+          version: latest 
+          
+      - name: Prepare      
+        if: success()      
+        id: prepare      
+        run: |        
+          echo ::set-output name=docker_platform::linux/arm/v7       
+          echo ::set-output name=docker_image::drumsergio/secciones-nacionalidades   
+          echo ::set-output name=version::${GITHUB_RUN_NUMBER}
+     
+      - name: Docker Login      
+        if: success()      
+        run: |        
+         echo "${DOCKER_PASSWORD}" | docker login --username "${DOCKER_USERNAME}" --password-stdin     
+
+      - name: Run Buildx (push image)      
+        if: success()      
+        run: |        
+          docker buildx build --platform ${{ steps.prepare.outputs.docker_platform }} \
+          --tag ${{ steps.prepare.outputs.docker_image }}:${{ steps.prepare.outputs.version }} \
+          --file ./Dockerfile-armv7l --output type=image,push=true .
+
+#      - name: Build and Push Container 
+#        id: test
+#        uses: ryanjfrizzell/action-bpd@master
+#        with:
+#          docker_username: ${{ secrets.dockerhub_username }}
+#          docker_password: ${{ secrets.dockerhub_password }}
+#          docker_image_tag: 'auto-latest-armv7l'
+#          docker_registry: 'drumsergio/secciones-nacionalidades'
+#          dockerhub: 'true'
+#          dockerfile: 'Dockerfile-armv7l'
+#      - name: Get the output
+#        run: |
+#          echo "imageinfo was ${{ steps.test.outputs.imageinfo }}"
           
       - name: Deploy to Kubernetes
         uses: steebchen/kubectl@master
@@ -45,7 +70,7 @@ jobs:
           KUBE_CONFIG_DATA: ${{ secrets.kubeconfig_data }}
           KUBECTL_VERSION: "1.18"
         with:
-          args: set image --record deployment/sec-nac container=drumsergio/secciones-nacionalidades:auto-latest-armv7l
+          args: set image --record deployment/sec-nac container=drumsergio/secciones-nacionalidades:${GITHUB_RUN_NUMBER}
 
           
 
