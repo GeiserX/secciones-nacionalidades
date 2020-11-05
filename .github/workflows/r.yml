@@ -19,7 +19,7 @@ jobs:
     runs-on: 	ubuntu-latest
     strategy:
       matrix:
-        r-version: [3.5, 3.6]
+        r-version: [3.6]
 
     steps:
       - uses: actions/checkout@v2
@@ -37,10 +37,10 @@ jobs:
         id: build
         uses: ryanjfrizzell/action-bpd@master
         with:
-          docker_registry_url: 'hub.docker.com'
-          docker_registry_owner: 'drumsergio'
-          docker_repository: 'secciones-nacionalidades'
-          docker_image: 'auto-latest'
+          docker_registry: 'drumsergio/secciones-nacionalidades'
+          docker_image_tag: 'auto-latest'
+          docker_repository: 'drumsergio'
+          docker_image: 'secciones-nacionalidades'
           docker_username: ${{ secrets.docker_username }}
           docker_password: ${{ secrets.docker_password }}
           input_docker_username: ${{ secrets.docker_username }}
