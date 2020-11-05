@@ -17,9 +17,9 @@ on:
 jobs:
   build:
     runs-on: 	ubuntu-latest
-    strategy:
-      matrix:
-        r-version: [3.6]
+#    strategy:
+#      matrix:
+#        r-version: [3.6]
 
     steps:
       - uses: actions/checkout@v2
@@ -34,22 +34,11 @@ jobs:
 #        shell: Rscript {0}
      
       - name: Build and Push Dockerfile
-        id: build
-        uses: ryanjfrizzell/action-bpd@master
-        with:
-          docker_registry: 'drumsergio/secciones-nacionalidades'
-          docker_image_tag: 'auto-latest'
-          docker_repository: 'drumsergio'
-          docker_image: 'secciones-nacionalidades'
-          docker_username: ${{ secrets.docker_username }}
-          docker_password: ${{ secrets.docker_password }}
-          input_docker_username: ${{ secrets.docker_username }}
-          input_docker_password: ${{ secrets.docker_password }}
-          dockerfile: 'Dockerfile'
-      - name: Get the output
         run: |
-          echo "imageinfo was ${{ steps.build.outputs.imageinfo }}"   
-
+          echo $docker_password | docker login -u drumsergio --password-stdin
+          docker build -t drumsergio/secciones-nacionalidades:auto-latest -f Dockerfile
+          docker push drumsergio/secciones-nacionalidades:auto-latest
+          
       - name: Deploy to Kubernetes
         uses: steebchen/kubectl@master
         env:
