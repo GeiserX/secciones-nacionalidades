@@ -56,7 +56,7 @@ jobs:
 #        with:
 #          docker_username: ${{ secrets.dockerhub_username }}
 #          docker_password: ${{ secrets.dockerhub_password }}
-#          docker_image_tag: 'auto-latest-armv7l'
+#          docker_image_tag: ${GITHUB_RUN_NUMBER}
 #          docker_registry: 'drumsergio/secciones-nacionalidades'
 #          dockerhub: 'true'
 #          dockerfile: 'Dockerfile-armv7l'
@@ -65,12 +65,12 @@ jobs:
 #          echo "imageinfo was ${{ steps.test.outputs.imageinfo }}"
           
       - name: Deploy to Kubernetes
-        uses: Consensys/kubernetes-action@master
+        uses: steebchen/kubectl@master
         env:
           KUBE_CONFIG_DATA: ${{ secrets.kubeconfig_data }}
-#          KUBECTL_VERSION: "1.18"
+          KUBECTL_VERSION: "1.18"
         with:
-          args: set image --record deployment/sec-nac container=drumsergio/secciones-nacionalidades:${GITHUB_RUN_NUMBER}
+          args: set image --record deployment/sec-nac-auto container=${{ steps.prepare.outputs.docker_image }}:${{ steps.prepare.outputs.version }} -n sec-nac-auto
 
           
 
