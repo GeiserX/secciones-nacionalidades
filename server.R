@@ -50,7 +50,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$selectProvincia,{
     provincia <- provincias$ID[which(input$selectProvincia == provincias$Nombre)]
     municipiosElegibles <<- municipios$NOMBRE[which(provincia == municipios$CPRO)]
-    updateSelectInput(session = session, "selectMunicipio", choices = "Madrid (Madrid)")
+    updateSelectInput(session = session, "selectMunicipio", choices = municipiosElegibles)
   })
   
   observeEvent(input$porcentaje, {
