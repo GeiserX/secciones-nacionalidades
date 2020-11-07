@@ -65,45 +65,46 @@ simplyMapIt <- function(porcentaje, hombreMujer, municipioSelected, nacionalidad
       setView(lat = round(mean(coordinates(capa_sp)[,2]), digits = 7),
               lng = round(mean(coordinates(capa_sp)[,1]), digits = 7), zoom=11) %>% 
       addPolygons(weight = 2, fillColor = ~ if(samePopulationPrintYellow(capa_sp)){ "#FFFF00" } else {
-        pal(ifelse(porcentaje == T, capa_sp@data$porcentajePoblacion, capa_sp@data$numPoblacionElegida))},
+        pal(if(porcentaje == T) {capa_sp@data$porcentajePoblacion} else {capa_sp@data$numPoblacionElegida})},
         fillOpacity = "0.4",
         stroke = T, color = "black", opacity = 0.8, highlightOptions = highlightOptions(color = "white", weight = 4, bringToFront = TRUE),
         popup = paste0("Sección Censal: <b>", paste0(capa_sp@data$CUMUN, "-", capa_sp@data$CDIS, "-", capa_sp@data$CSEC), "</b><br>",
                        "Población: <b>", capa_sp@data$numPoblacionElegida,
-                       ifelse(porcentaje == T,
-                              ifelse(hombreMujer == T, 
+                       if(porcentaje == T) {
+                              if(hombreMujer == T){ 
                                      paste0(
                                        "</b><br>",
                                        "Porcentaje de población: <b>", round(capa_sp@data$porcentajePoblacion, digits = 2), "%</b><br>",
                                        "Hombres: <b>", capa_sp@data$numPoblacionElegidaHombres, "</b><br>",
                                        "Mujeres: <b>", capa_sp@data$numPoblacionElegidaMujeres, "</b><br>",
-                                       "Fecha: <b>", Year, "</b>"),
+                                       "Fecha: <b>", Year, "</b>")} else {
                                      paste0(
-                                       ifelse(samePopulationPrintYellow(capa_sp),
-                                              paste0(" </b> Fecha: <b>", Year, "</b><br>"),
+                                       if(samePopulationPrintYellow(capa_sp)){
+                                              paste0(" </b> Fecha: <b>", Year, "</b><br>")} else{
                                               paste0("</b><br>", "Porcentaje de población: <b>", round(capa_sp@data$porcentajePoblacion, digits = 2),
-                                                     "%</b><br>", "Fecha: <b>", Year, "</b>")))),
+                                                     "%</b><br>", "Fecha: <b>", Year, "</b>")})}} else {
                               paste0("</b><br>", if(hombreMujer == T) paste0("Hombres: <b>", capa_sp@data$numPoblacionElegidaHombres, "</b><br>",
                                                                              "Mujeres: <b>", capa_sp@data$numPoblacionElegidaMujeres, "</b><br>"),
-                                     "Fecha: <b>", Year, "</b>"))
+                                     "Fecha: <b>", Year, "</b>")}
         ),
         layerId = capa_sp@data$seccionCensal, group = "censussections", label = capa_sp@data$seccionCensal) %>% 
-      addLegend(colors = ifelse(samePopulationPrintYellow(capa_sp), "#FFFF00", c(pal(max), pal((3*max+2*min)/5), pal((2*max+3*min)/5), pal(min))),
-                labels = ifelse(porcentaje == T,
-                                ifelse(samePopulationPrintYellow(capa_sp), 
+      addLegend(colors = if(samePopulationPrintYellow(capa_sp)){ "#FFFF00" } else { c(pal(max), pal((3*max+2*min)/5), pal((2*max+3*min)/5), pal(min))},
+                labels = if(porcentaje == T){
+                                if(samePopulationPrintYellow(capa_sp)){ 
                                        paste0(min(capa_sp@data$porcentajePoblacion,  na.rm = T),
-                                              "% - ", max(capa_sp@data$porcentajePoblacion,  na.rm = T), "%"),
+                                              "% - ", max(capa_sp@data$porcentajePoblacion,  na.rm = T), "%")} else {
                                        c(paste0(round((3*max+min)/4, digits = 2), " - <b>", max, "%</b>"),
                                          paste0(round((max+min)/2, digits = 2), " - ", round((3*max+min)/4, digits = 2), "%"),
                                          paste0(round((max+3*min)/4, digits = 2), " - ", round((max+min)/2, digits = 2), "%"),
-                                         paste0("<b>", min, "</b> - ", round((max+3*min)/4, digits = 2), "%"))),
-                                ifelse(samePopulationPrintYellow(capa_sp), 
-                                       paste0(min(capa_sp@data$numPoblacionElegida,  na.rm = T), " - ", max(capa_sp@data$numPoblacionElegida,  na.rm = T)),
+                                         paste0("<b>", min, "</b> - ", round((max+3*min)/4, digits = 2), "%"))}} else{
+                                if(samePopulationPrintYellow(capa_sp)){ 
+                                       paste0(min(capa_sp@data$numPoblacionElegida,  na.rm = T), " - ", max(capa_sp@data$numPoblacionElegida,  na.rm = T))} else {
                                        c(paste0(round((3*max+min)/4, digits = 2), " - <b>", max, "</b>"),
                                          paste0(round((max+min)/2, digits = 2), " - ", round((3*max+min)/4, digits = 2)),
                                          paste0(round((max+3*min)/4, digits = 2), " - ", round((max+min)/2, digits = 2)),
-                                         paste0("<b>", min, "</b> - ", round((max+3*min)/4, digits = 2))))),
+                                         paste0("<b>", min, "</b> - ", round((max+3*min)/4, digits = 2)))}},
                 na.label = "Valor no disponible", title = "Población", opacity = "0.4", bins = 2)
   })
   })
+  samePopulationPrintYellow(capa_sp)
 }
