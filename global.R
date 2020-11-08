@@ -22,6 +22,13 @@ SXnacionalHombres <<- readRDS(paste0("poblacion/", year, "/SXnacional", year, "h
 SXnacionalMujeres <<- readRDS(paste0("poblacion/", year, "/SXnacional", year, "mujeres.rds"))
 secciones <<- readRDS(paste0("seccionado/", year, "/secciones.rds"))
 
+poblacionAñoAmbos <<- list()
+for(i in 1:length(list.files("poblacion/"))){
+  año <- list.files("poblacion/")
+  poblacionAñoAmbos <<- append(poblacionAño, 
+                         list(cbind(readRDS(paste0("poblacion/", año[i], "/SXnacional", año[i], "ambos.rds")), año[i])))
+}
+
 samePopulationPrintYellow <- function(capa_sp){
   return(max(capa_sp@data$numPoblacionElegida,  na.rm = T) - min(capa_sp@data$numPoblacionElegida,  na.rm = T) == 0)
 }

@@ -306,5 +306,51 @@ shinyServer(function(input, output, session) {
       #       value = "Value", name = paste0("Population ", year))
     })
   })
+  
+  #############
+  ### TAB 4 ###
+  #############
+  
+  observeEvent(input$selectNacionalidad4,{
+    output$historicChart <- renderHighchart({
+      nacionalidad <- list()
+      total <- data.frame(years = list.files("poblacion/"))
+      for(i in 1:length(list.files("poblacion/"))){
+        nacionalidad <-  append(nacionalidad, list(poblacionAñoAmbos[[i]][which(input$selectNacionalidad4 == poblacionAñoAmbos[[i]]$nacionalidad), ]))
+        total$population[i] <- nacionalidad[[i]]$value[nacionalidad[[i]]$sección == "TOTAL"]
+      }
+      
+      highchart() %>% 
+        hc_chart(type = "line", zoomType = "x") %>% 
+        hc_title(text = "Population trend") %>% 
+        hc_xAxis(categories = total$years) %>% 
+        hc_add_series(data = total$population, name = "Total population")
+    })
+  })
+  
+  output$provinces <- renderUI({
+    if(input$metricsByAggregate != "National"){
+      selectizeInput("chartProvincia", label = "Select Province", choices = provincias$Nombre, multiple = T, selected = c())
+    }
+  })
+  
+  observeEvent(input$metricsByAggregate,{
+    if(input$metricsByAggregate == "Province"){
+      output$historicChart <- renderHighchart({
+        nacionalidad <- list()
+        total <- data.frame(years = list.files("poblacion/"))
+        for(i in 1:length(list.files("poblacion/"))){
+          nacionalidad <-  append(nacionalidad, list(poblacionAñoAmbos[[i]][which(input$selectNacionalidad4 == poblacionAñoAmbos[[i]]$nacionalidad), ]))
+          total$population[i] <- nacionalidad[[i]]$value[nacionalidad[[i]]$sección == "TOTAL"]
+        }
+        
+        highchart() %>% 
+          hc_chart(type = "line", zoomType = "x") %>% 
+          hc_title(text = "Population trend") %>% 
+          hc_xAxis(categories = total$years) %>% 
+          hc_add_series(data = total$population, name = "Total population")
+      })
+    }
+  })
     
 })
