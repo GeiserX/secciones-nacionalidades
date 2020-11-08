@@ -36,7 +36,7 @@ jobs:
         run: |        
           echo ::set-output name=docker_platform::linux/arm/v7       
           echo ::set-output name=docker_image::drumsergio/secciones-nacionalidades   
-          echo ::set-output name=version::latest          
+          echo ::set-output name=version::latest-amd64          
       
       - name: Prepare armv7     
         if: success()      
@@ -44,7 +44,7 @@ jobs:
         run: |        
           echo ::set-output name=docker_platform::linux/arm/v7       
           echo ::set-output name=docker_image::drumsergio/secciones-nacionalidades   
-          echo ::set-output name=version::latest
+          echo ::set-output name=version::latest-armv7
      
       - name: Docker Login      
         if: success()      
