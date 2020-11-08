@@ -5,6 +5,7 @@ dashboardPage(skin = "blue", title = "Foreign Insight",
         menuItem("Map it", tabName = "tab1", icon = shiny::icon("building")),
         menuItem("Statistics by Province", tabName = "tab2", icon = shiny::icon("brain")),
         menuItem("Spain Map", tabName = "tab3", icon = shiny::icon("binoculars")),
+        menuItem("References", tabName = "ref", icon = shiny::icon("copyright")),
         #menuItem("Historic data", tabName = "tab4", icon = shiny::icon(""))
         sliderInput("selectYear", "", min = 2012, max = 2019, value = 2019, sep = "")
     )
@@ -20,8 +21,7 @@ dashboardPage(skin = "blue", title = "Foreign Insight",
                     checkboxInput("porcentaje", "Apply percentage", value = F),
                     checkboxInput("hombreMujer", "Distinguish man/woman", value = F),
                     useShinyjs(),
-                    disabled(downloadButton("descargaKML", label = "Download selected areas")),
-                    htmlOutput("mention")
+                    disabled(downloadButton("descargaKML", label = "Download selected areas"))
                 ),
                 box(width = 9, title = "Map", status = "info", solidHeader = F, 
                     tags$style(type = "text/css", "#mapa {height: calc(100vh - 163px) !important;}"),
@@ -50,8 +50,17 @@ dashboardPage(skin = "blue", title = "Foreign Insight",
                     tags$style(type = "text/css", "#spainmap {height: calc(100vh - 163px) !important;}"),
                     highchartOutput(outputId = "spainmap", width = "auto")
                 )
-                
-        )
+        ),
+        tabItem(tabName = "ref", 
+                box(width = 12, title = "References", status = "info", solidHeader = F,
+                    HTML(paste0("Cartography extracted from <a ",
+                           "href=http://www.ine.es/ss/Satellite?L=es_ES&c=Page&cid=1259952026632&p=1259952026632&pagename=ProductosYServicios%2FPYSLayout target=_blank>",
+                           "data publicly available at the Spanish \'Instituto Nacional de Estadística\'</a><hr> Population data extracted thanks to ",
+                           "<a href=https://www.ine.es/dyngs/INEbase/es/operacion.htm?c=Estadistica_C&cid=1254736177012&menu=resultados&secc=1254736195461&idp=1254734710990 target=_blank>",
+                           "the publicly available information at the Spanish \'Instituto Nacional de Estadística\'</a><hr>",
+                           "Source code available at <a href=https://github.com/DrumSergio/secciones-nacionalidades target=_blank>GitHub</a>, so if you find any errors, open an issue there. PRs are welcome. ",
+                           "Docker container avaialble at <a href=https://hub.docker.com/r/drumsergio/secciones-nacionalidades target=_blank>DockerHub</a>."))
+                                     ))
       )
     )
   )
