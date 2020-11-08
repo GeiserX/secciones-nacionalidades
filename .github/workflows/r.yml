@@ -29,40 +29,41 @@ jobs:
         uses: crazy-max/ghaction-docker-buildx@v1      
         with:        
           version: latest 
-          
-      - name: Prepare      
+      
+      - name: Prepare amd64
         if: success()      
-        id: prepare      
+        id: prepare_amd64      
         run: |        
           echo ::set-output name=docker_platform::linux/arm/v7       
           echo ::set-output name=docker_image::drumsergio/secciones-nacionalidades   
-          echo ::set-output name=version::${GITHUB_RUN_NUMBER}
+          echo ::set-output name=version::latest          
+      
+      - name: Prepare armv7     
+        if: success()      
+        id: prepare_armv7      
+        run: |        
+          echo ::set-output name=docker_platform::linux/arm/v7       
+          echo ::set-output name=docker_image::drumsergio/secciones-nacionalidades   
+          echo ::set-output name=version::latest
      
       - name: Docker Login      
         if: success()      
         run: |        
          echo ${{ secrets.dockerhub_password }} | docker login --username ${{ secrets.dockerhub_username }} --password-stdin     
 
-      - name: Run Buildx (push image)      
+      - name: Run Buildx (amd64, push image)     
         if: success()      
         run: |        
-          docker buildx build --platform ${{ steps.prepare.outputs.docker_platform }} \
-          --tag ${{ steps.prepare.outputs.docker_image }}:${{ steps.prepare.outputs.version }} \
+          docker buildx build --platform ${{ steps.prepare_amd64.outputs.docker_platform }} \
+          --tag ${{ steps.prepare_amd64.outputs.docker_image }}:${{ steps.prepare_amd64.outputs.version }} \
+          --file ./Dockerfile --output type=image,push=true .
+           
+      - name: Run Buildx (armv7, push image)      
+        if: success()      
+        run: |        
+          docker buildx build --platform ${{ steps.prepare_armv7.outputs.docker_platform }} \
+          --tag ${{ steps.prepare_armv7.outputs.docker_image }}:${{ steps.prepare_armv7.outputs.version }} \
           --file ./Dockerfile-armv7l --output type=image,push=true .
-
-#      - name: Build and Push Container 
-#        id: test
-#        uses: ryanjfrizzell/action-bpd@master
-#        with:
-#          docker_username: ${{ secrets.dockerhub_username }}
-#          docker_password: ${{ secrets.dockerhub_password }}
-#          docker_image_tag: ${GITHUB_RUN_NUMBER}
-#          docker_registry: 'drumsergio/secciones-nacionalidades'
-#          dockerhub: 'true'
-#          dockerfile: 'Dockerfile-armv7l'
-#      - name: Get the output
-#        run: |
-#          echo "imageinfo was ${{ steps.test.outputs.imageinfo }}"
           
       - name: Deploy to Kubernetes
         uses: steebchen/kubectl@master
