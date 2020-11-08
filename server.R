@@ -44,6 +44,13 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$selectMunicipio,{
     disable("descargaKML")
+    nationalitySaved$n <- input$selectNacionalidad
+    if(!is.null(input$selectMunicipio)){
+      año <- input$selectYear
+      output$mapa <- simplyMapIt(porcentaje = input$porcentaje, hombreMujer = input$hombreMujer, municipioSelected = input$selectMunicipio,
+                                 nacionalidadSelected = input$selectNacionalidad, SXnacionalAmbos = SXnacionalAmbos, SXnacionalHombres = SXnacionalHombres,
+                                 SXnacionalMujeres = SXnacionalMujeres, Year = año)
+    }
   })
     
   
@@ -54,28 +61,49 @@ shinyServer(function(input, output, session) {
   })
   
   observeEvent(input$porcentaje, {
+    
+    nationalitySaved$n <- input$selectNacionalidad
+    
     if(input$porcentaje == T){
-      if(nationalitySaved$n != "Total Población")
-        updateSelectizeInput(session, "selectNacionalidad", choices = levels(SXnacionalAmbos$nacionalidad)[-1], selected = nationalitySaved$n)
-      else
+      if(input$selectNacionalidad == "Total Población")
         updateSelectizeInput(session, "selectNacionalidad", choices = levels(SXnacionalAmbos$nacionalidad)[-1])
-    }
-    else{
-      
+      else
+        updateSelectizeInput(session, "selectNacionalidad", choices = levels(SXnacionalAmbos$nacionalidad)[-1], selected = nationalitySaved$n)
+    } else {
       updateSelectizeInput(session, "selectNacionalidad", choices = levels(SXnacionalAmbos$nacionalidad), selected = nationalitySaved$n)
     }
+    
+    if(!is.null(input$selectMunicipio)){
+      año <- input$selectYear
+      output$mapa <- simplyMapIt(porcentaje = input$porcentaje, hombreMujer = input$hombreMujer, municipioSelected = input$selectMunicipio,
+                                 nacionalidadSelected = ifelse(input$porcentaje == T && input$selectNacionalidad == "Total Población",
+                                                               "Españoles", input$selectNacionalidad), 
+                                 SXnacionalAmbos = SXnacionalAmbos, SXnacionalHombres = SXnacionalHombres,
+                                 SXnacionalMujeres = SXnacionalMujeres, Year = año)
+    }
+    
   })
   
-  observe({
+  observeEvent(input$hombreMujer,{
     nationalitySaved$n <- input$selectNacionalidad
     if(!is.null(input$selectMunicipio)){
       año <- input$selectYear
       output$mapa <- simplyMapIt(porcentaje = input$porcentaje, hombreMujer = input$hombreMujer, municipioSelected = input$selectMunicipio,
-                                   nacionalidadSelected = input$selectNacionalidad, SXnacionalAmbos = SXnacionalAmbos, SXnacionalHombres = SXnacionalHombres,
-                                   SXnacionalMujeres = SXnacionalMujeres, Year = año)
+                               nacionalidadSelected = input$selectNacionalidad, SXnacionalAmbos = SXnacionalAmbos, SXnacionalHombres = SXnacionalHombres,
+                               SXnacionalMujeres = SXnacionalMujeres, Year = año)
     }
   })
   
+  # observe({
+  #   nationalitySaved$n <- input$selectNacionalidad
+  #   if(!is.null(input$selectMunicipio)){
+  #     año <- input$selectYear
+  #     output$mapa <- simplyMapIt(porcentaje = input$porcentaje, hombreMujer = input$hombreMujer, municipioSelected = input$selectMunicipio,
+  #                                  nacionalidadSelected = input$selectNacionalidad, SXnacionalAmbos = SXnacionalAmbos, SXnacionalHombres = SXnacionalHombres,
+  #                                  SXnacionalMujeres = SXnacionalMujeres, Year = año)
+  #   }
+  # })
+  # 
   observeEvent(input$mapa_shape_click, {
     click <- input$mapa_shape_click
     
