@@ -9,21 +9,23 @@ on:
 jobs:
   build:
     runs-on: 	ubuntu-18.04
-#    strategy:
-#      matrix:
-#        r-version: [3.6]
+    strategy:
+      matrix:
+        r-version: [4.0]
 
     steps:
       - uses: actions/checkout@v2
         
-#      - name: Install dependencies
-#        run: |
-#          install.packages(c("remotes", "rcmdcheck"))
-#          remotes::install_deps(dependencies = TRUE)
-#        shell: Rscript {0}
-#      - name: Test WebApp
-#        run: rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "error")
-#        shell: Rscript {0}
+      - name: Install dependencies
+        run: |
+          install.packages(c('shiny', 'shinydashboard', 'shinyjs', 'rgdal', \
+          'raster', 'sp', 'pxR', 'leaflet', 'plotKML', 'highcharter', 'shinytest', \
+          'testthat', 'rjson'))
+          remotes::install_deps(dependencies = TRUE)
+        shell: Rscript {0}
+      - name: Test WebApp
+        run: tests/test-shiny.R
+        shell: Rscript {0}
      
       - name: Set up Docker Buildx      
         uses: crazy-max/ghaction-docker-buildx@v1      
@@ -49,7 +51,8 @@ jobs:
       - name: Docker Login      
         if: success()      
         run: |        
-         echo ${{ secrets.dockerhub_password }} | docker login --username ${{ secrets.dockerhub_username }} --password-stdin     
+         echo ${{ secrets.dockerhub_password }} | docker login --username ${{ secrets.dockerhub_username }} \
+         --password-stdin     
 
       - name: Run Buildx (amd64, push image)     
         if: success()      
@@ -71,7 +74,8 @@ jobs:
           KUBE_CONFIG_DATA: ${{ secrets.kubeconfig_data }}
           KUBECTL_VERSION: "1.18"
         with:
-          args: set image --record deployment/sec-nac-auto secciones-nacionalidades=drumsergio/secciones-nacionalidades:latest-armv7 -n sec-nac-auto
+          args: set image --record deployment/sec-nac-auto \
+                secciones-nacionalidades=drumsergio/secciones-nacionalidades:latest-armv7 -n sec-nac-auto
 
           
 
