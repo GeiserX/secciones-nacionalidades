@@ -12,6 +12,8 @@ suppressPackageStartupMessages({
   library(highcharter)
 })
 
+#options(shiny.port=8080)
+
 #comunidades <- read.csv("datos_csv/codccaa.csv", fileEncoding = "UTF-8")
 provincias <- read.csv("datos_csv/codprov.csv", fileEncoding = "UTF-8")
 municipios <- read.csv("datos_csv/Municipios_Censo_2011.csv", fileEncoding = "UTF-8")

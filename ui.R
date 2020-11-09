@@ -2,9 +2,9 @@ dashboardPage(skin = "blue", title = "Foreign Insight",
   dashboardHeader(title = "Foreign Insight v1.1"),
     dashboardSidebar(
       sidebarMenu(id = "tabs",
-        menuItem("Map it", tabName = "tab1", icon = shiny::icon("building")),
-        menuItem("Statistics by Province", tabName = "tab2", icon = shiny::icon("brain")),
-        menuItem("Spain Map", tabName = "tab3", icon = shiny::icon("binoculars")),
+        menuItem("Statistics by Sections", tabName = "tab1", icon = shiny::icon("building")),
+        menuItem("Graphs by Province", tabName = "tab2", icon = shiny::icon("brain")),
+        menuItem("National Map", tabName = "tab3", icon = shiny::icon("binoculars")),
         menuItem("Historic data", tabName = "tab4", icon = shiny::icon("history")),
         menuItem("References", tabName = "ref", icon = shiny::icon("copyright")),
         sliderInput("selectYear", "", min = 2012, max = 2019, value = 2019, sep = "")
