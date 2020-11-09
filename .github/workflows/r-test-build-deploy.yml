@@ -27,7 +27,7 @@ jobs:
         
       - name: Test WebApp
         run: |
-          test-shiny.R
+          testthat::test_file("test-shiny.R")
         shell: Rscript {0}
      
       - name: Set up Docker Buildx      
