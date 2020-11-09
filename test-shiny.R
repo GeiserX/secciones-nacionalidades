@@ -4,12 +4,9 @@ suppressPackageStartupMessages({
   library(rjson)
 })
 
-context("Test Foreign Insight WebApp")
-
-setwd(".")
-app <- ShinyDriver$new(".", loadTimeout = 100000)
-
 test_that("Census section is correct", {
+  app <<- ShinyDriver$new(".", loadTimeout = 100000)
+  
   app$setInputs(sidebarCollapsed = FALSE, wait_ = F, values_ = F)
   app$setInputs(selectYear = "2013")
   app$setInputs(selectProvincia = "Albacete")
