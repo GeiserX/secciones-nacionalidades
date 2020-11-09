@@ -8,20 +8,20 @@ on:
 
 jobs:
   build:
-    runs-on: 	ubuntu-18.04
+    runs-on: ubuntu-18.04
     strategy:
       matrix:
         r-version: [4.0]
 
     steps:
       - uses: actions/checkout@v2
-        
+      - name: Set up R ${{ matrix.r-version }}
+        uses: r-lib/actions/setup-r@v1
+        with:
+          r-version: ${{ matrix.r-version }}
       - name: Install dependencies
         run: |
-          install.packages(c('shiny', 'shinydashboard', 'shinyjs', 'rgdal', \
-          'raster', 'sp', 'pxR', 'leaflet', 'plotKML', 'highcharter', 'shinytest', \
-          'testthat', 'rjson'))
-          remotes::install_deps(dependencies = TRUE)
+          install.packages(c('shiny', 'shinydashboard', 'shinyjs', 'rgdal', 'raster', 'sp', 'pxR', 'leaflet', 'plotKML', 'highcharter', 'shinytest', 'testthat', 'rjson'))
         shell: Rscript {0}
       - name: Test WebApp
         run: tests/test-shiny.R
