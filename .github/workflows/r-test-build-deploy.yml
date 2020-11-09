@@ -20,20 +20,16 @@ jobs:
         uses: r-lib/actions/setup-r@v1
         with:
           r-version: ${{ matrix.r-version }}
-       
-      - name: View libs
-        run: |
-          .libPaths()
-        shell: Rscript {0}
-       
+ 
       - name: Install dependencies
-        run: |
-          install.packages(c('shiny', 'shinydashboard', 'shinyjs', 'rgdal', 'raster', 'sp', 'pxR', 'leaflet', 'plotKML', 'highcharter', 'shinytest', 'testthat', 'rjson'), lib = "/usr/lib/R/site-library")
+        run: install.packages(c('shiny', 'shinydashboard', 'shinyjs', 'rgdal', 'raster', 'sp', 'pxR', 'leaflet', 'plotKML', 'highcharter', 'shinytest', 'testthat', 'rjson'), lib = "/home/runner/work/_temp/Library")
         shell: Rscript {0}
         
+      - name: View libs
+        run: ls /home/runner/work/_temp/Library
+        
       - name: Test WebApp
-        run: |
-          testthat::test_file("test-shiny.R")
+        run: testthat::test_file("test-shiny.R")
         shell: Rscript {0}
      
       - name: Set up Docker Buildx      
