@@ -15,14 +15,20 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        
       - name: Set up R ${{ matrix.r-version }}
         uses: r-lib/actions/setup-r@v1
         with:
           r-version: ${{ matrix.r-version }}
-          
+       
+      - name: View libs
+        run: |
+          .libPaths()
+        shell: Rscript {0}
+       
       - name: Install dependencies
         run: |
-          install.packages(c('shiny', 'shinydashboard', 'shinyjs', 'rgdal', 'raster', 'sp', 'pxR', 'leaflet', 'plotKML', 'highcharter', 'shinytest', 'testthat', 'rjson'))
+          install.packages(c('shiny', 'shinydashboard', 'shinyjs', 'rgdal', 'raster', 'sp', 'pxR', 'leaflet', 'plotKML', 'highcharter', 'shinytest', 'testthat', 'rjson'), lib = "/usr/lib/R/site-library")
         shell: Rscript {0}
         
       - name: Test WebApp
