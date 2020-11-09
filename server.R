@@ -281,7 +281,7 @@ shinyServer(function(input, output, session) {
     output$spainmap <- renderHighchart({
       year <- input$selectYear
       nacionalidad <- SXnacionalAmbos[which(input$selectNacionalidad3 == SXnacionalAmbos$nacionalidad), ]
-      total <- nacionalidad$value[nacionalidad$sección == "TOTAL"]
+      #total <- nacionalidad$value[nacionalidad$sección == "TOTAL"]
       secciones@data$seccionCensal <- paste0(secciones@data$CUMUN, secciones@data$CDIS, secciones@data$CSEC)
       secciones@data$poblacion <- nacionalidad[match(secciones@data$seccionCensal, nacionalidad$sección), "value"]
       
@@ -332,27 +332,32 @@ shinyServer(function(input, output, session) {
     }
   })
   
-  observeEvent(input$metricsByAggregate,{
+  observe({
     if(input$metricsByAggregate == "Province"){
       output$historicChart <- renderHighchart({
         
         nacionalidad <- list()
-        total <- data.frame(years = list.files("poblacion/"))
-        secciones@data$seccionCensal <- paste0(secciones@data$CUMUN, secciones@data$CDIS, secciones@data$CSEC)
+        datosAgregados <- list()
+        #total <- list(data.frame(years = list.files("poblacion/")))
+        years <- list.files("poblacion/")[i]
         
-        for(i in 1:length(list.files("poblacion/"))){
-          nacionalidad <-  append(nacionalidad, list(poblacionAñoAmbos[[i]][which(input$selectNacionalidad4 == poblacionAñoAmbos[[i]]$nacionalidad), ]))
-          total$population[i] <- nacionalidad[[i]]$value[nacionalidad[[i]]$sección == "TOTAL"]
+        for(i in 1:length(years)){
+          nacionalidad <-  append(nacionalidad, list(poblacionAñoAmbos[[i]][which("Bulgaria" == poblacionAñoAmbos[[i]]$nacionalidad), ]))
+          #total$population[i] <- nacionalidad[[i]]$value[nacionalidad[[i]]$sección == "TOTAL"]
+          seccionadoAño[[i]]@data <- seccionadoAño[[i]]@data[seccionadoAño[[i]]@data$NPRO %in% c("Murcia", "Albacete"), ]
+          seccionadoAño[[i]]@data$seccionCensal <- paste0(seccionadoAño[[i]]@data$CUMUN, seccionadoAño[[i]]@data$CDIS, seccionadoAño[[i]]@data$CSEC)
+          seccionadoAño[[i]]@data$poblacion <- nacionalidad[[i]][match(seccionadoAño[[i]]@data$seccionCensal, nacionalidad[[i]]$sección), "value"]
+          datosAgregados <- append(datosAgregados, list(cbind(aggregate(seccionadoAño[[i]]@data$poblacion, by = list(Provincia=seccionadoAño[[i]]@data$NPRO), FUN = sum), years)))
         }
         
-        secciones@data$poblacion <- nacionalidad[match(secciones@data$seccionCensal, nacionalidad$sección), "value"]
-        datos_agregados <- aggregate(secciones@data$poblacion, by = list(Provincia=secciones@data$CPRO), FUN = sum)  
+        result <- group_by(do.call(rbind, datosAgregados), Provincia)
+        summarise(result, )
         
         highchart() %>% 
           hc_chart(type = "line", zoomType = "x") %>% 
           hc_title(text = "Population trend") %>% 
-          hc_xAxis(categories = total$years) %>% 
-          hc_add_series(data = total$population, name = "Total population")
+          hc_xAxis(categories = unique(result$`list.files("poblacion/")[i]`)) %>% 
+          hc_add_series(data = result$x, name = result$Provincia)
       })
     }
   })
