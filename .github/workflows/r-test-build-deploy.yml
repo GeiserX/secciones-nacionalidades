@@ -18,9 +18,7 @@ jobs:
         
       - name: Install dependencies
         run: |
-          install.packages(c('shiny', 'shinydashboard', 'shinyjs', 'rgdal', \
-          'raster', 'sp', 'pxR', 'leaflet', 'plotKML', 'highcharter', 'shinytest', \
-          'testthat', 'rjson'))
+          install.packages(c('shiny', 'shinydashboard', 'shinyjs', 'rgdal', 'raster', 'sp', 'pxR', 'leaflet', 'plotKML', 'highcharter', 'shinytest', 'testthat', 'rjson'))
           remotes::install_deps(dependencies = TRUE)
         shell: Rscript {0}
       - name: Test WebApp
