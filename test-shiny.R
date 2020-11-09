@@ -7,7 +7,7 @@ suppressPackageStartupMessages({
 context("Test Foreign Insight WebApp")
 
 setwd(".")
-app <- ShinyDriver$new("../.", loadTimeout = 100000)
+app <- ShinyDriver$new(".", loadTimeout = 100000)
 
 test_that("Census section is correct", {
   app$setInputs(sidebarCollapsed = FALSE, wait_ = F, values_ = F)
@@ -29,7 +29,6 @@ test_that("Province graph is correct", {
   app$setInputs(sort = TRUE)
   app$setInputs(manWoman = TRUE)
   app$setInputs(percentage2 = TRUE)
-
   
   peakPopulation <- fromJSON(app$getAllValues()$output$chart)$x$hc_opts$series[[1]]$data[1]
   expect_equal(peakPopulation, 2807)  
