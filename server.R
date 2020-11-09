@@ -335,12 +335,18 @@ shinyServer(function(input, output, session) {
   observeEvent(input$metricsByAggregate,{
     if(input$metricsByAggregate == "Province"){
       output$historicChart <- renderHighchart({
+        
         nacionalidad <- list()
         total <- data.frame(years = list.files("poblacion/"))
+        secciones@data$seccionCensal <- paste0(secciones@data$CUMUN, secciones@data$CDIS, secciones@data$CSEC)
+        
         for(i in 1:length(list.files("poblacion/"))){
           nacionalidad <-  append(nacionalidad, list(poblacionAñoAmbos[[i]][which(input$selectNacionalidad4 == poblacionAñoAmbos[[i]]$nacionalidad), ]))
           total$population[i] <- nacionalidad[[i]]$value[nacionalidad[[i]]$sección == "TOTAL"]
         }
+        
+        secciones@data$poblacion <- nacionalidad[match(secciones@data$seccionCensal, nacionalidad$sección), "value"]
+        datos_agregados <- aggregate(secciones@data$poblacion, by = list(Provincia=secciones@data$CPRO), FUN = sum)  
         
         highchart() %>% 
           hc_chart(type = "line", zoomType = "x") %>% 
