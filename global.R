@@ -25,7 +25,7 @@ secciones <<- readRDS(paste0("seccionado/", year, "/secciones.rds"))
 poblacionAñoAmbos <<- list()
 for(i in 1:length(list.files("poblacion/"))){
   año <- list.files("poblacion/")
-  poblacionAñoAmbos <<- append(poblacionAño, 
+  poblacionAñoAmbos <<- append(poblacionAñoAmbos, 
                          list(cbind(readRDS(paste0("poblacion/", año[i], "/SXnacional", año[i], "ambos.rds")), año[i])))
 }
 
