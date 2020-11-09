@@ -24,7 +24,7 @@ jobs:
           install.packages(c('shiny', 'shinydashboard', 'shinyjs', 'rgdal', 'raster', 'sp', 'pxR', 'leaflet', 'plotKML', 'highcharter', 'shinytest', 'testthat', 'rjson'))
         shell: Rscript {0}
       - name: Test WebApp
-        run: tests/test-shiny.R
+        run: test-shiny.R
         shell: Rscript {0}
      
       - name: Set up Docker Buildx      
