@@ -16,21 +16,21 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         
-      - name: Set up R ${{ matrix.r-version }}
-        uses: r-lib/actions/setup-r@v1
-        with:
-          r-version: ${{ matrix.r-version }}
+#      - name: Set up R ${{ matrix.r-version }}
+#        uses: r-lib/actions/setup-r@v1
+#        with:
+#          r-version: ${{ matrix.r-version }}
  
-      - name: Install dependencies #  , lib = "/home/runner/work/_temp/Library"
-        run: install.packages(c('shinytest', 'shiny', 'testthat', 'rjson', 'shinydashboard', 'shinyjs', 'rgdal', 'raster', 'sp', 'pxR', 'leaflet', 'plotKML', 'highcharter'))
-        shell: Rscript {0}
+#      - name: Install dependencies #  , lib = "/home/runner/work/_temp/Library"
+#        run: install.packages(c('shinytest', 'shiny', 'testthat', 'rjson', 'shinydashboard', 'shinyjs', 'rgdal', 'raster', 'sp', 'pxR', 'leaflet', 'plotKML', 'highcharter'))
+#        shell: Rscript {0}
         
-      - name: View libs
-        run: ls /home/runner/work/_temp/Library
+#      - name: View libs
+#        run: ls /home/runner/work/_temp/Library
         
-      - name: Test WebApp
-        run: testthat::test_file("test-shiny.R")
-        shell: Rscript {0}
+#      - name: Test WebApp
+#        run: testthat::test_file("test-shiny.R")
+#        shell: Rscript {0}
      
       - name: Set up Docker Buildx      
         uses: crazy-max/ghaction-docker-buildx@v1      
