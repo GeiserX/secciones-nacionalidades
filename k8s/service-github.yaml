@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: sec-nac-auto
+  name: sec-nac-auto
+  namespace: sec-nac-auto
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: sec-nac-auto
+  type: LoadBalancer
+  loadBalancerIP: 192.168.10.152

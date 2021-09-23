@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sec-nac-auto
+  labels:
+    app: sec-nac-auto
+  namespace: sec-nac-auto
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sec-nac-auto
+  template:
+    metadata:
+      labels:
+        app: sec-nac-auto
+    spec:
+      containers:
+      - image: drumsergio/secciones-nacionalidades:latest-armv7
+        imagePullPolicy: "Always"
+        name: secciones-nacionalidades
+        ports:
+        - containerPort: 8080
