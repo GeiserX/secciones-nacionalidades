@@ -7,7 +7,7 @@ dashboardPage(skin = "blue", title = "Foreign Insight",
         menuItem("National Map", tabName = "tab3", icon = shiny::icon("binoculars")),
         menuItem("Historic data", tabName = "tab4", icon = shiny::icon("history")),
         menuItem("References", tabName = "ref", icon = shiny::icon("copyright")),
-        sliderInput("selectYear", "", min = 2012, max = 2019, value = 2019, sep = "")
+        sliderInput("selectYear", "", min = 2012, max = 2020, value = 2020, sep = "")
     )
   ),
   dashboardBody(
