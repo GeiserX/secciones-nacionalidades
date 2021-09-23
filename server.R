@@ -17,7 +17,7 @@ shinyServer(function(input, output, session) {
     SXnacionalHombres <<- readRDS(paste0("poblacion/", year, "/SXnacional", year, "hombres.rds"))
     SXnacionalMujeres <<- readRDS(paste0("poblacion/", year, "/SXnacional", year, "mujeres.rds"))
     
-    # secciones <- readOGR(dsn = paste0("seccionado/", year, "/"), layer = paste0("SECC_CE_", year, "0101"))
+    # secciones <- readOGR(paste0("seccionado/", year, "/SECC_CE_", year, "0101.shp"))
     # secciones <- readOGR(dsn = paste0("seccionado/", year, "/"), layer = paste0("SECC_CE_", year, "0101_01_R_INE"))
     # secciones <- readOGR(dsn = paste0("seccionado/", year, "/"), layer = paste0("SECC_CE_", year, "0101_00_R_INE"))
     # saveRDS(secciones, paste0("seccionado/", year, "/secciones.rds")) 
