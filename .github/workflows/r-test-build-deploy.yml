@@ -77,7 +77,7 @@ jobs:
         uses: steebchen/kubectl@master
         env:
           KUBE_CONFIG_DATA: ${{ secrets.kubeconfig_data }}
-          KUBECTL_VERSION: "1.18"
+          KUBECTL_VERSION: "1.21"
         with:
           args: set image --record deployment/sec-nac-auto \
                 secciones-nacionalidades=drumsergio/secciones-nacionalidades:latest-armv7 -n sec-nac-auto
