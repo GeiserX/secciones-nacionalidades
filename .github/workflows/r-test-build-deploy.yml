@@ -37,13 +37,13 @@ jobs:
         with:        
           version: latest 
       
-      - name: Prepare amd64
-        if: success()      
-        id: prepare_amd64      
-        run: |        
-          echo ::set-output name=docker_platform::linux/arm/v7       
-          echo ::set-output name=docker_image::drumsergio/secciones-nacionalidades   
-          echo ::set-output name=version::latest-amd64          
+#      - name: Prepare amd64
+#        if: success()      
+#        id: prepare_amd64      
+#        run: |        
+#          echo ::set-output name=docker_platform::linux/amd64
+#          echo ::set-output name=docker_image::drumsergio/secciones-nacionalidades   
+#          echo ::set-output name=version::latest-amd64          
       
       - name: Prepare armv7     
         if: success()      
