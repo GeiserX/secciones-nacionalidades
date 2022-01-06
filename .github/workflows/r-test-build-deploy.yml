@@ -59,12 +59,12 @@ jobs:
          echo ${{ secrets.dockerhub_password }} | docker login --username ${{ secrets.dockerhub_username }} \
          --password-stdin     
 
-      - name: Run Buildx (amd64, push image)     
-        if: success()      
-        run: |        
-          docker buildx build --platform ${{ steps.prepare_amd64.outputs.docker_platform }} \
-          --tag ${{ steps.prepare_amd64.outputs.docker_image }}:${{ steps.prepare_amd64.outputs.version }} \
-          --file ./Dockerfile --output type=image,push=true .
+#      - name: Run Buildx (amd64, push image)     
+#        if: success()      
+#        run: |        
+#          docker buildx build --platform ${{ steps.prepare_amd64.outputs.docker_platform }} \
+#          --tag ${{ steps.prepare_amd64.outputs.docker_image }}:${{ steps.prepare_amd64.outputs.version }} \
+#          --file ./Dockerfile --output type=image,push=true .
            
       - name: Run Buildx (armv7, push image)      
         if: success()      
