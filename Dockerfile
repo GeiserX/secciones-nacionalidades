@@ -1,7 +1,7 @@
 FROM openanalytics/r-base
 MAINTAINER Sergio Fernández "acsdesk@protonmail.com"
 
-RUN apt-get update && apt-get install -y libgdal-dev
+RUN apt-get update && apt-get install -y libgdal-dev libudunits2-dev
 
 RUN R -e "install.packages(c('shiny', 'shinydashboard', 'shinyjs', 'rgdal', 'raster', 'sp', 'pxR', 'leaflet', 'plotKML', 'highcharter'), repos='https://cloud.r-project.org/')"
 
@@ -12,6 +12,7 @@ COPY . /root/secciones_censales
 EXPOSE 8080
 CMD ["R", "-e", "shiny::runApp('/root/secciones_censales', port = 8080, host = '0.0.0.0')"]
 
+## To run -- docker run --name secciones-nacionalidades -p 8080:8080 drumsergio/secciones-nacionalidades:latest
 ## To see shiny logs -- docker logs [container-name]
 ## To know container-name -- docker ps (last column)
 ## To stop all running containers -- docker stop $(docker ps -a -q)
