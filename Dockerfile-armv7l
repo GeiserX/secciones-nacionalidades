@@ -2,7 +2,7 @@ FROM arm32v7/debian:bullseye
 MAINTAINER Sergio Fernández "acsdesk@protonmail.com"
 ARG DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update && apt-get install -y libgdal-dev r-base locales libudunits2-dev && rm -rf /var/lib/apt/lists/* && localedef -i es_ES -c -f UTF-8 -A /usr/share/locale/locale.alias es_ES.UTF-8
+RUN apt-get update && apt-get install -y libgdal-dev r-base locales libudunits2-dev libgeos-dev libproj-dev && rm -rf /var/lib/apt/lists/* && localedef -i es_ES -c -f UTF-8 -A /usr/share/locale/locale.alias es_ES.UTF-8
 ENV LANG es_ES.utf8
 
 RUN R -e "install.packages(c('shiny', 'shinydashboard', 'shinyjs', 'rgdal', 'raster', 'sp', 'pxR', 'leaflet', 'plotKML', 'highcharter'), repos='https://cloud.r-project.org/')"
