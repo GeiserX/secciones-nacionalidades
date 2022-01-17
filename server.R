@@ -1,5 +1,20 @@
 shinyServer(function(input, output, session) {
   
+  # observeEvent(input$NationalityOrBirth, {
+  #   if(input$NationalityOrBirth == 1){
+  #     Nacionalidad_Ambos <<- readRDS(paste0("poblacion/", year, "/Nacionalidad", year, "ambos.rds"))
+  #     Nacionalidad_Hombres <<- readRDS(paste0("poblacion/", year, "/Nacionalidad", year, "hombres.rds"))
+  #     Nacionalidad_Mujeres <<- readRDS(paste0("poblacion/", year, "/Nacionalidad", year, "mujeres.rds"))
+  #   } else {
+  #     Nacionalidad_Ambos <<- readRDS(paste0("poblacion/", year, "/Nacimiento", year, "ambos.rds"))
+  #     colnames(Nacionalidad_Ambos)[colnames(Nacionalidad_Ambos) == "país.de.nacimiento"] <- "nacionalidad" 
+  #     Nacionalidad_Hombres <<- readRDS(paste0("poblacion/", year, "/Nacimiento", year, "hombres.rds"))
+  #     colnames(Nacionalidad_Hombres)[colnames(Nacionalidad_Ambos) == "país.de.nacimiento"] <- "nacionalidad" 
+  #     Nacionalidad_Mujeres <<- readRDS(paste0("poblacion/", year, "/Nacimiento", year, "mujeres.rds"))
+  #     colnames(Nacionalidad_Mujeres)[colnames(Nacionalidad_Ambos) == "país.de.nacimiento"] <- "nacionalidad" 
+  #   }
+  # })
+  
   observeEvent(input$selectYear,{
     year <- input$selectYear
     
@@ -21,13 +36,15 @@ shinyServer(function(input, output, session) {
     #   saveRDS(Nacimiento_Mujeres, paste0("poblacion/", year, "/Nacimiento", year, "mujeres.rds"))
     # }
 
-    Nacionalidad_Ambos <<- readRDS(paste0("poblacion/", year, "/Nacionalidad", year, "ambos.rds"))
-    Nacionalidad_Hombres <<- readRDS(paste0("poblacion/", year, "/Nacionalidad", year, "hombres.rds"))
-    Nacionalidad_Mujeres <<- readRDS(paste0("poblacion/", year, "/Nacionalidad", year, "mujeres.rds"))
-
-    Nacimiento_Ambos <<- readRDS(paste0("poblacion/", year, "/Nacimiento", year, "ambos.rds"))
-    Nacimiento_Hombres <<- readRDS(paste0("poblacion/", year, "/Nacimiento", year, "hombres.rds"))
-    Nacimiento_Mujeres <<- readRDS(paste0("poblacion/", year, "/Nacimiento", year, "mujeres.rds"))
+    # if(input$NationalityOrBirth == 1){
+      Nacionalidad_Ambos <<- readRDS(paste0("poblacion/", year, "/Nacionalidad", year, "ambos.rds"))
+      Nacionalidad_Hombres <<- readRDS(paste0("poblacion/", year, "/Nacionalidad", year, "hombres.rds"))
+      Nacionalidad_Mujeres <<- readRDS(paste0("poblacion/", year, "/Nacionalidad", year, "mujeres.rds"))
+    # } else {
+      # Nacionalidad_Ambos <<- readRDS(paste0("poblacion/", year, "/Nacimiento", year, "ambos.rds"))
+      # Nacionalidad_Hombres <<- readRDS(paste0("poblacion/", year, "/Nacimiento", year, "hombres.rds"))
+      # Nacionalidad_Mujeres <<- readRDS(paste0("poblacion/", year, "/Nacimiento", year, "mujeres.rds"))
+    # }
 
     # secciones <- readOGR(paste0("seccionado/", year, "/SECC_CE_", year, "0101.shp"))
     ## secciones <- readOGR(dsn = paste0("seccionado/", year, "/"), layer = paste0("SECC_CE_", year, "0101_01_R_INE"))
