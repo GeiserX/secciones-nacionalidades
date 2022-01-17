@@ -19,9 +19,9 @@ provincias <- read.csv("datos_csv/codprov.csv", fileEncoding = "UTF-8")
 municipios <- read.csv("datos_csv/Municipios_Censo_2011.csv", fileEncoding = "UTF-8")
 
 year <- 2020
-SXnacionalAmbos <<- readRDS(paste0("poblacion/", year, "/SXnacional", year, "ambos.rds"))
-SXnacionalHombres <<- readRDS(paste0("poblacion/", year, "/SXnacional", year, "hombres.rds"))
-SXnacionalMujeres <<- readRDS(paste0("poblacion/", year, "/SXnacional", year, "mujeres.rds"))
+Nacionalidad_Ambos <<- readRDS(paste0("poblacion/", year, "/Nacionalidad", year, "ambos.rds"))
+Nacionalidad_Hombres <<- readRDS(paste0("poblacion/", year, "/Nacionalidad", year, "hombres.rds"))
+Nacionalidad_Mujeres <<- readRDS(paste0("poblacion/", year, "/Nacionalidad", year, "mujeres.rds"))
 secciones <<- readRDS(paste0("seccionado/", year, "/secciones.rds"))
 
 poblacionAñoAmbos <<- list()
@@ -29,7 +29,7 @@ seccionadoAño <<- list()
 for(i in 1:length(list.files("poblacion/"))){
   año <- list.files("poblacion/")
   poblacionAñoAmbos <<- append(poblacionAñoAmbos, 
-                           list(cbind(readRDS(paste0("poblacion/", año[i], "/SXnacional", año[i], "ambos.rds")), año[i])))
+                           list(cbind(readRDS(paste0("poblacion/", año[i], "/Nacionalidad", año[i], "ambos.rds")), año[i])))
   seccionadoAño <<- append(seccionadoAño,
                            list(cbind(readRDS(paste0("seccionado/", año[i], "/secciones.rds")), año[i])))
 }
@@ -38,7 +38,7 @@ samePopulationPrintYellow <- function(capa_sp){
   return(max(capa_sp@data$numPoblacionElegida,  na.rm = T) - min(capa_sp@data$numPoblacionElegida,  na.rm = T) == 0)
 }
 
-simplyMapIt <- function(porcentaje, hombreMujer, municipioSelected, nacionalidadSelected, SXnacionalAmbos, SXnacionalHombres, SXnacionalMujeres, Year){
+simplyMapIt <- function(porcentaje, hombreMujer, municipioSelected, nacionalidadSelected, Nacionalidad_Ambos, Nacionalidad_Hombres, Nacionalidad_Mujeres, Year){
   return({renderLeaflet({
     municipio <<- sprintf("%05d", municipios$COD_MUN[municipios$NOMBRE %in% municipioSelected])
     capa <- secciones[secciones@data$CUMUN %in% municipio,]
@@ -46,13 +46,13 @@ simplyMapIt <- function(porcentaje, hombreMujer, municipioSelected, nacionalidad
     capa@data$seccionCensal <- paste0(capa@data$CUMUN, capa@data$CDIS, capa@data$CSEC)
     capa@data$download <- paste0("download-", capa@data$CUMUN, capa@data$CDIS, capa@data$CSEC)
     
-    nacionalidad <- SXnacionalAmbos[which(nacionalidadSelected == SXnacionalAmbos$nacionalidad), ]
-    totalPoblacion <- SXnacionalAmbos[which("Total Población" == SXnacionalAmbos$nacionalidad), ]
+    nacionalidad <- Nacionalidad_Ambos[which(nacionalidadSelected == Nacionalidad_Ambos$nacionalidad), ]
+    totalPoblacion <- Nacionalidad_Ambos[which("Total Población" == Nacionalidad_Ambos$nacionalidad), ]
     nacionalidadPorSeccion <- nacionalidad[match(capa@data$seccionCensal, nacionalidad$sección), "value"]
     capa@data$numPoblacionElegida <- nacionalidadPorSeccion
     if(hombreMujer == T){
-      nacionalidadHombres <- SXnacionalHombres[which(nacionalidadSelected == SXnacionalHombres$nacionalidad), ]
-      nacionalidadMujeres <- SXnacionalMujeres[which(nacionalidadSelected == SXnacionalMujeres$nacionalidad), ]
+      nacionalidadHombres <- Nacionalidad_Hombres[which(nacionalidadSelected == Nacionalidad_Hombres$nacionalidad), ]
+      nacionalidadMujeres <- Nacionalidad_Mujeres[which(nacionalidadSelected == Nacionalidad_Mujeres$nacionalidad), ]
       nacionalidadPorSeccionHombres <- nacionalidadHombres[match(capa@data$seccionCensal, nacionalidadHombres$sección), "value"]
       nacionalidadPorSeccionMujeres <- nacionalidadMujeres[match(capa@data$seccionCensal, nacionalidadMujeres$sección), "value"]
       capa@data$numPoblacionElegidaHombres <- nacionalidadPorSeccionHombres
