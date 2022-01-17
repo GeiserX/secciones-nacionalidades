@@ -23,16 +23,20 @@ year <- 2021
 Nacionalidad_Ambos <<- readRDS(paste0("poblacion/", year, "/Nacionalidad", year, "ambos.rds"))
 Nacionalidad_Hombres <<- readRDS(paste0("poblacion/", year, "/Nacionalidad", year, "hombres.rds"))
 Nacionalidad_Mujeres <<- readRDS(paste0("poblacion/", year, "/Nacionalidad", year, "mujeres.rds"))
+
+#Nacimiento_Ambos <<- readRDS(paste0("poblacion/", year, "/Nacimiento", year, "ambos.rds"))
+#Nacimiento_Hombres <<- readRDS(paste0("poblacion/", year, "/Nacimiento", year, "hombres.rds"))
+#Nacimiento_Mujeres <<- readRDS(paste0("poblacion/", year, "/Nacimiento", year, "mujeres.rds"))
+
 secciones <<- readRDS(paste0("seccionado/", year, "/secciones.rds"))
 
 poblacionAñoAmbos <<- list()
 seccionadoAño <<- list()
 for(i in 1:length(list.files("poblacion/"))){
   año <- list.files("poblacion/")
-  poblacionAñoAmbos <<- append(poblacionAñoAmbos, 
-                           list(cbind(readRDS(paste0("poblacion/", año[i], "/Nacionalidad", año[i], "ambos.rds")), año[i])))
-  seccionadoAño <<- append(seccionadoAño,
-                           list(cbind(readRDS(paste0("seccionado/", año[i], "/secciones.rds")), año[i])))
+  poblacionAñoAmbos <<- append(poblacionAñoAmbos, list(cbind(readRDS(paste0("poblacion/", año[i], "/Nacionalidad", año[i], "ambos.rds")), año[i])))
+  #poblacionAñoAmbo_Nacimientos <<- append(poblacionAñoAmbos_Nacimiento, list(cbind(readRDS(paste0("poblacion/", año[i], "/Nacimiento", año[i], "ambos.rds")), año[i])))
+  seccionadoAño <<- append(seccionadoAño, list(cbind(readRDS(paste0("seccionado/", año[i], "/secciones.rds")), año[i])))
 }
 
 samePopulationPrintYellow <- function(capa_sp){
