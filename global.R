@@ -1,4 +1,4 @@
-#install.packages(c('shiny', 'shinydashboard', 'shinyjs', 'rgdal', 'raster', 'sp', 'pxR', 'leaflet', 'plotKML', 'highcharter', 'shinytest', 'testthat', 'rjson'), repos='https://cloud.r-project.org/')
+#install.packages(c('shiny', 'shinydashboard', 'shinyjs', 'rgdal', 'raster', 'sp', 'pxR', 'leaflet', 'plotKML', 'highcharter', 'shinytest', 'testthat', 'rjson', 'dplyr'), repos='https://cloud.r-project.org/')
 suppressPackageStartupMessages({
   library(shiny)
   library(shinydashboard)
@@ -10,6 +10,7 @@ suppressPackageStartupMessages({
   library(leaflet)
   library(plotKML)
   library(highcharter)
+  library(dplyr)
 })
 
 #options(shiny.port=8080)
@@ -18,7 +19,7 @@ suppressPackageStartupMessages({
 provincias <- read.csv("datos_csv/codprov.csv", fileEncoding = "UTF-8")
 municipios <- read.csv("datos_csv/Municipios_Censo_2011.csv", fileEncoding = "UTF-8")
 
-year <- 2020
+year <- 2021
 Nacionalidad_Ambos <<- readRDS(paste0("poblacion/", year, "/Nacionalidad", year, "ambos.rds"))
 Nacionalidad_Hombres <<- readRDS(paste0("poblacion/", year, "/Nacionalidad", year, "hombres.rds"))
 Nacionalidad_Mujeres <<- readRDS(paste0("poblacion/", year, "/Nacionalidad", year, "mujeres.rds"))
