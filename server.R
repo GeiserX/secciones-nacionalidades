@@ -3,41 +3,43 @@ shinyServer(function(input, output, session) {
   observeEvent(input$selectYear,{
     year <- input$selectYear
     
-    # SXnacional <- as.data.frame(read.px(paste0("poblacion/", year, "/0003.px")))
-    # 
-    # SXnacionalAmbos <- SXnacional[which(SXnacional$sexo == "Ambos Sexos"), ]
-    # SXnacionalHombres <- SXnacional[which(SXnacional$sexo == "Hombres"), ]
-    # SXnacionalMujeres <- SXnacional[which(SXnacional$sexo == "Mujeres"), ]
-    # 
-    # saveRDS(SXnacionalAmbos, paste0("poblacion/", year, "/SXnacional", year, "ambos.rds"))
-    # saveRDS(SXnacionalHombres, paste0("poblacion/", year, "/SXnacional", year, "hombres.rds"))
-    # saveRDS(SXnacionalMujeres, paste0("poblacion/", year, "/SXnacional", year, "mujeres.rds"))
-    
-    SXnacionalAmbos <<- readRDS(paste0("poblacion/", year, "/SXnacional", year, "ambos.rds"))
-    SXnacionalHombres <<- readRDS(paste0("poblacion/", year, "/SXnacional", year, "hombres.rds"))
-    SXnacionalMujeres <<- readRDS(paste0("poblacion/", year, "/SXnacional", year, "mujeres.rds"))
-    
+    # for(year in 2012:2021){
+      # Nacionalidad <- as.data.frame(read.px(paste0("poblacion/", year, "/0003.px")))
+      # Nacionalidad_Ambos <- Nacionalidad[which(Nacionalidad$sexo == "Ambos Sexos"), ]
+      # Nacionalidad_Hombres <- Nacionalidad[which(Nacionalidad$sexo == "Hombres"), ]
+      # Nacionalidad_Mujeres <- Nacionalidad[which(Nacionalidad$sexo == "Mujeres"), ]
+      # saveRDS(Nacionalidad_Ambos, paste0("poblacion/", year, "/Nacionalidad", year, "ambos.rds"))
+      # saveRDS(Nacionalidad_Hombres, paste0("poblacion/", year, "/Nacionalidad", year, "hombres.rds"))
+      # saveRDS(Nacionalidad_Mujeres, paste0("poblacion/", year, "/Nacionalidad", year, "mujeres.rds"))
+    #   
+    #   Nacimiento <- as.data.frame(read.px(paste0("poblacion/", year, "/0006.px")))
+    #   Nacimiento_Ambos <- Nacimiento[which(Nacimiento$sexo == "Ambos Sexos"), ]
+    #   Nacimiento_Hombres <- Nacimiento[which(Nacimiento$sexo == "Hombres"), ]
+    #   Nacimiento_Mujeres <- Nacimiento[which(Nacimiento$sexo == "Mujeres"), ]
+    #   saveRDS(Nacimiento_Ambos, paste0("poblacion/", year, "/Nacimiento", year, "ambos.rds"))
+    #   saveRDS(Nacimiento_Hombres, paste0("poblacion/", year, "/Nacimiento", year, "hombres.rds"))
+    #   saveRDS(Nacimiento_Mujeres, paste0("poblacion/", year, "/Nacimiento", year, "mujeres.rds"))
+    # }
+
+    Nacionalidad_Ambos <<- readRDS(paste0("poblacion/", year, "/Nacionalidad", year, "ambos.rds"))
+    Nacionalidad_Hombres <<- readRDS(paste0("poblacion/", year, "/Nacionalidad", year, "hombres.rds"))
+    Nacionalidad_Mujeres <<- readRDS(paste0("poblacion/", year, "/Nacionalidad", year, "mujeres.rds"))
+
+    Nacimiento_Ambos <<- readRDS(paste0("poblacion/", year, "/Nacimiento", year, "ambos.rds"))
+    Nacimiento_Hombres <<- readRDS(paste0("poblacion/", year, "/Nacimiento", year, "hombres.rds"))
+    Nacimiento_Mujeres <<- readRDS(paste0("poblacion/", year, "/Nacimiento", year, "mujeres.rds"))
+
     # secciones <- readOGR(paste0("seccionado/", year, "/SECC_CE_", year, "0101.shp"))
-    # secciones <- readOGR(dsn = paste0("seccionado/", year, "/"), layer = paste0("SECC_CE_", year, "0101_01_R_INE"))
-    # secciones <- readOGR(dsn = paste0("seccionado/", year, "/"), layer = paste0("SECC_CE_", year, "0101_00_R_INE"))
-    # saveRDS(secciones, paste0("seccionado/", year, "/secciones.rds")) 
-    # git lfs track ..(FILE)..
+    ## secciones <- readOGR(dsn = paste0("seccionado/", year, "/"), layer = paste0("SECC_CE_", year, "0101_01_R_INE"))
+    ## secciones <- readOGR(dsn = paste0("seccionado/", year, "/"), layer = paste0("SECC_CE_", year, "0101_00_R_INE"))
+    # saveRDS(secciones, paste0("seccionado/", year, "/secciones.rds"))
+    ## git lfs track ..(FILE)..
     secciones <<- readRDS(paste0("seccionado/", year, "/secciones.rds"))
     
     # es_map <- download_map_data(url = "countries/es/es-all", showinfo = F)
     # saveRDS(es_map, "es-all.rds")
     es_map <<- readRDS("es-all.rds")
   })
-
-  # output$mention <- renderText({
-  #   paste0("<hr>Cartography extracted from <a ",
-  #   "href=http://www.ine.es/ss/Satellite?L=es_ES&c=Page&cid=1259952026632&p=1259952026632&pagename=ProductosYServicios%2FPYSLayout target=_blank>",
-  #   "data publicly available at the Spanish \'Instituto Nacional de Estadística\'</a><hr> Population data extracted thanks to ",
-  #   "<a href=https://www.ine.es/dyngs/INEbase/es/operacion.htm?c=Estadistica_C&cid=1254736177012&menu=resultados&secc=1254736195461&idp=1254734710990 target=_blank>",
-  #   "the publicly available information at the Spanish \'Instituto Nacional de Estadística\'</a><hr>",
-  #   "Source code available at <a href=https://github.com/DrumSergio/secciones-nacionalidades target=_blank>GitHub</a>, so if you find any errors, please, kindly open an issue there.<br>",
-  #   "Docker container avaialble at <a href=https://hub.docker.com/r/drumsergio/secciones-nacionalidades target=_blank>DockerHub</a>.")
-  # })
   
   clickedIds <- reactiveValues(ids = vector())
   nationalitySaved <- reactiveValues(ids = vector())
@@ -48,16 +50,24 @@ shinyServer(function(input, output, session) {
     if(!is.null(input$selectMunicipio)){
       año <- input$selectYear
       output$mapa <- simplyMapIt(porcentaje = input$porcentaje, hombreMujer = input$hombreMujer, municipioSelected = input$selectMunicipio,
-                                 nacionalidadSelected = input$selectNacionalidad, SXnacionalAmbos = SXnacionalAmbos, SXnacionalHombres = SXnacionalHombres,
-                                 SXnacionalMujeres = SXnacionalMujeres, Year = año)
+                                 nacionalidadSelected = input$selectNacionalidad, Nacionalidad_Ambos = Nacionalidad_Ambos, Nacionalidad_Hombres = Nacionalidad_Hombres,
+                                 Nacionalidad_Mujeres = Nacionalidad_Mujeres, Year = año)
     }
   })
-    
   
   observeEvent(input$selectProvincia,{
     provincia <- provincias$ID[which(input$selectProvincia == provincias$Nombre)]
     municipiosElegibles <<- municipios$NOMBRE[which(provincia == municipios$CPRO)]
     updateSelectInput(session = session, "selectMunicipio", choices = municipiosElegibles)
+  })
+  
+  observeEvent(input$selectNacionalidad,{
+    if(!is.null(input$selectMunicipio)){
+      año <- input$selectYear
+      output$mapa <- simplyMapIt(porcentaje = input$porcentaje, hombreMujer = input$hombreMujer, municipioSelected = input$selectMunicipio,
+                               nacionalidadSelected = input$selectNacionalidad, Nacionalidad_Ambos = Nacionalidad_Ambos, Nacionalidad_Hombres = Nacionalidad_Hombres,
+                               Nacionalidad_Mujeres = Nacionalidad_Mujeres, Year = año)
+    }
   })
   
   observeEvent(input$porcentaje, {
@@ -66,11 +76,11 @@ shinyServer(function(input, output, session) {
     
     if(input$porcentaje == T){
       if(input$selectNacionalidad == "Total Población")
-        updateSelectizeInput(session, "selectNacionalidad", choices = levels(SXnacionalAmbos$nacionalidad)[-1])
+        updateSelectizeInput(session, "selectNacionalidad", choices = levels(Nacionalidad_Ambos$nacionalidad)[-1])
       else
-        updateSelectizeInput(session, "selectNacionalidad", choices = levels(SXnacionalAmbos$nacionalidad)[-1], selected = nationalitySaved$n)
+        updateSelectizeInput(session, "selectNacionalidad", choices = levels(Nacionalidad_Ambos$nacionalidad)[-1], selected = nationalitySaved$n)
     } else {
-      updateSelectizeInput(session, "selectNacionalidad", choices = levels(SXnacionalAmbos$nacionalidad), selected = nationalitySaved$n)
+      updateSelectizeInput(session, "selectNacionalidad", choices = levels(Nacionalidad_Ambos$nacionalidad), selected = nationalitySaved$n)
     }
     
     if(!is.null(input$selectMunicipio)){
@@ -78,8 +88,8 @@ shinyServer(function(input, output, session) {
       output$mapa <- simplyMapIt(porcentaje = input$porcentaje, hombreMujer = input$hombreMujer, municipioSelected = input$selectMunicipio,
                                  nacionalidadSelected = ifelse(input$porcentaje == T && input$selectNacionalidad == "Total Población",
                                                                "Españoles", input$selectNacionalidad), 
-                                 SXnacionalAmbos = SXnacionalAmbos, SXnacionalHombres = SXnacionalHombres,
-                                 SXnacionalMujeres = SXnacionalMujeres, Year = año)
+                                 Nacionalidad_Ambos = Nacionalidad_Ambos, Nacionalidad_Hombres = Nacionalidad_Hombres,
+                                 Nacionalidad_Mujeres = Nacionalidad_Mujeres, Year = año)
     }
     
   })
@@ -89,8 +99,8 @@ shinyServer(function(input, output, session) {
     if(!is.null(input$selectMunicipio)){
       año <- input$selectYear
       output$mapa <- simplyMapIt(porcentaje = input$porcentaje, hombreMujer = input$hombreMujer, municipioSelected = input$selectMunicipio,
-                               nacionalidadSelected = input$selectNacionalidad, SXnacionalAmbos = SXnacionalAmbos, SXnacionalHombres = SXnacionalHombres,
-                               SXnacionalMujeres = SXnacionalMujeres, Year = año)
+                               nacionalidadSelected = input$selectNacionalidad, Nacionalidad_Ambos = Nacionalidad_Ambos, Nacionalidad_Hombres = Nacionalidad_Hombres,
+                               Nacionalidad_Mujeres = Nacionalidad_Mujeres, Year = año)
     }
   })
   
@@ -99,8 +109,8 @@ shinyServer(function(input, output, session) {
   #   if(!is.null(input$selectMunicipio)){
   #     año <- input$selectYear
   #     output$mapa <- simplyMapIt(porcentaje = input$porcentaje, hombreMujer = input$hombreMujer, municipioSelected = input$selectMunicipio,
-  #                                  nacionalidadSelected = input$selectNacionalidad, SXnacionalAmbos = SXnacionalAmbos, SXnacionalHombres = SXnacionalHombres,
-  #                                  SXnacionalMujeres = SXnacionalMujeres, Year = año)
+  #                                  nacionalidadSelected = input$selectNacionalidad, Nacionalidad_Ambos = Nacionalidad_Ambos, Nacionalidad_Hombres = Nacionalidad_Hombres,
+  #                                  Nacionalidad_Mujeres = Nacionalidad_Mujeres, Year = año)
   #   }
   # })
   # 
@@ -193,15 +203,15 @@ shinyServer(function(input, output, session) {
     output$chart <- renderHighchart({
       
       year <- input$selectYear
-      nacionalidad <- SXnacionalAmbos[which(input$selectNacionalidad2 == SXnacionalAmbos$nacionalidad), ]
+      nacionalidad <- Nacionalidad_Ambos[which(input$selectNacionalidad2 == Nacionalidad_Ambos$nacionalidad), ]
       
       capa <- secciones[secciones@data$CPRO %in% sprintf("%02d", provincia2),]
       capa@data$seccionCensal <- paste0(capa@data$CUMUN, capa@data$CDIS, capa@data$CSEC)
       capa@data$numPoblacionElegida <- nacionalidad[match(capa@data$seccionCensal, nacionalidad$sección), "value"]
       
       if(input$manWoman){
-        nacionalidadHombres <- SXnacionalHombres[which(input$selectNacionalidad2 == SXnacionalHombres$nacionalidad), ]
-        nacionalidadMujeres <- SXnacionalMujeres[which(input$selectNacionalidad2 == SXnacionalMujeres$nacionalidad), ]
+        nacionalidadHombres <- Nacionalidad_Hombres[which(input$selectNacionalidad2 == Nacionalidad_Hombres$nacionalidad), ]
+        nacionalidadMujeres <- Nacionalidad_Mujeres[which(input$selectNacionalidad2 == Nacionalidad_Mujeres$nacionalidad), ]
 
         capa@data$hombres <- nacionalidadHombres[match(capa@data$seccionCensal, nacionalidadHombres$sección), "value"]
         capa@data$mujeres <- nacionalidadMujeres[match(capa@data$seccionCensal, nacionalidadMujeres$sección), "value"]
@@ -213,7 +223,7 @@ shinyServer(function(input, output, session) {
       datos_agregados <- aggregate(capa@data$numPoblacionElegida, by = list(Municipio=capa@data$NMUN), FUN = sum)      
       
       if(input$percentage2){
-        nacionalidad <- SXnacionalAmbos[which("Total Población" == SXnacionalAmbos$nacionalidad), ]
+        nacionalidad <- Nacionalidad_Ambos[which("Total Población" == Nacionalidad_Ambos$nacionalidad), ]
         capa@data$numPoblacionTOTAL <- nacionalidad[match(capa@data$seccionCensal, nacionalidad$sección), "value"]
         datos_agregadosT <- aggregate(capa@data$numPoblacionTOTAL, by = list(Municipio=capa@data$NMUN), FUN = sum)
         datos_agregadosTP <- datos_agregadosT
@@ -281,8 +291,8 @@ shinyServer(function(input, output, session) {
     output$spainmap <- renderHighchart({
       yearSelected <- input$selectYear
       
-      nacionalidad <- SXnacionalAmbos[which(input$selectNacionalidad3 == SXnacionalAmbos$nacionalidad), ]
-      #total <- nacionalidad$value[nacionalidad$sección == "TOTAL"]
+      nacionalidad <- Nacionalidad_Ambos[which(input$selectNacionalidad3 == Nacionalidad_Ambos$nacionalidad), ]
+      total <- nacionalidad$value[nacionalidad$sección == "TOTAL"]
       secciones@data$seccionCensal <- paste0(secciones@data$CUMUN, secciones@data$CDIS, secciones@data$CSEC)
       secciones@data$poblacion <- nacionalidad[match(secciones@data$seccionCensal, nacionalidad$sección), "value"]
       
@@ -329,12 +339,13 @@ shinyServer(function(input, output, session) {
   
   output$provinces <- renderUI({
     if(input$metricsByAggregate != "National"){
-      selectizeInput("chartProvincia", label = "Select Province", choices = provincias$Nombre, multiple = T, selected = c())
+      selectizeInput("chartProvincia", label = "Select Province", choices = provincias$Nombre, multiple = T, selected = c("Murcia"))
     }
   })
   
   observe({
     if(input$metricsByAggregate == "Province"){
+      
       output$historicChart <- renderHighchart({
         
         nacionalidad <- list()
@@ -362,10 +373,10 @@ shinyServer(function(input, output, session) {
           hc_title(text = "Population trend") %>% 
           hc_xAxis(categories = years)
         
-        for(i in 1:length(c("Murcia", "Albacete"))){
-          hc <- hc %>% 
-            hc_add_series_list(datosAgregados[[i]]$x)
-        }
+        # for(i in 1:length(c("Murcia", "Albacete"))){
+        #   hc <- hc %>% 
+        #     hc_add_series_list(datosAgregados[[i]]$x)
+        # }
         hc
       })
     }
