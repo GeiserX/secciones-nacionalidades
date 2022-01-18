@@ -17,17 +17,17 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$selectYear,{
     year <- input$selectYear
-    
+     
     # for(year in 2012:2021){
-      # Nacionalidad <- as.data.frame(read.px(paste0("poblacion/", year, "/0003.px")))
-      # Nacionalidad_Ambos <- Nacionalidad[which(Nacionalidad$sexo == "Ambos Sexos"), ]
-      # Nacionalidad_Hombres <- Nacionalidad[which(Nacionalidad$sexo == "Hombres"), ]
-      # Nacionalidad_Mujeres <- Nacionalidad[which(Nacionalidad$sexo == "Mujeres"), ]
-      # saveRDS(Nacionalidad_Ambos, paste0("poblacion/", year, "/Nacionalidad", year, "ambos.rds"))
-      # saveRDS(Nacionalidad_Hombres, paste0("poblacion/", year, "/Nacionalidad", year, "hombres.rds"))
-      # saveRDS(Nacionalidad_Mujeres, paste0("poblacion/", year, "/Nacionalidad", year, "mujeres.rds"))
-    #   
-    #   Nacimiento <- as.data.frame(read.px(paste0("poblacion/", year, "/0006.px")))
+    #   Nacionalidad <- as.data.frame(read.px(paste0("poblacion/", year, "/0003.px"), encoding = "latin1"))
+    #   Nacionalidad_Ambos <- Nacionalidad[which(Nacionalidad$sexo == "Ambos Sexos"), ]
+    #   Nacionalidad_Hombres <- Nacionalidad[which(Nacionalidad$sexo == "Hombres"), ]
+    #   Nacionalidad_Mujeres <- Nacionalidad[which(Nacionalidad$sexo == "Mujeres"), ]
+    #   saveRDS(Nacionalidad_Ambos, paste0("poblacion/", year, "/Nacionalidad", year, "ambos.rds"))
+    #   saveRDS(Nacionalidad_Hombres, paste0("poblacion/", year, "/Nacionalidad", year, "hombres.rds"))
+    #   saveRDS(Nacionalidad_Mujeres, paste0("poblacion/", year, "/Nacionalidad", year, "mujeres.rds"))
+    # 
+    #   Nacimiento <- as.data.frame(read.px(paste0("poblacion/", year, "/0006.px"), encoding = "latin1"))
     #   Nacimiento_Ambos <- Nacimiento[which(Nacimiento$sexo == "Ambos Sexos"), ]
     #   Nacimiento_Hombres <- Nacimiento[which(Nacimiento$sexo == "Hombres"), ]
     #   Nacimiento_Mujeres <- Nacimiento[which(Nacimiento$sexo == "Mujeres"), ]
@@ -44,15 +44,16 @@ shinyServer(function(input, output, session) {
       # Nacionalidad_Ambos <<- readRDS(paste0("poblacion/", year, "/Nacimiento", year, "ambos.rds"))
       # Nacionalidad_Hombres <<- readRDS(paste0("poblacion/", year, "/Nacimiento", year, "hombres.rds"))
       # Nacionalidad_Mujeres <<- readRDS(paste0("poblacion/", year, "/Nacimiento", year, "mujeres.rds"))
-    # }
+    # 
+    #  }
 
     # secciones <- readOGR(paste0("seccionado/", year, "/SECC_CE_", year, "0101.shp"))
     ## secciones <- readOGR(dsn = paste0("seccionado/", year, "/"), layer = paste0("SECC_CE_", year, "0101_01_R_INE"))
     ## secciones <- readOGR(dsn = paste0("seccionado/", year, "/"), layer = paste0("SECC_CE_", year, "0101_00_R_INE"))
     # saveRDS(secciones, paste0("seccionado/", year, "/secciones.rds"))
     ## git lfs track ..(FILE)..
-    secciones <<- readRDS(paste0("seccionado/", year, "/secciones.rds"))
     
+    secciones <<- readRDS(paste0("seccionado/", year, '/secciones.rds'))
     # es_map <- download_map_data(url = "countries/es/es-all", showinfo = F)
     # saveRDS(es_map, "es-all.rds")
     es_map <<- readRDS("es-all.rds")
