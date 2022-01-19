@@ -39,6 +39,9 @@ for(i in 1:length(list.files("poblacion/"))){
   seccionadoAño <<- append(seccionadoAño, list(cbind(readRDS(paste0("seccionado/", año[i], "/secciones.rds")), año[i])))
 }
 
+provinciasTab4 <<- unique(seccionadoAño[[1]]@data$NPRO)
+provinciasTab4 <<- provinciasTab4[provinciasTab4 != 'Gipuzcoa']
+
 samePopulationPrintYellow <- function(capa_sp){
   return(max(capa_sp@data$numPoblacionElegida,  na.rm = T) - min(capa_sp@data$numPoblacionElegida,  na.rm = T) == 0)
 }
