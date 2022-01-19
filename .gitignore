@@ -1,5 +1,14 @@
 secciones-nacionalidades.Rproj
-.vs/
+.vs/**
+k8s/.vs/**
+*.shp
+*.shx
+*.xml
+*.sbx
+*.sbn
+*.prj
+*.dbf
+*.CPG
 
 # History files
 .Rhistory
