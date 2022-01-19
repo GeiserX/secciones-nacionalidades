@@ -1,20 +1,5 @@
 shinyServer(function(input, output, session) {
-  
-  # observeEvent(input$NationalityOrBirth, {
-  #   if(input$NationalityOrBirth == 1){
-  #     Nacionalidad_Ambos <<- readRDS(paste0("poblacion/", year, "/Nacionalidad", year, "ambos.rds"))
-  #     Nacionalidad_Hombres <<- readRDS(paste0("poblacion/", year, "/Nacionalidad", year, "hombres.rds"))
-  #     Nacionalidad_Mujeres <<- readRDS(paste0("poblacion/", year, "/Nacionalidad", year, "mujeres.rds"))
-  #   } else {
-  #     Nacionalidad_Ambos <<- readRDS(paste0("poblacion/", year, "/Nacimiento", year, "ambos.rds"))
-  #     colnames(Nacionalidad_Ambos)[colnames(Nacionalidad_Ambos) == "país.de.nacimiento"] <- "nacionalidad" 
-  #     Nacionalidad_Hombres <<- readRDS(paste0("poblacion/", year, "/Nacimiento", year, "hombres.rds"))
-  #     colnames(Nacionalidad_Hombres)[colnames(Nacionalidad_Ambos) == "país.de.nacimiento"] <- "nacionalidad" 
-  #     Nacionalidad_Mujeres <<- readRDS(paste0("poblacion/", year, "/Nacimiento", year, "mujeres.rds"))
-  #     colnames(Nacionalidad_Mujeres)[colnames(Nacionalidad_Ambos) == "país.de.nacimiento"] <- "nacionalidad" 
-  #   }
-  # })
-  
+
   observeEvent(input$selectYear,{
     year <- input$selectYear
      
@@ -34,26 +19,28 @@ shinyServer(function(input, output, session) {
     #   saveRDS(Nacimiento_Ambos, paste0("poblacion/", year, "/Nacimiento", year, "ambos.rds"))
     #   saveRDS(Nacimiento_Hombres, paste0("poblacion/", year, "/Nacimiento", year, "hombres.rds"))
     #   saveRDS(Nacimiento_Mujeres, paste0("poblacion/", year, "/Nacimiento", year, "mujeres.rds"))
-    # }
-
-    # if(input$NationalityOrBirth == 1){
+      
       Nacionalidad_Ambos <<- readRDS(paste0("poblacion/", year, "/Nacionalidad", year, "ambos.rds"))
       Nacionalidad_Hombres <<- readRDS(paste0("poblacion/", year, "/Nacionalidad", year, "hombres.rds"))
       Nacionalidad_Mujeres <<- readRDS(paste0("poblacion/", year, "/Nacionalidad", year, "mujeres.rds"))
-    # } else {
-      # Nacionalidad_Ambos <<- readRDS(paste0("poblacion/", year, "/Nacimiento", year, "ambos.rds"))
-      # Nacionalidad_Hombres <<- readRDS(paste0("poblacion/", year, "/Nacimiento", year, "hombres.rds"))
-      # Nacionalidad_Mujeres <<- readRDS(paste0("poblacion/", year, "/Nacimiento", year, "mujeres.rds"))
-    # 
-    #  }
+      
+      # if(year %in% 2013:2015)
+      #   secciones <- readOGR(dsn = paste0("seccionado/", year, "/SECC_CE_", year, "0101_01_R_INE.shp"))
+      # else if (year==2012)
+      #   secciones <- readOGR(dsn = paste0("seccionado/", year, "/SECC_CE_", year, "0101_00_R_INE.shp"))
+      # else
+      #   secciones <- readOGR(paste0("seccionado/", year, "/SECC_CE_", year, "0101.shp"))
+      # 
+      # Encoding(secciones@data$NPRO) <- "UTF-8"
+      # Encoding(secciones@data$NCA) <- "UTF-8"  
+      # Encoding(secciones@data$NMUN) <- "UTF-8"
+      # saveRDS(secciones, paste0("seccionado/", year, "/secciones.rds"))
+      # # git lfs track ..(FILE)..
+      
+      secciones <<- readRDS(paste0("seccionado/", year, '/secciones.rds'))
+    # }
 
-    # secciones <- readOGR(paste0("seccionado/", year, "/SECC_CE_", year, "0101.shp"))
-    ## secciones <- readOGR(dsn = paste0("seccionado/", year, "/"), layer = paste0("SECC_CE_", year, "0101_01_R_INE"))
-    ## secciones <- readOGR(dsn = paste0("seccionado/", year, "/"), layer = paste0("SECC_CE_", year, "0101_00_R_INE"))
-    # saveRDS(secciones, paste0("seccionado/", year, "/secciones.rds"))
-    ## git lfs track ..(FILE)..
-    
-    secciones <<- readRDS(paste0("seccionado/", year, '/secciones.rds'))
+
     # es_map <- download_map_data(url = "countries/es/es-all", showinfo = F)
     # saveRDS(es_map, "es-all.rds")
     es_map <<- readRDS("es-all.rds")
@@ -357,7 +344,7 @@ shinyServer(function(input, output, session) {
   
   output$provinces <- renderUI({
     if(input$metricsByAggregate != "National"){
-      selectizeInput("selectProvincia4", label = "Select Province", choices = provincias$Nombre, multiple = T, selected = c("Murcia"))
+      selectizeInput("selectProvincia4", label = "Select Province", choices = seccionadoAño[[1]]@data$NPRO, multiple = T, selected = c("Murcia"))
     }
   })
   
@@ -369,16 +356,21 @@ shinyServer(function(input, output, session) {
           
           nacionalidad <- list()
           datosAgregados <- list()
+          filtrado <- list(data.frame())
           #total <- list(data.frame(years = list.files("poblacion/")))
           years <- list.files("poblacion/")
           
           for(i in 1:length(years)){
             nacionalidad <-  append(nacionalidad, list(poblacionAñoAmbos[[i]][which(input$selectNacionalidad4 == poblacionAñoAmbos[[i]]$nacionalidad), ]))
             #total$population[i] <- nacionalidad[[i]]$value[nacionalidad[[i]]$sección == "TOTAL"]
-            seccionadoAño[[i]]@data <- seccionadoAño[[i]]@data[seccionadoAño[[i]]@data$NPRO %in% input$selectProvincia4, ]
-            seccionadoAño[[i]]@data$seccionCensal <- paste0(seccionadoAño[[i]]@data$CUMUN, seccionadoAño[[i]]@data$CDIS, seccionadoAño[[i]]@data$CSEC)
-            seccionadoAño[[i]]@data$poblacion <- nacionalidad[[i]][match(seccionadoAño[[i]]@data$seccionCensal, nacionalidad[[i]]$sección), "value"]
-            datosAgregados <- append(datosAgregados, list(cbind(aggregate(seccionadoAño[[i]]@data$poblacion, by = list(Provincia=seccionadoAño[[i]]@data$NPRO), FUN = sum, na.rm = T), years[i])))
+            filtrado[[i]]  <- seccionadoAño[[i]]@data[seccionadoAño[[i]]@data$NPRO %in% "Cáceres", ]
+            filtrado[[i]]$seccionCensal <- paste0(filtrado[[i]]$CUMUN, filtrado[[i]]$CDIS, filtrado[[i]]$CSEC)
+            filtrado[[i]]$poblacion <- nacionalidad[[i]][match(filtrado[[i]]$seccionCensal, nacionalidad[[i]]$sección), "value"]
+            datosAgregados <- append(datosAgregados, 
+                                     list(
+                                       cbind(
+                                         aggregate(filtrado[[i]]$poblacion, by = list(Provincia=filtrado[[i]]$NPRO),
+                                           FUN = sum, na.rm = T), years[i])))
           }
          
           result <- do.call(rbind, datosAgregados) %>% 

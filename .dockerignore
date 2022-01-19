@@ -1,5 +1,9 @@
 **/.git
 **/.github
-**/.vs
+**/.vs # VS Code files
+**/.px # Census data in raw form
+.gitattributes
+.gitignore
+Dockerfile-armv7l
 .RData
 .RDataTmp
