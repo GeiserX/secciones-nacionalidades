@@ -7,3 +7,11 @@
 Dockerfile-armv7l
 .RData
 .RDataTmp
+**/.shp
+**/.shx
+**/.xml
+**/.sbx
+**/.sbn
+**/.prj
+**/.dbf
+**/.CPG

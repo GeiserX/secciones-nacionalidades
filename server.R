@@ -327,24 +327,106 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$selectNacionalidad4,{
     output$historicChart <- renderHighchart({
-      nacionalidad <- list()
-      total <- data.frame(years = list.files("poblacion/"))
-      for(i in 1:length(list.files("poblacion/"))){
-        nacionalidad <-  append(nacionalidad, list(poblacionAñoAmbos[[i]][which(input$selectNacionalidad4 == poblacionAñoAmbos[[i]]$nacionalidad), ]))
-        total$population[i] <- nacionalidad[[i]]$value[nacionalidad[[i]]$sección == "TOTAL"]
+      if(input$metricsByAggregate == "National"){
+        nacionalidad <- list()
+        total <- data.frame(years = list.files("poblacion/"))
+        for(i in 1:length(list.files("poblacion/"))){
+          nacionalidad <-  append(nacionalidad, list(poblacionAñoAmbos[[i]][which(input$selectNacionalidad4 == poblacionAñoAmbos[[i]]$nacionalidad), ]))
+          total$population[i] <- nacionalidad[[i]]$value[nacionalidad[[i]]$sección == "TOTAL"]
+        }
+        
+        highchart() %>% 
+          hc_chart(type = "line", zoomType = "x") %>% 
+          hc_title(text = "Population trend") %>% 
+          hc_xAxis(categories = total$years) %>% 
+          hc_add_series(data = total$population, name = "Total population")
+      } else if(input$metricsByAggregate == "Province") {
+        if(!is.null(input$selectProvincia4)){
+          
+          output$historicChart <- renderHighchart({
+            
+            nacionalidad <- data.frame
+            datosAgregados <- list()
+            #total <- list(data.frame(years = list.files("poblacion/")))
+            years <- list.files("poblacion/")
+            
+            
+            for(i in 1:length(years)){
+              filtrado <- list(data.frame())
+              nacionalidad <-  poblacionAñoAmbos[[i]][which(input$selectNacionalidad4 == poblacionAñoAmbos[[i]]$nacionalidad), ]
+              #total$population[i] <- nacionalidad[[i]]$value[nacionalidad[[i]]$sección == "TOTAL"]
+              filtrado <- seccionadoAño[[i]]@data[seccionadoAño[[i]]@data$NPRO %in% input$selectProvincia4, ]
+              filtrado$seccionCensal <- paste0(filtrado$CUMUN, filtrado$CDIS, filtrado$CSEC)
+              filtrado$poblacion <- nacionalidad[match(filtrado$seccionCensal, nacionalidad$sección), "value"]
+              datosAgregados <- append(datosAgregados, list(cbind(aggregate(filtrado$poblacion, by = list(Provincia=filtrado$NPRO), FUN = sum, na.rm = T), years[i])))
+            }
+            
+            result <- do.call(rbind, datosAgregados) %>% 
+              group_by(Provincia) %>% 
+              summarise(years, x)
+            
+            hc <- highchart() %>% 
+              hc_chart(type = "line", zoomType = "x") %>% 
+              hc_title(text = "Population trend") %>% 
+              hc_xAxis(categories = years)
+            
+            for(i in input$selectProvincia4){
+              hc <- hc %>% 
+                hc_add_series(result$x[which(result$Provincia==i)], name=i)
+            }
+            hc
+          })
+        }
       }
-      
-      highchart() %>% 
-        hc_chart(type = "line", zoomType = "x") %>% 
-        hc_title(text = "Population trend") %>% 
-        hc_xAxis(categories = total$years) %>% 
-        hc_add_series(data = total$population, name = "Total population")
+      else if(input$metricsByAggregate == "Municipality"){
+        if(!is.null(input$selectProvincia4_single) && !is.null(input$selectMunicipality4)){
+          output$historicChart <- renderHighchart({
+            
+            nacionalidad <- data.frame
+            datosAgregados <- list()
+            years <- list.files("poblacion/")
+            
+            for(i in 1:length(years)){
+              filtrado <- list(data.frame())
+              nacionalidad <-  poblacionAñoAmbos[[i]][which(input$selectNacionalidad4 == poblacionAñoAmbos[[i]]$nacionalidad), ]
+              filtrado <- seccionadoAño[[i]]@data[seccionadoAño[[i]]@data$NMUN %in% input$selectMunicipality4, ]
+              filtrado$seccionCensal <- paste0(filtrado$CUMUN, filtrado$CDIS, filtrado$CSEC)
+              filtrado$poblacion <- nacionalidad[match(filtrado$seccionCensal, nacionalidad$sección), "value"]
+              datosAgregados <- append(datosAgregados, list(cbind(aggregate(filtrado$poblacion, by = list(Provincia=filtrado$NMUN), FUN = sum, na.rm = T), years[i])))
+            }
+            
+            result <- do.call(rbind, datosAgregados) %>% 
+              group_by(Provincia) %>% 
+              summarise(years, x)
+            
+            hc <- highchart() %>% 
+              hc_chart(type = "line", zoomType = "x") %>% 
+              hc_title(text = "Population trend") %>% 
+              hc_xAxis(categories = years)
+            
+            for(i in input$selectMunicipality4){
+              hc <- hc %>% 
+                hc_add_series(result$x[which(result$Provincia==i)], name=i)
+            }
+            hc
+          })
+        }
+      }
     })
   })
   
   output$provinces <- renderUI({
-    if(input$metricsByAggregate != "National"){
-      selectizeInput("selectProvincia4", label = "Select Province", choices = seccionadoAño[[1]]@data$NPRO, multiple = T, selected = c("Murcia"))
+    if(input$metricsByAggregate == "Province"){
+      selectizeInput("selectProvincia4", label = "Select Province", choices = provinciasTab4, multiple = T, selected = c("Murcia"))
+    } else if (input$metricsByAggregate == "Municipality"){
+      selectizeInput("selectProvincia4_single", label = "Select Province", choices = provinciasTab4, multiple = F, selected = c("Murcia"))
+    }
+  })
+  
+  output$municipalities <- renderUI({
+    if(input$metricsByAggregate == "Municipality"){
+      municipios <- unique(seccionadoAño[[i]]@data$NMUN[seccionadoAño[[i]]@data$NPRO == input$selectProvincia4_single])
+      selectizeInput("selectMunicipality4", label = "Select Municipality", choices = municipios, multiple = T)
     }
   })
   
@@ -354,23 +436,18 @@ shinyServer(function(input, output, session) {
         
         output$historicChart <- renderHighchart({
           
-          nacionalidad <- list()
+          nacionalidad <- data.frame
           datosAgregados <- list()
-          filtrado <- list(data.frame())
-          #total <- list(data.frame(years = list.files("poblacion/")))
           years <- list.files("poblacion/")
           
+          
           for(i in 1:length(years)){
-            nacionalidad <-  append(nacionalidad, list(poblacionAñoAmbos[[i]][which(input$selectNacionalidad4 == poblacionAñoAmbos[[i]]$nacionalidad), ]))
-            #total$population[i] <- nacionalidad[[i]]$value[nacionalidad[[i]]$sección == "TOTAL"]
-            filtrado[[i]]  <- seccionadoAño[[i]]@data[seccionadoAño[[i]]@data$NPRO %in% "Cáceres", ]
-            filtrado[[i]]$seccionCensal <- paste0(filtrado[[i]]$CUMUN, filtrado[[i]]$CDIS, filtrado[[i]]$CSEC)
-            filtrado[[i]]$poblacion <- nacionalidad[[i]][match(filtrado[[i]]$seccionCensal, nacionalidad[[i]]$sección), "value"]
-            datosAgregados <- append(datosAgregados, 
-                                     list(
-                                       cbind(
-                                         aggregate(filtrado[[i]]$poblacion, by = list(Provincia=filtrado[[i]]$NPRO),
-                                           FUN = sum, na.rm = T), years[i])))
+            filtrado <- list(data.frame())
+            nacionalidad <-  poblacionAñoAmbos[[i]][which(input$selectNacionalidad4 == poblacionAñoAmbos[[i]]$nacionalidad), ]
+            filtrado <- seccionadoAño[[i]]@data[seccionadoAño[[i]]@data$NPRO %in% input$selectProvincia4, ]
+            filtrado$seccionCensal <- paste0(filtrado$CUMUN, filtrado$CDIS, filtrado$CSEC)
+            filtrado$poblacion <- nacionalidad[match(filtrado$seccionCensal, nacionalidad$sección), "value"]
+            datosAgregados <- append(datosAgregados, list(cbind(aggregate(filtrado$poblacion, by = list(Provincia=filtrado$NPRO), FUN = sum, na.rm = T), years[i])))
           }
          
           result <- do.call(rbind, datosAgregados) %>% 
@@ -388,8 +465,46 @@ shinyServer(function(input, output, session) {
           }
           hc
         })
+      } 
+    }
+  })
+  
+  observeEvent(input$selectMunicipality4, {
+    if(input$metricsByAggregate == "Municipality") {
+      if(!is.null(input$selectProvincia4_single) && !is.null(input$selectMunicipality4)){
+        output$historicChart <- renderHighchart({
+          
+          nacionalidad <- data.frame
+          datosAgregados <- list()
+          years <- list.files("poblacion/")
+          
+          for(i in 1:length(years)){
+            filtrado <- list(data.frame())
+            nacionalidad <-  poblacionAñoAmbos[[i]][which(input$selectNacionalidad4 == poblacionAñoAmbos[[i]]$nacionalidad), ]
+            filtrado <- seccionadoAño[[i]]@data[seccionadoAño[[i]]@data$NMUN %in% input$selectMunicipality4, ]
+            filtrado$seccionCensal <- paste0(filtrado$CUMUN, filtrado$CDIS, filtrado$CSEC)
+            filtrado$poblacion <- nacionalidad[match(filtrado$seccionCensal, nacionalidad$sección), "value"]
+            datosAgregados <- append(datosAgregados, list(cbind(aggregate(filtrado$poblacion, by = list(Provincia=filtrado$NMUN), FUN = sum, na.rm = T), years[i])))
+          }
+          
+          result <- do.call(rbind, datosAgregados) %>% 
+            group_by(Provincia) %>% 
+            summarise(years, x)
+          
+          hc <- highchart() %>% 
+            hc_chart(type = "line", zoomType = "x") %>% 
+            hc_title(text = "Population trend") %>% 
+            hc_xAxis(categories = years)
+          
+          for(i in input$selectMunicipality4){
+            hc <- hc %>% 
+              hc_add_series(result$x[which(result$Provincia==i)], name=i)
+          }
+          hc
+        })
       }
     }
+    
   })
     
 })
