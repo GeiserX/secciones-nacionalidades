@@ -60,10 +60,11 @@ dashboardPage(skin = "blue", title = "Foreign Insight",
         tabItem(tabName = "tab4",
                 box(width = 2, title = "Historic data & Analytics", status = "primary", solidHeader = TRUE,
                     radioButtons("metricsByAggregate", label = "Select Aggregation",
-                                 choices = c("National", "Province", "Municipality", "Section"), selected = "National"),
+                                 choices = c("National", "Province", "Municipality"), selected = "National"),
                     selectizeInput("selectNacionalidad4", label = "Select Nationality",
                                    choices = levels(Nacionalidad_Ambos$nacionalidad), selected = "Total Población"),
-                    uiOutput("provinces")
+                    uiOutput("provinces"),
+                    uiOutput("municipalities")
                 ),
                 box(width = 10, title = "Chart", status = "info", solidHeader = F, 
                     highchartOutput(outputId = "historicChart", width = "auto")
