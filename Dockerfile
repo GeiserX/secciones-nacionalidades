@@ -3,6 +3,8 @@ MAINTAINER Sergio Fernández "acsdesk@protonmail.com"
 
 RUN apt-get update && apt-get install -y libgdal-dev libudunits2-dev curl
 
+RUN R -e "install.packages('remotes', repos='https://cloud.r-project.org/')"  # Install remotes to install github s2 package, otherwise broken. Delete next time these two lines. (Not working 09/01/21. Delete lines in the future)
+RUN R -e "remotes::install_github('r-spatial/s2')"
 RUN R -e "install.packages(c('shiny', 'shinydashboard', 'shinyjs', 'rgdal', 'raster', 'sp', 'pxR', 'leaflet', 'plotKML', 'highcharter', 'dplyr'), repos='https://cloud.r-project.org/')"
 
 COPY Rprofile.site /usr/lib/R/etc/
