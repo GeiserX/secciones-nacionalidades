@@ -2,6 +2,6 @@ version: '3'
 services:
   secnac:
     container_name: secnac
-    image: drumsergio/secciones-nacionalidades:2.0
+    image: drumsergio/secciones-nacionalidades:2.1
     ports: 
       - "8080:8080"
