@@ -5,3 +5,13 @@ services:
     image: drumsergio/secciones-nacionalidades:2.1
     ports: 
       - "8080:8080"
+  postgres:
+    image: 'postgres:latest'
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: geiser
+      POSTGRES_PASSWORD: holahello123
+      POSTGRES_DB: secnac
+    volumes:
+      - ./db-data/:/var/lib/postgresql/data  
