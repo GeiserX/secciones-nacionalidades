@@ -301,7 +301,7 @@ shinyServer(function(input, output, session) {
       secciones@data$seccionCensal <- paste0(secciones@data$CUMUN, secciones@data$CDIS, secciones@data$CSEC)
       secciones@data$poblacion <- nacionalidad[match(secciones@data$seccionCensal, nacionalidad$sección), "value"]
       
-      datos_agregados <- aggregate(secciones@data$poblacion, by = list(Provincia=secciones@data$CPRO), FUN = sum)     
+      datos_agregados <- aggregate(secciones@data$poblacion, by = list(Provincia=secciones@data$CPRO), FUN = sum, na.rm = T)     
       
       codes <- sprintf('%02d', seq(1,52))
       names <- c('es-vi', 'es-ab', 'es-a', 'es-al', 'es-av', 'es-ba', 'es-pm', 'es-b', 'es-bu', 'es-cc',
