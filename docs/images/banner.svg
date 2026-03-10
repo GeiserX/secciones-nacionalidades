@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 200" width="900" height="200">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2E7D32"/>
+      <stop offset="100%" stop-color="#1A1A2E"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#81C784" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#2E7D32" stop-opacity="0.6"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="200" rx="12" fill="url(#bg)"/>
+
+  <!-- Subtle grid -->
+  <g stroke="#ffffff" stroke-opacity="0.04" stroke-width="1">
+    <line x1="0" y1="50" x2="900" y2="50"/>
+    <line x1="0" y1="100" x2="900" y2="100"/>
+    <line x1="0" y1="150" x2="900" y2="150"/>
+    <line x1="150" y1="0" x2="150" y2="200"/>
+    <line x1="300" y1="0" x2="300" y2="200"/>
+    <line x1="450" y1="0" x2="450" y2="200"/>
+    <line x1="600" y1="0" x2="600" y2="200"/>
+    <line x1="750" y1="0" x2="750" y2="200"/>
+  </g>
+
+  <!-- Spain map outline (simplified) with data dots -->
+  <g transform="translate(65, 50)">
+    <!-- Simplified Spain peninsula outline -->
+    <path d="M10,60 L20,20 L40,10 L65,5 L90,15 L110,10 L120,25 L110,50 L105,70 L85,80 L60,85 L30,80 L10,70 Z"
+          fill="none" stroke="url(#accent)" stroke-width="2" opacity="0.7"/>
+    <!-- Data dots representing census sections -->
+    <circle cx="35" cy="35" r="3" fill="#81C784" opacity="0.8"/>
+    <circle cx="55" cy="25" r="4" fill="#81C784" opacity="0.6"/>
+    <circle cx="75" cy="30" r="3.5" fill="#81C784" opacity="0.7"/>
+    <circle cx="95" cy="35" r="2.5" fill="#81C784" opacity="0.5"/>
+    <circle cx="45" cy="55" r="3" fill="#81C784" opacity="0.6"/>
+    <circle cx="70" cy="60" r="4.5" fill="#81C784" opacity="0.8"/>
+    <circle cx="90" cy="55" r="3" fill="#81C784" opacity="0.4"/>
+    <circle cx="60" cy="45" r="2" fill="#81C784" opacity="0.5"/>
+    <!-- Connection lines between dots -->
+    <line x1="35" y1="35" x2="55" y2="25" stroke="#81C784" stroke-width="0.8" opacity="0.25"/>
+    <line x1="55" y1="25" x2="75" y2="30" stroke="#81C784" stroke-width="0.8" opacity="0.25"/>
+    <line x1="70" y1="60" x2="45" y2="55" stroke="#81C784" stroke-width="0.8" opacity="0.25"/>
+  </g>
+
+  <!-- Title -->
+  <text x="220" y="90" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="38" font-weight="700" fill="#ffffff" letter-spacing="-0.5">
+    secciones-nacionalidades
+  </text>
+
+  <!-- Subtitle -->
+  <text x="222" y="125" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="16" fill="#81C784" letter-spacing="0.5">
+    Foreign Insight — Nationalities in Spain from INE data
+  </text>
+
+  <!-- Accent line -->
+  <rect x="222" y="138" width="70" height="2.5" rx="1.25" fill="#81C784" opacity="0.5"/>
+
+  <!-- Decorative bar chart on right -->
+  <g transform="translate(760, 50)" opacity="0.15">
+    <rect x="0" y="60" width="12" height="40" rx="3" fill="#ffffff"/>
+    <rect x="20" y="30" width="12" height="70" rx="3" fill="#ffffff"/>
+    <rect x="40" y="45" width="12" height="55" rx="3" fill="#ffffff"/>
+    <rect x="60" y="15" width="12" height="85" rx="3" fill="#ffffff"/>
+    <rect x="80" y="50" width="12" height="50" rx="3" fill="#ffffff"/>
+  </g>
+</svg>
