@@ -1,7 +1,10 @@
 library(testthat)
 
-# Source the actual helper functions from the codebase
-source(file.path(getwd(), "R", "helpers.R"))
+# Source the actual helper functions from the codebase.
+# When testthat::test_dir() runs, the working directory is the test dir itself,
+# so we navigate up to the project root.
+project_root <- normalizePath(file.path(getwd(), "..", ".."), mustWork = FALSE)
+source(file.path(project_root, "R", "helpers.R"))
 
 # --- Tests for samePopulationPrintYellow ---
 
@@ -58,7 +61,7 @@ test_that("buildSeccionCensal handles vectorized input", {
 # --- Tests for CSV data file integrity ---
 
 test_that("codprov.csv has required columns and all 52 provinces", {
-  provincias <- read.csv(file.path(getwd(), "datos_csv", "codprov.csv"),
+  provincias <- read.csv(file.path(project_root, "datos_csv", "codprov.csv"),
                          fileEncoding = "UTF-8")
   expect_true("Nombre" %in% colnames(provincias))
   expect_true("ID" %in% colnames(provincias))
@@ -66,14 +69,14 @@ test_that("codprov.csv has required columns and all 52 provinces", {
 })
 
 test_that("codccaa.csv has all autonomous communities", {
-  ccaa <- read.csv(file.path(getwd(), "datos_csv", "codccaa.csv"),
+  ccaa <- read.csv(file.path(project_root, "datos_csv", "codccaa.csv"),
                    fileEncoding = "UTF-8", header = FALSE)
   # Spain has 17 autonomous communities + 2 autonomous cities = 19
   expect_gte(nrow(ccaa), 19)
 })
 
 test_that("Municipios_Censo_2011.csv has required columns and data", {
-  municipios <- read.csv(file.path(getwd(), "datos_csv", "Municipios_Censo_2011.csv"),
+  municipios <- read.csv(file.path(project_root, "datos_csv", "Municipios_Censo_2011.csv"),
                          fileEncoding = "UTF-8")
   expect_true("COD_MUN" %in% colnames(municipios))
   expect_true("NOMBRE" %in% colnames(municipios))
