@@ -13,6 +13,9 @@ suppressPackageStartupMessages({
   library(dplyr)
 })
 
+# Source pure helper functions (testable without heavy dependencies)
+source("R/helpers.R")
+
 #options(shiny.port=8080)
 
 #comunidades <- read.csv("datos_csv/codccaa.csv", fileEncoding = "UTF-8")
@@ -42,16 +45,12 @@ for(i in 1:length(list.files("poblacion/"))){
 provinciasTab4 <<- unique(seccionadoAño[[1]]@data$NPRO)
 provinciasTab4 <<- provinciasTab4[provinciasTab4 != 'Gipuzcoa']
 
-samePopulationPrintYellow <- function(capa_sp){
-  return(max(capa_sp@data$numPoblacionElegida,  na.rm = T) - min(capa_sp@data$numPoblacionElegida,  na.rm = T) == 0)
-}
-
 simplyMapIt <- function(porcentaje, hombreMujer, municipioSelected, nacionalidadSelected, Nacionalidad_Ambos, Nacionalidad_Hombres, Nacionalidad_Mujeres, Year){
   return({renderLeaflet({
-    municipio <<- sprintf("%05d", municipios$COD_MUN[municipios$NOMBRE %in% municipioSelected])
+    municipio <<- formatMunicipioCode(municipios$COD_MUN[municipios$NOMBRE %in% municipioSelected])
     capa <- secciones[secciones@data$CUMUN %in% municipio,]
     
-    capa@data$seccionCensal <- paste0(capa@data$CUMUN, capa@data$CDIS, capa@data$CSEC)
+    capa@data$seccionCensal <- buildSeccionCensal(capa@data$CUMUN, capa@data$CDIS, capa@data$CSEC)
     capa@data$download <- paste0("download-", capa@data$CUMUN, capa@data$CDIS, capa@data$CSEC)
     
     nacionalidad <- Nacionalidad_Ambos[which(nacionalidadSelected == Nacionalidad_Ambos$nacionalidad), ]
@@ -84,7 +83,7 @@ simplyMapIt <- function(porcentaje, hombreMujer, municipioSelected, nacionalidad
       addTiles() %>% 
       setView(lat = round(mean(coordinates(capa_sp)[,2]), digits = 7),
               lng = round(mean(coordinates(capa_sp)[,1]), digits = 7), zoom=11) %>% 
-      addPolygons(weight = 2, fillColor = ~ if(samePopulationPrintYellow(capa_sp)){ "#FFFF00" } else {
+      addPolygons(weight = 2, fillColor = ~ if(samePopulationPrintYellow(capa_sp@data)){ "#FFFF00" } else {
         pal(if(porcentaje == T) {capa_sp@data$porcentajePoblacion} else {capa_sp@data$numPoblacionElegida})},
         fillOpacity = "0.4",
         stroke = T, color = "black", opacity = 0.8, highlightOptions = highlightOptions(color = "white", weight = 4, bringToFront = TRUE),
@@ -99,7 +98,7 @@ simplyMapIt <- function(porcentaje, hombreMujer, municipioSelected, nacionalidad
                                        "Mujeres: <b>", capa_sp@data$numPoblacionElegidaMujeres, "</b><br>",
                                        "Fecha: <b>", Year, "</b>")} else {
                                      paste0(
-                                       if(samePopulationPrintYellow(capa_sp)){
+                                       if(samePopulationPrintYellow(capa_sp@data)){
                                               paste0(" </b> Fecha: <b>", Year, "</b><br>")} else{
                                               paste0("</b><br>", "Porcentaje de población: <b>", round(capa_sp@data$porcentajePoblacion, digits = 2),
                                                      "%</b><br>", "Fecha: <b>", Year, "</b>")})}} else {
@@ -108,16 +107,16 @@ simplyMapIt <- function(porcentaje, hombreMujer, municipioSelected, nacionalidad
                                      "Fecha: <b>", Year, "</b>")}
         ),
         layerId = capa_sp@data$seccionCensal, group = "censussections", label = capa_sp@data$seccionCensal) %>% 
-      addLegend(colors = if(samePopulationPrintYellow(capa_sp)){ "#FFFF00" } else { c(pal(max), pal((3*max+2*min)/5), pal((2*max+3*min)/5), pal(min))},
+      addLegend(colors = if(samePopulationPrintYellow(capa_sp@data)){ "#FFFF00" } else { c(pal(max), pal((3*max+2*min)/5), pal((2*max+3*min)/5), pal(min))},
                 labels = if(porcentaje == T){
-                                if(samePopulationPrintYellow(capa_sp)){ 
+                                if(samePopulationPrintYellow(capa_sp@data)){ 
                                        paste0(min(capa_sp@data$porcentajePoblacion,  na.rm = T),
                                               "% - ", max(capa_sp@data$porcentajePoblacion,  na.rm = T), "%")} else {
                                        c(paste0(round((3*max+min)/4, digits = 2), " - <b>", max, "%</b>"),
                                          paste0(round((max+min)/2, digits = 2), " - ", round((3*max+min)/4, digits = 2), "%"),
                                          paste0(round((max+3*min)/4, digits = 2), " - ", round((max+min)/2, digits = 2), "%"),
                                          paste0("<b>", min, "</b> - ", round((max+3*min)/4, digits = 2), "%"))}} else{
-                                if(samePopulationPrintYellow(capa_sp)){ 
+                                if(samePopulationPrintYellow(capa_sp@data)){ 
                                        paste0(min(capa_sp@data$numPoblacionElegida,  na.rm = T), " - ", max(capa_sp@data$numPoblacionElegida,  na.rm = T))} else {
                                        c(paste0(round((3*max+min)/4, digits = 2), " - <b>", max, "</b>"),
                                          paste0(round((max+min)/2, digits = 2), " - ", round((3*max+min)/4, digits = 2)),
@@ -126,5 +125,5 @@ simplyMapIt <- function(porcentaje, hombreMujer, municipioSelected, nacionalidad
                 na.label = "Valor no disponible", title = "Población", opacity = "0.4", bins = 2)
   })
   })
-  samePopulationPrintYellow(capa_sp)
+  samePopulationPrintYellow(capa_sp@data)
 }
