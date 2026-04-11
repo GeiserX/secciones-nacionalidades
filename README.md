@@ -5,7 +5,7 @@
 <h1 align="center">secciones-nacionalidades</h1>
 
 <p align="center">
-  <a href="https://github.com/GeiserX/secciones-nacionalidades/actions"><img src="https://github.com/GeiserX/secciones-nacionalidades/workflows/Test%20and%20Deployment%20to%20K3s%20cluster/badge.svg?branch=main" alt="Test and Deployment"></a>
+  <a href="https://github.com/GeiserX/secciones-nacionalidades/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/GeiserX/secciones-nacionalidades/ci.yml?label=CI" alt="CI"></a>
 </p>
 
 <p align="center">
