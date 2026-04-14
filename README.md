@@ -30,12 +30,22 @@ Aplicación web interactiva construida con R y Shiny que permite explorar datos 
 - **Mapa nacional**: vista general de España con datos agregados por provincia
 - **Datos históricos**: evolución temporal a nivel nacional, provincial o municipal
 
+### Capturas de pantalla
+
+| Mapa por secciones censales | Gráficos por provincia |
+|:---:|:---:|
+| ![Census Sections Map](docs/images/screenshots/census-sections-map.png) | ![Province Chart](docs/images/screenshots/province-chart.png) |
+
+| Mapa nacional | Datos históricos |
+|:---:|:---:|
+| ![National Map](docs/images/screenshots/national-map.png) | ![Historic Data](docs/images/screenshots/historic-data.png) |
+
 > **⚠️ Datos disponibles: 2012–2021.** El INE dejó de publicar los microdatos de nacionalidad por sección censal a partir del año 2022. Por tanto, esta aplicación contiene datos únicamente del periodo 2012–2021 y no recibirá actualizaciones de nuevos años salvo que el INE reanude la publicación.
 
 ## Ejecución
 
 ```bash
-docker run -p 3838:3838 drumsergio/secciones-nacionalidades
+docker run -p 3838:8080 drumsergio/secciones-nacionalidades
 ```
 
 ## Actualización anual (archivado)
