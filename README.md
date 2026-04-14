@@ -9,7 +9,7 @@
   <a href="https://github.com/GeiserX/secciones-nacionalidades/blob/main/LICENSE"><img src="https://img.shields.io/github/license/GeiserX/secciones-nacionalidades" alt="License"></a>
   <a href="https://hub.docker.com/r/drumsergio/secciones-nacionalidades"><img src="https://img.shields.io/docker/pulls/drumsergio/secciones-nacionalidades" alt="Docker Pulls"></a>
   <a href="https://github.com/GeiserX/secciones-nacionalidades/stargazers"><img src="https://img.shields.io/github/stars/GeiserX/secciones-nacionalidades" alt="GitHub Stars"></a>
-  <a href="https://github.com/GeiserX/awesome-spain"><img src="https://img.shields.io/badge/awesome--spain-listed-c60b1e?logo=awesome-lists" alt="Mentioned in awesome-spain"></a>
+  <a href="https://github.com/GeiserX/awesome-spain"><img src="https://awesome.re/mentioned-badge-flat.svg" alt="Mentioned in Awesome Spain"></a>
 </p>
 
 <p align="center">
