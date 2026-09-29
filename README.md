@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/images/banner.svg" alt="secciones-nacionalidades banner" width="900"/>
+  <img src="docs/images/banner.svg" alt="secciones-nacionalidades" width="900"/>
 </p>
 
 <h1 align="center">secciones-nacionalidades</h1>
@@ -13,16 +13,14 @@
 </p>
 
 <p align="center">
-  <strong>Foreign Insight — Nacionalidades en España por sección censal (INE)</strong>
+  <strong>secciones-nacionalidades (Foreign Insight): nacionalidades en España por sección censal, con datos del INE</strong>
 </p>
 
 ---
 
-## Descripción
+Aplicación web interactiva construida con R y Shiny que permite explorar datos demográficos de nacionalidades por **sección censal** en España, utilizando datos públicos del [Instituto Nacional de Estadística (INE)](https://www.ine.es/). Se ejecuta en Docker.
 
-Aplicación web interactiva construida con R y Shiny que permite explorar datos demográficos de nacionalidades por **sección censal** en España, utilizando datos públicos del [Instituto Nacional de Estadística (INE)](https://www.ine.es/).
-
-### Funcionalidades
+## Funcionalidades
 
 - **Mapa interactivo por secciones censales**: selecciona provincia, municipio y nacionalidad para visualizar la distribución en el mapa con código de colores
 - **Descarga a KML**: selecciona las áreas de interés en el mapa y descárgalas como archivo KML, listo para importar en Google Earth o Google Maps
@@ -30,30 +28,32 @@ Aplicación web interactiva construida con R y Shiny que permite explorar datos 
 - **Mapa nacional**: vista general de España con datos agregados por provincia
 - **Datos históricos**: evolución temporal a nivel nacional, provincial o municipal
 
-### Capturas de pantalla
+## Capturas de pantalla
 
 | Mapa por secciones censales | Gráficos por provincia |
 |:---:|:---:|
-| ![Census Sections Map](docs/images/screenshots/census-sections-map.png) | ![Province Chart](docs/images/screenshots/province-chart.png) |
+| ![Mapa por secciones censales](docs/images/screenshots/census-sections-map.png) | ![Gráficos por provincia](docs/images/screenshots/province-chart.png) |
 
 | Mapa nacional | Datos históricos |
 |:---:|:---:|
-| ![National Map](docs/images/screenshots/national-map.png) | ![Historic Data](docs/images/screenshots/historic-data.png) |
+| ![Mapa nacional](docs/images/screenshots/national-map.png) | ![Datos históricos](docs/images/screenshots/historic-data.png) |
 
-> **⚠️ Datos disponibles: 2012–2021.** El INE dejó de publicar los microdatos de nacionalidad por sección censal a partir del año 2022. Por tanto, esta aplicación contiene datos únicamente del periodo 2012–2021 y no recibirá actualizaciones de nuevos años salvo que el INE reanude la publicación.
+> **Datos disponibles: 2012–2021.** El INE dejó de publicar los microdatos de nacionalidad por sección censal a partir del año 2022. Por tanto, esta aplicación contiene datos únicamente del periodo 2012–2021 y no recibirá actualizaciones de nuevos años salvo que el INE reanude la publicación.
 
-## Ejecución
+## Inicio rápido
+
+Necesitas Docker.
 
 ```bash
-docker run -p 3838:8080 drumsergio/secciones-nacionalidades
+docker run --platform linux/amd64 -p 3838:8080 drumsergio/secciones-nacionalidades:2.1
 ```
 
-## Actualización anual (archivado)
+Abre http://localhost:3838 en el navegador. La imagen incluye los datos de 2012 a 2021; no hace falta descargar nada.
 
-1. Descargar datos sobre [población](https://www.ine.es/dyngs/INEbase/es/operacion.htm?c=Estadistica_C&cid=1254736177012&menu=resultados&secc=1254736195461&idp=1254734710990) y [seccionado](http://www.ine.es/ss/Satellite?L=es_ES&c=Page&cid=1259952026632&p=1259952026632&pagename=ProductosYServicios%2FPYSLayout).
-2. Ejecutar los comentarios en `server.R` y borrar los datos para dejar únicamente los ficheros RDS, con menor peso.
-3. Añadir el nuevo año en la app en `ui.R` y también en `global.R`.
+## Documentación
 
-## Autor
+- [Desarrollo](docs/development.md): cómo se actualizaban los datos cada año (archivado: el INE no publica datos posteriores a 2021).
 
-[@GeiserX](https://github.com/GeiserX)
+## Licencia
+
+[GPL-3.0-or-later](LICENSE)
