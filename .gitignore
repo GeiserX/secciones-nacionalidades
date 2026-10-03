@@ -48,3 +48,6 @@ vignettes/*.pdf
 # Shiny token, see https://shiny.rstudio.com/articles/shinyapps.html
 rsconnect/
 packrat/lib*/
+
+# Beads: bead text lives in the Dolt tracker only, never in git
+.beads/*.jsonl
