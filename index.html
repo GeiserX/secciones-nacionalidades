@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" content="#1a1a19" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#fcfcfb" media="(prefers-color-scheme: light)" />
+    <meta name="description" content="Población por nacionalidad en cada sección censal de España, de 2012 a 2021, con datos abiertos del INE. Mapas, gráficos por municipio y evolución histórica." />
+    <title>Foreign Insight · Nacionalidades por sección censal</title>
+    <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+  </head>
+  <body>
+    <header class="top">
+      <h1><img src="./icon.svg" alt="" width="28" height="28" /> Foreign Insight</h1>
+      <label class="year">
+        <span>Año <output id="yearOut">2021</output></span>
+        <input id="year" type="range" min="2012" max="2021" step="1" value="2021" />
+      </label>
+    </header>
+
+    <nav class="tabs" aria-label="Vistas">
+      <button data-view="sections" aria-current="page">Secciones</button>
+      <button data-view="municipalities">Municipios</button>
+      <button data-view="spain">España</button>
+      <button data-view="history">Evolución</button>
+      <button data-view="about">Fuentes</button>
+    </nav>
+
+    <main>
+      <section id="view-sections" class="view">
+        <aside class="controls">
+          <label>Provincia <select id="s-province"></select></label>
+          <div class="field">
+            <span>Municipios <small>(vacío = toda la provincia)</small></span>
+            <div id="s-municipalities" class="picker"></div>
+          </div>
+          <label>Nacionalidad <select id="s-nat" class="nat"></select></label>
+          <label>Sexo <select id="s-sex" class="sex"></select></label>
+          <label class="check"><input id="s-percent" type="checkbox" /> En porcentaje de la población</label>
+          <div class="buttons">
+            <button id="s-locate" type="button">Mi ubicación</button>
+            <button id="s-kml" type="button" disabled>Descargar KML</button>
+            <button id="s-csv" type="button">Descargar CSV</button>
+          </div>
+          <p class="hint">Pulsa una sección para ver sus datos y añadirla a la descarga KML (Google Earth, Google Maps).</p>
+          <p id="s-status" class="status" role="status"></p>
+        </aside>
+        <div class="stage"><div id="s-map" class="map"></div><div id="s-legend" class="legend"></div></div>
+      </section>
+
+      <section id="view-municipalities" class="view" hidden>
+        <aside class="controls">
+          <label>Provincia <select id="m-province"></select></label>
+          <label>Nacionalidad <select id="m-nat" class="nat"></select></label>
+          <label>Sexo <select id="m-sex" class="sex"></select></label>
+          <label class="check"><input id="m-percent" type="checkbox" /> En porcentaje de la población</label>
+          <label class="check"><input id="m-sort" type="checkbox" checked /> Ordenar de mayor a menor</label>
+          <div class="buttons"><button id="m-csv" type="button">Descargar CSV</button></div>
+          <p id="m-status" class="status" role="status"></p>
+        </aside>
+        <div class="stage scroll"><div id="m-wrap" class="chart-wrap"><canvas id="m-chart"></canvas></div></div>
+      </section>
+
+      <section id="view-spain" class="view" hidden>
+        <aside class="controls">
+          <label>Nacionalidad <select id="e-nat" class="nat"></select></label>
+          <label>Sexo <select id="e-sex" class="sex"></select></label>
+          <label class="check"><input id="e-percent" type="checkbox" /> En porcentaje de la población</label>
+          <p id="e-total" class="headline"></p>
+          <p class="hint">Pulsa una provincia para abrir sus secciones censales.</p>
+        </aside>
+        <div class="stage"><div id="e-map" class="map"></div><div id="e-legend" class="legend"></div></div>
+      </section>
+
+      <section id="view-history" class="view" hidden>
+        <aside class="controls">
+          <fieldset class="segmented">
+            <legend>Ámbito</legend>
+            <label><input type="radio" name="h-level" value="national" checked /> España</label>
+            <label><input type="radio" name="h-level" value="province" /> Provincias</label>
+            <label><input type="radio" name="h-level" value="municipality" /> Municipios</label>
+          </fieldset>
+          <label>Nacionalidad <select id="h-nat" class="nat"></select></label>
+          <label>Sexo <select id="h-sex" class="sex"></select></label>
+          <label class="check"><input id="h-percent" type="checkbox" /> En porcentaje de la población</label>
+          <div class="field" id="h-provinces-field" hidden><span>Provincias <small>(hasta 8)</small></span><div id="h-provinces" class="picker"></div></div>
+          <label id="h-province-field" hidden>Provincia <select id="h-province"></select></label>
+          <div class="field" id="h-municipalities-field" hidden><span>Municipios <small>(hasta 8)</small></span><div id="h-municipalities" class="picker"></div></div>
+          <p id="h-status" class="status" role="status"></p>
+        </aside>
+        <div class="stage"><div class="chart-wrap fill"><canvas id="h-chart"></canvas></div></div>
+      </section>
+
+      <section id="view-about" class="view prose" hidden>
+        <article>
+          <h2>Qué es Foreign Insight</h2>
+          <p>Foreign Insight muestra cuántas personas de cada nacionalidad viven en cada una de las más de 36.000 secciones censales de España, del año 2012 al 2021, según el Padrón municipal. Permite ver el mapa de un municipio sección a sección, comparar los municipios de una provincia, ver el reparto por provincias y seguir la evolución en el tiempo.</p>
+          <p>Los datos llegan hasta 2021 porque el INE dejó de publicar la población por nacionalidad a nivel de sección censal a partir de 2022.</p>
+          <h2>Fuentes de datos</h2>
+          <ul>
+            <li>Población por sexo y nacionalidad en cada sección censal: Estadística del Padrón Continuo, Instituto Nacional de Estadística (INE). <a href="https://www.ine.es/dyngs/INEbase/es/operacion.htm?c=Estadistica_C&amp;cid=1254736177012&amp;menu=resultados&amp;idp=1254734710990" target="_blank" rel="noopener">ine.es · Estadística del Padrón Continuo</a></li>
+            <li>Contornos de las secciones censales (cartografía digitalizada, un fichero por año): INE, Datos Abiertos. <a href="https://www.ine.es/dyngs/DAB/index.htm?cid=1389" target="_blank" rel="noopener">ine.es · Cartografía secciones censales</a></li>
+            <li>Mapa base: IGN Base, © Instituto Geográfico Nacional, licencia CC BY 4.0. <a href="https://www.scne.es/" target="_blank" rel="noopener">scne.es</a></li>
+          </ul>
+          <p>Los contornos se han simplificado para que la aplicación cargue rápido; para análisis de precisión, usa los ficheros originales del INE. Fuente de los datos: INE. Los datos se reutilizan según el aviso legal del INE.</p>
+          <h2>Privacidad</h2>
+          <p>La aplicación no tiene cuentas, ni publicidad, ni analítica, y no envía datos personales a ningún sitio. Si pulsas «Mi ubicación», la posición se usa solo en tu dispositivo para encontrar tu sección censal y no se guarda ni se transmite.</p>
+          <h2>Código abierto</h2>
+          <p>El código es libre (GPL-3.0-or-later) y está en <a href="https://github.com/GeiserX/secciones-nacionalidades" target="_blank" rel="noopener">GitHub</a>. Si encuentras un error, abre una incidencia allí.</p>
+          <p class="version">Versión <span id="version"></span></p>
+        </article>
+      </section>
+    </main>
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>

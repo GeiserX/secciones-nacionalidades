@@ -1,9 +1,37 @@
 # Desarrollo
 
-El INE dejó de publicar los microdatos de nacionalidad por sección censal después de 2021, así que la aplicación ya no recibe años nuevos. Este procedimiento se conserva como registro de cómo se añadía cada año.
+## Estructura
 
-## Actualización anual (archivado)
+| Ruta | Qué es |
+|---|---|
+| `index.html`, `src/` | La aplicación web (Vite, Leaflet, Chart.js). Todo el texto está en español |
+| `public/data/` | Los datos que carga la aplicación, generados por los scripts de abajo y versionados en git |
+| `poblacion/`, `seccionado/` | Los datos originales del INE (2012-2021) en RDS y PC-Axis |
+| `scripts/` | La conversión de los datos originales a `public/data/` |
+| `android/`, `ios/` | Las aplicaciones nativas (Capacitor), con los datos dentro para funcionar sin conexión |
+| `tests/web/` | Pruebas (Vitest) |
 
-1. Descargar datos sobre [población](https://www.ine.es/dyngs/INEbase/es/operacion.htm?c=Estadistica_C&cid=1254736177012&menu=resultados&secc=1254736195461&idp=1254734710990) y [seccionado](http://www.ine.es/ss/Satellite?L=es_ES&c=Page&cid=1259952026632&p=1259952026632&pagename=ProductosYServicios%2FPYSLayout).
-2. Descomentar y ejecutar los bloques de conversión comentados en `server.R`, y después borrar los datos para dejar únicamente los ficheros RDS, con menor peso.
-3. Añadir el nuevo año en la app en `ui.R` y también en `global.R`.
+## Formato de `public/data`
+
+- `meta.json`: años, nacionalidades (índice 0 = «Total Población»), provincias y nombres de municipios.
+- `trends.json`: hombres y mujeres por año, provincia y nacionalidad.
+- `pop/<año>/<provincia>.json`: `{ s: [secciones], m: [[hombres por nacionalidad]], w: [[mujeres …]] }`. El total es la suma de hombres y mujeres; la exportación comprueba que coincide con el «Ambos sexos» del INE en cada sección.
+- `geo/<año>/<provincia>.json`: contornos de las secciones en TopoJSON (WGS84, simplificados), con `id` (sección), `m` (municipio), `p` (provincia) y `n` (nombre del municipio).
+- `geo/provinces.json`: contornos de las provincias, para el mapa de España.
+
+## Regenerar los datos
+
+Solo hace falta si cambian los datos originales o el formato. Es pesado (unos 20 minutos y varios GB de memoria): hazlo en un servidor, no en un portátil.
+
+```bash
+docker run --rm -v "$PWD":/w -w /w rocker/geospatial:4.5.1 Rscript scripts/export-data.R
+docker run --rm -v "$PWD":/w -w /w node:22-alpine sh scripts/build-data.sh
+```
+
+## Aplicaciones móviles
+
+```bash
+npm run cap:sync          # build web + copia a android/ e ios/
+npx cap open android      # Android Studio
+npx cap open ios          # Xcode
+```
