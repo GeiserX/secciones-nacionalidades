@@ -20,6 +20,8 @@
 
 **Mapa de Nacionalidades** muestra cuántas personas de cada nacionalidad viven en cada una de las más de 36.000 **secciones censales** de España, de 2012 a 2021, con datos abiertos del [Instituto Nacional de Estadística (INE)](https://www.ine.es/).
 
+Es una aplicación antigua: la desarrollé hacia 2017 y la he renovado con IA.
+
 **Ábrela en el navegador: https://nacionalidades.geiser.cloud** — sin instalar nada, también en el móvil. También hay aplicación para Android e iPhone, que funciona sin conexión.
 
 ## Funcionalidades
