@@ -1,17 +1,10 @@
 **/.git
 **/.github
-**/.vs # VS Code files
-**/.px # Census data in raw form
-.gitattributes
-.gitignore
-Dockerfile-armv7l
-.RData
-.RDataTmp
-**/.shp
-**/.shx
-**/.xml
-**/.sbx
-**/.sbn
-**/.prj
-**/.dbf
-**/.CPG
+node_modules
+dist
+build
+android
+ios
+poblacion
+seccionado
+docs

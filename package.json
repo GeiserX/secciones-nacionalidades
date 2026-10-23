@@ -1,0 +1,31 @@
+{
+  "name": "foreign-insight",
+  "private": true,
+  "version": "3.0.0",
+  "description": "Foreign Insight: población por nacionalidad en cada sección censal de España (INE, 2012-2021)",
+  "license": "GPL-3.0-or-later",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "cap:sync": "npm run build && cap sync"
+  },
+  "dependencies": {
+    "@capacitor/android": "8.5.3",
+    "@capacitor/core": "8.5.3",
+    "@capacitor/filesystem": "8.1.5",
+    "@capacitor/geolocation": "8.2.4",
+    "@capacitor/ios": "8.5.3",
+    "@capacitor/share": "8.0.3",
+    "chart.js": "4.6.1",
+    "leaflet": "1.9.4",
+    "topojson-client": "3.1.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "8.5.3",
+    "vite": "8.3.5",
+    "vitest": "5.0.5"
+  }
+}

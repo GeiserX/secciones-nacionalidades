@@ -6,17 +6,59 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: r-lib/actions/setup-r@v2
-      - name: Install system dependencies
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - name: Build the site
+        run: npm run build
+      - name: Check every province of every year shipped
         run: |
-          sudo apt-get update
-          sudo apt-get install -y libuv1-dev libcurl4-openssl-dev
-      - name: Install test dependencies
-        run: Rscript -e 'install.packages("testthat", repos = "https://cloud.r-project.org/")'
-      - name: Run tests
-        run: Rscript -e 'testthat::test_dir("tests/testthat")'
+          for y in $(seq 2012 2021); do
+            n=$(ls dist/data/geo/$y | wc -l); p=$(ls dist/data/pop/$y | wc -l)
+            if [ "$n" -ne 52 ] || [ "$p" -ne 52 ]; then echo "::error::$y has $n geometry and $p population files, expected 52"; exit 1; fi
+          done
+
+  android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+        with:
+          distribution: temurin
+          java-version: 21
+      - run: npm ci
+      - run: npm run build && npx cap sync android
+      - run: cd android && ./gradlew --no-daemon assembleDebug
+
+  ios:
+    runs-on: macos-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build && npx cap sync ios
+      - name: Build for the simulator
+        run: |
+          set -o pipefail
+          xcodebuild build -project ios/App/App.xcodeproj -scheme App -configuration Release \
+            -destination "generic/platform=iOS Simulator" CODE_SIGNING_ALLOWED=NO \
+            | grep -E "error:|\*\* BUILD"

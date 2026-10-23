@@ -1,14 +1,20 @@
+# Web app
+node_modules/
+dist/
+# Intermediate output of scripts/export-data.R (public/data is committed)
+build/
+
 secciones-nacionalidades.Rproj
 .vs/**
 k8s/.vs/**
-*.shp
-*.shx
-*.xml
-*.sbx
-*.sbn
-*.prj
-*.dbf
-*.CPG
+seccionado/**/*.shp
+seccionado/**/*.shx
+seccionado/**/*.xml
+seccionado/**/*.sbx
+seccionado/**/*.sbn
+seccionado/**/*.prj
+seccionado/**/*.dbf
+seccionado/**/*.CPG
 
 # History files
 .Rhistory
