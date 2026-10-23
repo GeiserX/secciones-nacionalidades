@@ -10,8 +10,10 @@
 	<false/>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Para encontrar tu sección censal en el mapa. La ubicación se usa solo en el teléfono y no se envía a ningún sitio.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Para encontrar tu sección censal en el mapa. La app solo usa la ubicación mientras está abierta, solo en el teléfono, y no la envía a ningún sitio.</string>
 	<key>CFBundleDisplayName</key>
-        <string>Foreign Insight</string>
+        <string>Nacionalidades</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>

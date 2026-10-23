@@ -219,7 +219,7 @@ async function downloadKml() {
     title: `${f.properties.n} · ${f.properties.id}`,
     rows: sectionRows(f, c),
   }));
-  await saveTextFile(`secciones-${state.year}.kml`, buildKml(`Foreign Insight ${state.year}`, items), 'application/vnd.google-earth.kml+xml');
+  await saveTextFile(`secciones-${state.year}.kml`, buildKml(`Mapa de Nacionalidades ${state.year}`, items), 'application/vnd.google-earth.kml+xml');
 }
 
 const csvCell = (v) => (typeof v === 'string' && /[",;\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v ?? '');

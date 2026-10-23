@@ -1,6 +1,6 @@
 {
-  "name": "Foreign Insight",
-  "short_name": "Foreign Insight",
+  "name": "Mapa de Nacionalidades",
+  "short_name": "Nacionalidades",
   "description": "Población por nacionalidad en cada sección censal de España (INE, 2012-2021)",
   "lang": "es",
   "start_url": "./",
