@@ -71,8 +71,8 @@ jobs:
             -PVERSION_NAME=${{ needs.check.outputs.version }} -PVERSION_CODE=${{ needs.check.outputs.code }}
           rm -f "$FI_KEYSTORE_PATH"
           mkdir -p ../out
-          cp app/build/outputs/apk/release/app-release.apk ../out/foreign-insight-${{ needs.check.outputs.version }}.apk
-          cp app/build/outputs/bundle/release/app-release.aab ../out/foreign-insight-${{ needs.check.outputs.version }}.aab
+          cp app/build/outputs/apk/release/app-release.apk ../out/mapa-nacionalidades-${{ needs.check.outputs.version }}.apk
+          cp app/build/outputs/bundle/release/app-release.aab ../out/mapa-nacionalidades-${{ needs.check.outputs.version }}.aab
       - name: Check the APK is signed with the release key
         run: |
           APKSIGNER=$(ls "$ANDROID_HOME"/build-tools/*/apksigner | sort -V | tail -1)

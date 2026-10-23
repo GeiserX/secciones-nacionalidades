@@ -1,6 +1,6 @@
 {
   "appId": "io.github.geiserx.foreigninsight",
-  "appName": "Foreign Insight",
+  "appName": "Mapa de Nacionalidades",
   "webDir": "dist",
   "backgroundColor": "#1a1a19",
   "android": { "allowMixedContent": false },

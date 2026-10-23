@@ -35,3 +35,17 @@ npm run cap:sync          # build web + copia a android/ e ios/
 npx cap open android      # Android Studio
 npx cap open ios          # Xcode
 ```
+
+## Logo, iconos y banners
+
+`scripts/build-brand.mjs` dibuja en SVG, a partir de los datos, el logo (`public/icon.svg`), los iconos y pantallas de inicio de las apps (`assets/*.svg`) y los banners (`docs/images/banner.svg` para el README y `feature-graphic.svg` para Google Play). El logo es España con cada provincia coloreada según su porcentaje de extranjeros en 2021. Después se pasan a PNG sin transparencia (salvo `icon-foreground`) y se generan los tamaños de cada plataforma:
+
+```bash
+node scripts/build-brand.mjs
+for f in assets/*.svg docs/images/feature-graphic.svg; do npx --yes sharp-cli@5 -i "$f" -o "${f%.svg}.png"; done
+for f in assets/icon-only assets/icon-background assets/splash assets/splash-dark docs/images/feature-graphic; do
+  npx --yes sharp-cli@5 -i "$f.png" -o "$f.png" flatten --background "#1a1a19"
+done
+npx sharp-cli@5 -i docs/images/banner.svg -o docs/images/social-preview.png
+npx --yes @capacitor/assets@3.0.5 generate --iconBackgroundColor '#1a1a19' --iconBackgroundColorDark '#1a1a19' --splashBackgroundColor '#1a1a19' --splashBackgroundColorDark '#1a1a19' --android --ios
+```

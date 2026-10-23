@@ -1,11 +1,11 @@
 # CLAUDE.md — secciones-nacionalidades
 
 ## Overview
-Foreign Insight: a static web app (plus Android and iOS apps built with Capacitor) that shows the population of each nationality in every census section of Spain, 2012-2021, from INE open data. Public site: https://foreign-insight.geiser.cloud (GitHub Pages).
+Mapa de Nacionalidades (called Foreign Insight until 3.0.0): a static web app (plus Android and iOS apps built with Capacitor) that shows the population of each nationality in every census section of Spain, 2012-2021, from INE open data. Public site: https://nacionalidades.geiser.cloud (GitHub Pages).
 
 ## Tech Stack
 - Vite, vanilla JS, Leaflet, Chart.js, topojson-client
-- Capacitor 8 for Android and iOS (bundle id `io.github.geiserx.foreigninsight`); the data ships inside the apps
+- Capacitor 8 for Android and iOS (bundle id `io.github.geiserx.foreigninsight`, kept from the old name: the stores tie the listing to it); the data ships inside the apps
 - Vitest for tests
 - One-off data conversion: R (`rocker/geospatial`) and mapshaper, see `docs/development.md`
 
@@ -21,6 +21,7 @@ npm run cap:sync
 - `src/stats.js` — pure data functions (tested)
 - `src/data.js` — loads `public/data` files
 - `src/native.js` — geolocation and file sharing, browser vs Capacitor
+- `scripts/build-brand.mjs` — logo, app icons, splash screens and banners, drawn from the data
 - `public/data/` — generated, committed; format in `docs/development.md`
 - `poblacion/`, `seccionado/` — original INE data, the source of `public/data`
 

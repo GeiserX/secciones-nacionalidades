@@ -1,26 +1,26 @@
 <p align="center">
-  <img src="docs/images/banner.svg" alt="secciones-nacionalidades" width="900"/>
+  <img src="docs/images/banner.svg" alt="Mapa de Nacionalidades" width="900"/>
 </p>
 
-<h1 align="center">secciones-nacionalidades</h1>
+<h1 align="center">Mapa de Nacionalidades</h1>
 
 <p align="center">
   <a href="https://github.com/GeiserX/secciones-nacionalidades/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/GeiserX/secciones-nacionalidades/ci.yml?label=CI" alt="CI"></a>
   <a href="https://github.com/GeiserX/secciones-nacionalidades/blob/main/LICENSE"><img src="https://img.shields.io/github/license/GeiserX/secciones-nacionalidades" alt="License"></a>
-  <a href="https://foreign-insight.geiser.cloud"><img src="https://img.shields.io/badge/abrir-foreign--insight.geiser.cloud-2a78d6" alt="Abrir la aplicación"></a>
+  <a href="https://nacionalidades.geiser.cloud"><img src="https://img.shields.io/badge/abrir-nacionalidades.geiser.cloud-2a78d6" alt="Abrir la aplicación"></a>
   <a href="https://github.com/GeiserX/secciones-nacionalidades/stargazers"><img src="https://img.shields.io/github/stars/GeiserX/secciones-nacionalidades" alt="GitHub Stars"></a>
   <a href="https://github.com/GeiserX/awesome-spain#readme"><img src="https://img.shields.io/badge/listed%20on-awesome--spain-c60b1e?style=flat-square&logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIxNCIgdmlld0JveD0iMCAwIDIwIDE0Ij48cmVjdCB3aWR0aD0iMjAiIGhlaWdodD0iMTQiIGZpbGw9IiNjNjBiMWUiLz48cmVjdCB5PSIzLjUiIHdpZHRoPSIyMCIgaGVpZ2h0PSI3IiBmaWxsPSIjZmZjNDAwIi8+PC9zdmc+&labelColor=ffc400" alt="listed on awesome-spain"></a>
 </p>
 
 <p align="center">
-  <strong>secciones-nacionalidades (Foreign Insight): nacionalidades en España por sección censal, con datos del INE</strong>
+  <strong>Extranjeros en España por nacionalidad y sección censal, con datos del INE</strong>
 </p>
 
 ---
 
-**Foreign Insight** muestra cuántas personas de cada nacionalidad viven en cada una de las más de 36.000 **secciones censales** de España, de 2012 a 2021, con datos abiertos del [Instituto Nacional de Estadística (INE)](https://www.ine.es/).
+**Mapa de Nacionalidades** muestra cuántas personas de cada nacionalidad viven en cada una de las más de 36.000 **secciones censales** de España, de 2012 a 2021, con datos abiertos del [Instituto Nacional de Estadística (INE)](https://www.ine.es/).
 
-**Ábrela en el navegador: https://foreign-insight.geiser.cloud** — sin instalar nada, también en el móvil. También hay aplicación para Android e iPhone, que funciona sin conexión.
+**Ábrela en el navegador: https://nacionalidades.geiser.cloud** — sin instalar nada, también en el móvil. También hay aplicación para Android e iPhone, que funciona sin conexión.
 
 ## Funcionalidades
 
@@ -66,7 +66,7 @@ npm test
 Con Docker:
 
 ```bash
-docker build -t foreign-insight . && docker run -p 8080:8080 foreign-insight
+docker build -t mapa-nacionalidades . && docker run -p 8080:8080 mapa-nacionalidades
 ```
 
 Cómo se regeneran los datos: [docs/development.md](docs/development.md).

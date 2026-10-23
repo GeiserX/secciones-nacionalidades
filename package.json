@@ -1,8 +1,8 @@
 {
-  "name": "foreign-insight",
+  "name": "mapa-nacionalidades",
   "private": true,
-  "version": "3.0.0",
-  "description": "Foreign Insight: población por nacionalidad en cada sección censal de España (INE, 2012-2021)",
+  "version": "3.0.1",
+  "description": "Mapa de Nacionalidades: población por nacionalidad en cada sección censal de España (INE, 2012-2021)",
   "license": "GPL-3.0-or-later",
   "type": "module",
   "scripts": {
