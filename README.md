@@ -65,12 +65,6 @@ npm run dev      # http://localhost:5173
 npm test
 ```
 
-Con Docker:
-
-```bash
-docker build -t mapa-nacionalidades . && docker run -p 8080:8080 mapa-nacionalidades
-```
-
 Cómo se regeneran los datos: [docs/development.md](docs/development.md).
 
 ## Licencia
