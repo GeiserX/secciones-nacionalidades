@@ -1,7 +1,7 @@
 # Self-hosted copy of the site. The public instance is https://nacionalidades.geiser.cloud
 # The build stage makes plain static files, so it runs on the builder's own platform:
 # under QEMU for arm64 it took more than 35 minutes.
-FROM --platform=$BUILDPLATFORM node:22-alpine AS build
+FROM --platform=$BUILDPLATFORM node:26-alpine AS build
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
