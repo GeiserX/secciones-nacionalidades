@@ -13,4 +13,4 @@ RUN npm run build
 FROM nginxinc/nginx-unprivileged:1.31-alpine
 COPY --from=build /app/dist /usr/share/nginx/html
 EXPOSE 8080
-HEALTHCHECK CMD wget -q -O /dev/null http://localhost:8080/ || exit 1
+HEALTHCHECK CMD wget -q -O /dev/null http://127.0.0.1:8080/ || exit 1
