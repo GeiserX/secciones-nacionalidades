@@ -24,7 +24,7 @@
     "topojson-client": "3.1.0"
   },
   "devDependencies": {
-    "@capacitor/cli": "8.5.3",
+    "@capacitor/cli": "8.6.2",
     "vite": "8.3.5",
     "vitest": "5.0.5"
   }
